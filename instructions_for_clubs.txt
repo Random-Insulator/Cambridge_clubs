@@ -1,0 +1,24 @@
+1) Images of activites
+2) What happened in those activites
+3) When did the activites happen
+4) Mentor's name
+6) Room Number
+7) from which grade can the students participate in the club
+
+
+literary- II to XII
+python/finance-II to X
+fianncial literacy- XI and XII
+quizardders- II to X
+Technocrates- II to XII
+grainiacs- XI and XII
+Robotics- III to X
+entrepenture's crew- XI and XII
+thethre- V to X
+cybersonic club-  VIII to X
+TedEd- VIII to X
+debaters club- X to  and 
+eco- VIII to X
+awareness club- XI to XII
+cookery- VIII to X
+creative crew- XI and XII

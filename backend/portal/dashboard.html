@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentor Dashboard — CambridgeClubs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0b10;
+      --surface: #13151f;
+      --surface2: #1c1f30;
+      --border: rgba(255,255,255,0.08);
+      --accent: #7c6ef7;
+      --accent2: #a78bfa;
+      --text: #e8e8f0;
+      --muted: #7a7a9a;
+      --error: #f87171;
+      --success: #4ade80;
+      --radius: 14px;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 10% 20%, rgba(124,110,247,0.1) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 90% 80%, rgba(167,139,250,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ── Header ─────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,11,16,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { font-size: 1.1rem; font-weight: 700; }
+    .logo span { color: var(--accent2); }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .mentor-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .mentor-badge strong { color: var(--text); margin-right: 4px; }
+    .logout-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .logout-btn:hover { color: var(--error); border-color: var(--error); }
+
+    /* ── Main layout ─────────────────────── */
+    main { max-width: 1100px; margin: 0 auto; padding: 36px 24px; display: grid; grid-template-columns: 360px 1fr; gap: 28px; }
+    @media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+
+    /* ── Cards ──────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-title svg { width: 18px; height: 18px; opacity: 0.6; }
+
+    /* ── Form ────────────────────────────── */
+    label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; margin-top: 14px; }
+    label:first-of-type { margin-top: 0; }
+    input[type="text"], input[type="date"], select, textarea {
+      width: 100%; padding: 11px 13px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-family: inherit; font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7a9a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    select option { background: #13151f; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,110,247,0.18); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* File drop zone */
+    .file-zone {
+      margin-top: 14px;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .file-zone:hover, .file-zone.drag-over { border-color: var(--accent); background: rgba(124,110,247,0.05); }
+    .file-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .file-zone-icon { font-size: 2rem; margin-bottom: 6px; }
+    .file-zone-text { font-size: 0.85rem; color: var(--muted); }
+    .file-zone-name { font-size: 0.85rem; color: var(--accent2); margin-top: 6px; font-weight: 500; }
+
+    /* Preview image */
+    #imgPreview { display: none; width: 100%; height: 160px; object-fit: cover; border-radius: 10px; margin-top: 12px; }
+
+    .submit-btn {
+      width: 100%; margin-top: 20px;
+      padding: 13px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: var(--radius);
+      color: #fff; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+    }
+    .submit-btn:hover  { opacity: 0.88; }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Status message */
+    .status-msg {
+      display: none;
+      margin-top: 14px; padding: 10px 14px;
+      border-radius: 10px; font-size: 0.85rem;
+    }
+    .status-msg.success { display: block; color: var(--success); background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.2); }
+    .status-msg.error   { display: block; color: var(--error);   background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); }
+
+    /* ── Activities list ─────────────────── */
+    .activities-col {}
+    .activities-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .activities-count { font-size: 0.82rem; color: var(--muted); }
+
+    .activity-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 14px;
+      margin-bottom: 12px;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .activity-thumb {
+      width: 72px; height: 72px; border-radius: 10px; object-fit: cover;
+      background: var(--surface); border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .activity-thumb-ph {
+      width: 72px; height: 72px; border-radius: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--muted);
+    }
+    .activity-body { flex: 1; min-width: 0; }
+    .activity-title { font-size: 0.92rem; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .activity-meta  { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .activity-tag   { background: rgba(124,110,247,0.15); color: var(--accent2); border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
+    .activity-desc  { font-size: 0.82rem; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .delete-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); padding: 4px; border-radius: 6px;
+      transition: color 0.2s, background 0.2s; flex-shrink: 0;
+    }
+    .delete-btn:hover { color: var(--error); background: rgba(248,113,113,0.1); }
+    .delete-btn svg { width: 16px; height: 16px; }
+
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); font-size: 0.9rem; }
+    .empty-state svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.3; display: block; margin-inline: auto; }
+
+    .loading { text-align: center; padding: 32px; color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Cambridge<span>Clubs</span> <span style="color:var(--muted);font-weight:400;font-size:0.85rem;">Portal</span></div>
+    <div class="header-right">
+      <div class="mentor-badge"><strong id="headerMentor"></strong><span id="headerClub"></span></div>
+      <button class="logout-btn" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Upload Form -->
+    <div>
+      <div class="card">
+        <div class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload New Activity
+        </div>
+        <form id="uploadForm">
+          <label for="titleInput">Activity Title *</label>
+          <input type="text" id="titleInput" placeholder="e.g. Japanese cuisine session" required />
+
+          <label for="dateInput">Date</label>
+          <input type="date" id="dateInput" />
+
+          <label for="tagInput">Tag</label>
+          <select id="tagInput">
+            <option value="Activity">Activity</option>
+            <option value="Cook">Cook</option>
+            <option value="Event">Event</option>
+            <option value="Competition">Competition</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Performance">Performance</option>
+            <option value="Project">Project</option>
+            <option value="Talk">Talk</option>
+            <option value="Field Trip">Field Trip</option>
+          </select>
+
+          <label for="descInput">Description</label>
+          <textarea id="descInput" placeholder="Brief description of what happened…"></textarea>
+
+          <label>Photo *</label>
+          <div class="file-zone" id="fileZone">
+            <input type="file" id="imageInput" name="image" accept="image/*" required />
+            <div class="file-zone-icon">📷</div>
+            <div class="file-zone-text">Click or drag & drop a photo here</div>
+            <div class="file-zone-name" id="fileName"></div>
+          </div>
+          <img id="imgPreview" alt="Preview" />
+
+          <button type="submit" class="submit-btn" id="uploadBtn">Upload Activity</button>
+          <div class="status-msg" id="statusMsg"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Activities list -->
+    <div class="activities-col">
+      <div class="card" style="padding-bottom:8px;">
+        <div class="activities-header">
+          <div class="card-title" style="margin-bottom:0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Your Activities
+          </div>
+          <span class="activities-count" id="actCount">…</span>
+        </div>
+        <div id="actList"><div class="loading">Loading…</div></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API = '';
+
+    // ── Auth guard ──────────────────────────────────────────────────
+    const token      = localStorage.getItem('cc_token');
+    const clubId     = localStorage.getItem('cc_clubId');
+    const clubName   = localStorage.getItem('cc_clubName');
+    const mentorName = localStorage.getItem('cc_mentorName');
+
+    if (!token || !clubId) { window.location.href = 'login.html'; }
+
+    document.getElementById('headerMentor').textContent = mentorName + ' · ';
+    document.getElementById('headerClub').textContent   = clubName + ' Club';
+    document.title = `${clubName} Dashboard — CambridgeClubs`;
+
+    // Today's date default
+    document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+
+    // ── Logout ──────────────────────────────────────────────────────
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
+
+    // ── File preview ────────────────────────────────────────────────
+    const fileInput  = document.getElementById('imageInput');
+    const fileZone   = document.getElementById('fileZone');
+    const fileName   = document.getElementById('fileName');
+    const imgPreview = document.getElementById('imgPreview');
+
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files[0];
+      if (!f) return;
+      fileName.textContent = f.name;
+      const url = URL.createObjectURL(f);
+      imgPreview.src = url;
+      imgPreview.style.display = 'block';
+    });
+    fileZone.addEventListener('dragover', e => { e.preventDefault(); fileZone.classList.add('drag-over'); });
+    fileZone.addEventListener('dragleave', () => fileZone.classList.remove('drag-over'));
+    fileZone.addEventListener('drop', e => {
+      e.preventDefault(); fileZone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change'));
+      }
+    });
+
+    // ── Load activities ──────────────────────────────────────────────
+    async function loadActivities() {
+      const list = document.getElementById('actList');
+      try {
+        const res  = await fetch(`${API}/api/activities/${clubId}`);
+        const data = await res.json();
+        renderActivities(data);
+      } catch {
+        list.innerHTML = '<div class="empty-state">Could not load activities. Is the server running?</div>';
+      }
+    }
+
+    function renderActivities(items) {
+      const list = document.getElementById('actList');
+      document.getElementById('actCount').textContent = items.length + ' photo' + (items.length !== 1 ? 's' : '');
+
+      if (!items.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            No activities yet. Upload your first photo!
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = items.map(a => `
+        <div class="activity-item" id="item-${a.id}">
+          <img class="activity-thumb" src="${API}${a.img}" alt="${a.title}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="activity-thumb-ph" style="display:none">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div class="activity-body">
+            <div class="activity-title">${a.title}</div>
+            <div class="activity-meta">
+              <span>${a.date || ''}</span>
+              <span class="activity-tag">${a.tag}</span>
+            </div>
+            <div class="activity-desc">${a.desc || ''}</div>
+          </div>
+          <button class="delete-btn" onclick="deleteActivity('${a.id}')" title="Delete activity">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // ── Upload ────────────────────────────────────────────────────────
+    document.getElementById('uploadForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn  = document.getElementById('uploadBtn');
+      const msg  = document.getElementById('statusMsg');
+      msg.className = 'status-msg';
+
+      const formData = new FormData();
+      formData.append('title', document.getElementById('titleInput').value);
+      formData.append('date',  document.getElementById('dateInput').value);
+      formData.append('tag',   document.getElementById('tagInput').value);
+      formData.append('desc',  document.getElementById('descInput').value);
+      formData.append('image', fileInput.files[0]);
+
+      btn.disabled = true; btn.textContent = 'Uploading…';
+
+      try {
+        const res  = await fetch(`${API}/api/upload/${clubId}`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+        msg.textContent = '✓ Activity uploaded successfully!';
+        msg.className = 'status-msg success';
+        e.target.reset();
+        fileName.textContent = '';
+        imgPreview.style.display = 'none';
+        document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+        loadActivities();
+      } catch (ex) {
+        msg.textContent = ex.message;
+        msg.className = 'status-msg error';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Upload Activity';
+      }
+    });
+
+    // ── Delete ────────────────────────────────────────────────────────
+    async function deleteActivity(id) {
+      if (!confirm('Delete this activity? This cannot be undone.')) return;
+      try {
+        const res = await fetch(`${API}/api/activities/${clubId}/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) { const d = await res.json(); throw new Error(d.error); }
+        document.getElementById(`item-${id}`)?.remove();
+        loadActivities();
+      } catch (ex) {
+        alert('Delete failed: ' + ex.message);
+      }
+    }
+
+    loadActivities();
+  </script>
+</body>
+</html>

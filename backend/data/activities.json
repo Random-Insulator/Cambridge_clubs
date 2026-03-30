@@ -1,0 +1,49 @@
+[
+  {
+    "id": "1f9c45f5-0bb5-4a2b-afb7-994ec0bc99f5",
+    "clubId": "Theatre",
+    "img": "/uploads/Theatre/1774265861955-f0d86b9e-1108-4cbf-ab11-ad623ecc92f3.jpg",
+    "title": "BEST ACT",
+    "date": "2026-03-23",
+    "tag": "Competition",
+    "desc": "a competition by cybersonic club",
+    "uploadedAt": "2026-03-23T11:37:41.957Z",
+    "approved": true
+  },
+  {
+    "id": "30e5cf03-759b-44e6-b390-9f930fa57f56",
+    "clubId": "cookery",
+    "img": "/uploads/cookery/1774686808922-5f622d23-6b26-4320-bfad-e8c52be53bcd.jpeg",
+    "title": "Nutrition Month",
+    "date": "2025-12-01",
+    "tag": "Activity",
+    "desc": "The Members of the club had a nutrition month, where they made a lot of dishes which were very healthy",
+    "approved": true,
+    "uploadedAt": "2026-03-28T08:33:28.925Z",
+    "approvedAt": "2026-03-28T08:33:59.588Z"
+  },
+  {
+    "id": "6304abe6-1e9b-48a8-9c8c-0cbe293bebca",
+    "clubId": "cookery",
+    "img": "/uploads/cookery/1774730759504-2d9c0a61-737e-4375-a3a1-b81bab95f724.jpeg",
+    "title": "Learning the art of plating",
+    "date": "2025-08-11",
+    "tag": "Workshop",
+    "desc": "The members of the club learned how to present the food that they made with the best manner because first impression is everything",
+    "approved": true,
+    "uploadedAt": "2026-03-28T20:45:59.507Z",
+    "approvedAt": "2026-03-28T20:46:33.042Z"
+  },
+  {
+    "id": "0d695fc6-b20d-4198-abb9-01dcb2a3aee1",
+    "clubId": "cookery",
+    "img": "/uploads/cookery/1774730953438-2b9dcfdd-9263-463e-ac12-9aba2a725817.jpeg",
+    "title": "Making Fireless dishes",
+    "date": "2025-07-28",
+    "tag": "Cook",
+    "desc": "The club members learned that making food doesn't always need fire.",
+    "approved": true,
+    "uploadedAt": "2026-03-28T20:49:13.440Z",
+    "approvedAt": "2026-03-28T20:49:28.584Z"
+  }
+]

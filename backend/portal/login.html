@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentor Login — CambridgeClubs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0b10;
+      --surface: #13151f;
+      --surface2: #1c1f30;
+      --border: rgba(255,255,255,0.08);
+      --accent: #7c6ef7;
+      --accent2: #a78bfa;
+      --text: #e8e8f0;
+      --muted: #7a7a9a;
+      --error: #f87171;
+      --radius: 14px;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* Ambient glow background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 30%, rgba(124,110,247,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(167,139,250,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      animation: slideUp 0.4s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 28px;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent2); }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    select, input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 18px;
+      appearance: none;
+    }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7a9a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+    select option { background: #13151f; }
+    select:focus, input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,110,247,0.2);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-top: 4px;
+    }
+    .submit-btn:hover  { opacity: 0.9; }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .error-msg {
+      display: none;
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 10px;
+    }
+    .error-msg.show { display: block; }
+
+    .hint {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .hint a { color: var(--accent2); text-decoration: none; }
+    .hint a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Cambridge<span>Clubs</span></div>
+    <h1>Mentor Login</h1>
+    <p class="subtitle">Sign in to manage your club's photos and activities.</p>
+
+    <form id="loginForm">
+      <label for="clubSelect">Your Club</label>
+      <select id="clubSelect" name="clubId" required>
+        <option value="" disabled selected>Select your club…</option>
+        <option value="teded">TedEd</option>
+        <option value="cybersonic">Cybersonic</option>
+        <option value="robotics">Robotics</option>
+        <option value="cookery">Cookery</option>
+        <option value="quizzarders">Quizzarders</option>
+        <option value="finance">Finance</option>
+        <option value="Theatre">Theatre</option>
+        <option value="eco">Eco</option>
+        <option value="Technocrates">Technocrates</option>
+        <option value="debate">Debate</option>
+      </select>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
+
+      <button type="submit" class="submit-btn" id="loginBtn">Sign in →</button>
+      <div class="error-msg" id="errorMsg"></div>
+    </form>
+
+    <p class="hint">Go back to <a href="../index.html">CambridgeClubs</a></p>
+  </div>
+
+  <script>
+    const API = '';
+
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const err = document.getElementById('errorMsg');
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+      err.classList.remove('show');
+
+      const clubId   = document.getElementById('clubSelect').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res  = await fetch(`${API}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clubId, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Login failed');
+
+        localStorage.setItem('cc_token',      data.token);
+        localStorage.setItem('cc_clubId',     data.clubId);
+        localStorage.setItem('cc_clubName',   data.clubName);
+        localStorage.setItem('cc_mentorName', data.mentorName);
+
+        window.location.href = 'dashboard.html';
+      } catch (ex) {
+        err.textContent = ex.message;
+        err.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Sign in →';
+      }
+    });
+  </script>
+</body>
+</html>
