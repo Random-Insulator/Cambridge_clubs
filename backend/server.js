@@ -236,7 +236,7 @@ Also, here is a strict mapping list to help in specific cases:
 - Software -> Cybersonic Club
 - Books (loves talking) -> TedEd Club
 - Books (introverted/just wants to learn) -> Quizzarders Club
- Give the user a club after 3 rounds of questioning
+ **GIVE THE USER A CLUB AFTER U ASK 3 QUESTIONS, NO MORE, NO LESS
 Do not invent or suggest any clubs outside of this specific list.`;
 
 
