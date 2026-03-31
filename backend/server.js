@@ -199,42 +199,11 @@ app.post("/api/chat", async (req, res) => {
       return res.json({ response: "I'm sorry, I cannot respond to that. Please keep our conversation school-appropriate and focused on finding a club!" });
     }
 
-    const turnCount = Math.floor((history || []).length / 2);
-    
-    // Hardcoded Mapping Detection (to force accuracy)
-    let mappingNudge = "";
-    const fullHistoryText = (history || []).map(h => h.content).join(" ").toLowerCase() + " " + message.toLowerCase();
-    
-    const allowedClubs = ["cybersonic", "robotics", "technocrates", "finance", "eco", "TedEd", "thetre", "quizaarders", "cookery", "debate"];
-
-    if (turnCount === 3) {
-      if (fullHistoryText.match(/book|read|literature|story/)) {
-        mappingNudge = "\nSTRICT: User mentioned books. YOU MUST SUGGEST 'TedEd' OR 'quizaarders'.";
-      } else if (fullHistoryText.match(/art|paint|draw|sketch|craft/)) {
-        mappingNudge = "\nSTRICT: User mentioned art. YOU MUST SUGGEST 'eco'.";
-      } else if (fullHistoryText.match(/software|code|program|app|ai/)) {
-        mappingNudge = "\nSTRICT: User mentioned software/apps. YOU MUST SUGGEST 'cybersonic'.";
-      } else if (fullHistoryText.match(/hardware|circuit|builder|robot side/)) {
-        mappingNudge = "\nSTRICT: User mentioned hardware/robotics. YOU MUST SUGGEST 'robotics'.";
-      }
-    }
-
-    const systemPrompt = `You are "Cambridge Clubs Bot".
-    
-    ALLOWED CLUBS: ${allowedClubs.join(", ")}.
-    
-    TURN RULES:
-    - Turn 1 & 2 (Asked ${turnCount + 1}): ASK ONLY ONE SHORT QUESTION to learn about the student. DO NOT SUGGEST A CLUB YET.
-    - Turn 3: Ask ONE FINAL short question.
-    - Turn 4: YOU MUST SUGGEST ONE CLUB FROM THE ALLOWED LIST. 
-    
-    STRICT RULE: Only suggest a club on Turn 4. Never invent new clubs.
-    ${mappingNudge}
-    
-    CURRENT TURN: ${turnCount + 1}
-    
-    IF TURN IS 1, 2, or 3: Respond with ONLY a friendly question.
-    IF TURN IS 4: Use this format: "I've got it! I think you'd love the [Club Name] because [1 sentence]."`;
+    const systemPrompt = `You are the "Cambridge Clubs Bot".
+You are a friendly, concise assistant that helps students find an extracurricular club to join.
+Ask them questions to understand their interests, then recommend one of our official clubs: 
+Robotics, Cybersonic, Technocrates, Finance, Eco, TedEd, Theatre, Quizzarders, Cookery, or Debate.
+Do not invent or suggest any clubs outside of this list.`;
 
 
 
