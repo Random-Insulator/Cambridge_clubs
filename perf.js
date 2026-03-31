@@ -16,7 +16,7 @@
       _o.id = "_perfOverlay";
       _o.style.cssText = "position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;cursor:pointer;animation:_pfIn .3s ease";
       // DROP YOUR MEME IMAGE HERE ↓↓↓ (replace the placeholder src)
-      _o.innerHTML = '<img src="images/util_cache_01.jpg" style="max-width:80vw;max-height:80vh;border-radius:16px;box-shadow:0 0 60px rgba(255,255,255,0.2)">';
+      _o.innerHTML = '<img src="/images/util_cache_01.jpg" style="max-width:80vw;max-height:80vh;border-radius:16px;box-shadow:0 0 60px rgba(255,255,255,0.2)">';
       _o.addEventListener("click", () => _o.remove());
       document.body.appendChild(_o);
       setTimeout(() => { if (_o.parentNode) _o.remove(); }, 4000);
@@ -46,13 +46,13 @@
     if (!ft) { _lc = 0; return; }
     _lc++;
     clearTimeout(_lt);
-    _lt = setTimeout(() => _lc = 0, 2000);
-    if (_lc >= 10) {
+    _lt = setTimeout(() => _lc = 0, 4000);
+    if (_lc >= 7) {
       _lc = 0;
       const _m = document.createElement("div");
       _m.style.cssText = "position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer;animation:_pfIn .3s ease";
       // DROP YOUR MEME IMAGE HERE ↓↓↓ (replace the placeholder src)
-      _m.innerHTML = '<img src="images/util_cache_02.jpg" style="max-width:85vw;max-height:85vh;border-radius:16px">';
+      _m.innerHTML = '<img src="/images/util_cache_02.jpg" style="max-width:85vw;max-height:85vh;border-radius:16px">';
       _m.addEventListener("click", () => _m.remove());
       document.body.appendChild(_m);
       setTimeout(() => { if (_m.parentNode) _m.remove(); }, 5000);
