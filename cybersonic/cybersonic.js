@@ -45,7 +45,10 @@ function buildCarousel(slides) {
 
 function goTo(idx) {
   current = (idx + totalSlides) % totalSlides;
-  track.style.transform = `translateX(calc(-${current} * (560px + 16px)))`;
+  const slide = track.querySelector('.carousel-slide');
+  if (slide) {
+    track.style.transform = `translateX(-${current * (slide.offsetWidth + 16)}px)`;
+  }
   document.querySelectorAll('.carousel-dots span')
     .forEach((d, i) => d.classList.toggle('active', i === current));
 }
