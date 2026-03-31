@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -51,6 +51,18 @@ nav::-webkit-scrollbar { display: none; }
 }
 
 .nav-logo span { color: #e02020; }
+.nav-logo .cool-clubs {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  background: linear-gradient(135deg, #e02020, #9333ea);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-left: 4px;
+  transform: rotate(-3deg);
+  display: inline-block;
+  line-height: 0.8;
+}
 
 .nav-links {
   display: flex;
