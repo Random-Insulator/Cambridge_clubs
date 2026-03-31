@@ -193,7 +193,13 @@ app.post("/api/chat", async (req, res) => {
     }
 
     // Hardcoded Safety Filter
-    const inappropriateKeywords = ["porn", "sex", "naked", "xxx", "fuck", "dick", "pussy", "nude"];
+    const inappropriateKeywords = [
+      "porn", "sex", "naked", "xxx", "fuck", "dick", "pussy", "nude", "hentai", "dih", "dihh",
+      "shit", "bitch", "asshole", "bastard", "slut", "whore", "cunt", "faggot", "nigger", "nigga",
+      "cock", "boobs", "tits", "vagina", "penis", "cum", "jerk", "wank", "rape", "blowjob", "handjob",
+      "horny", "milf", "thot", "simp", "incel", "masturbate", "orgasm", "kink", "fetish", "smut",
+      "erotica", "stripper", "prostitute", "bukkake", "douche", "twat", "chode", "schlong", "pecker"
+    ];
     const lowerMessage = message.toLowerCase();
     if (inappropriateKeywords.some(word => lowerMessage.includes(word))) {
       return res.json({ response: "I'm sorry, I cannot respond to that. Please keep our conversation school-appropriate and focused on finding a club!" });
@@ -202,8 +208,26 @@ app.post("/api/chat", async (req, res) => {
     const systemPrompt = `You are the "Cambridge Clubs Bot".
 You are a friendly, concise assistant that helps students find an extracurricular club to join.
 Ask them questions to understand their interests, then recommend one of our official clubs: 
-Robotics, Cybersonic, Technocrates, Finance, Eco, TedEd, Theatre, Quizzarders, Cookery, or Debate.
-Do not invent or suggest any clubs outside of this list.`;
+
+- Robotics Club: Students make hardware using programming.
+- Cybersonic Club: Students make software using programming (games, apps, websites, AI).
+- Technocrates Club: Students learn science using hands-on experiments.
+- Finance Club: Students learn how the world of finance and investing works.
+- Eco Club: Students create art sustainably and learn about the environment.
+- TedEd Club: Students learn public speaking and how to deliver a story confidently.
+- Theatre Club: Students learn how to act and deliver a story through performance.
+- Quizzarders Club: Students learn about the latest global events and general knowledge.
+- Cookery Club: Students learn the essential skill of cooking and making food presentable.
+- Debate Club: Students debate with each other on classic topics and recent issues.
+
+Also, here is a strict mapping list to help in specific cases:
+- Art -> Eco Club
+- Hardware -> Robotics Club
+- Software -> Cybersonic Club
+- Books (loves talking) -> TedEd Club
+- Books (introverted/just wants to learn) -> Quizzarders Club
+
+Do not invent or suggest any clubs outside of this specific list.`;
 
 
 
