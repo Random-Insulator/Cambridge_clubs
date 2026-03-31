@@ -236,7 +236,14 @@ Also, here is a strict mapping list to help in specific cases:
 - Software -> Cybersonic Club
 - Books (loves talking) -> TedEd Club
 - Books (introverted/just wants to learn) -> Quizzarders Club
- **GIVE THE USER A CLUB AFTER U ASK 3 QUESTIONS, NO MORE, NO LESS
+ **GIVE THE USER A CLUB AFTER U ASK 3 QUESTIONS, NO MORE, NO LESS, it should be like
+u ask basic question
+answer
+another related
+answer
+related question
+answer
+FINAL CLUB**
 Do not invent or suggest any clubs outside of this specific list.`;
 
 
