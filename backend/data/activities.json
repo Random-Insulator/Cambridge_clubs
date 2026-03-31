@@ -1,16 +1,5 @@
 [
   {
-    "id": "1f9c45f5-0bb5-4a2b-afb7-994ec0bc99f5",
-    "clubId": "Theatre",
-    "img": "/uploads/Theatre/1774265861955-f0d86b9e-1108-4cbf-ab11-ad623ecc92f3.jpg",
-    "title": "BEST ACT",
-    "date": "2026-03-23",
-    "tag": "Competition",
-    "desc": "a competition by cybersonic club",
-    "uploadedAt": "2026-03-23T11:37:41.957Z",
-    "approved": true
-  },
-  {
     "id": "30e5cf03-759b-44e6-b390-9f930fa57f56",
     "clubId": "cookery",
     "img": "/uploads/cookery/1774686808922-5f622d23-6b26-4320-bfad-e8c52be53bcd.jpeg",
@@ -45,5 +34,149 @@
     "approved": true,
     "uploadedAt": "2026-03-28T20:49:13.440Z",
     "approvedAt": "2026-03-28T20:49:28.584Z"
+  },
+  {
+    "id": "513bc995-45eb-4dfb-aff2-e48ea5af2dc6",
+    "clubId": "eco",
+    "img": "/uploads/eco/1774857769414-babda69e-cc4c-4574-b718-373c3acb0370.jpg",
+    "title": "Making sustainable bags",
+    "date": "2025-06-23",
+    "tag": "Activity",
+    "desc": "The memebers of eco club made sustainable bags out of cloth to combat the growing polution cased by single use plastic bags",
+    "approved": true,
+    "uploadedAt": "2026-03-30T08:02:49.416Z",
+    "approvedAt": "2026-03-30T08:04:10.397Z"
+  },
+  {
+    "id": "801c5d7d-6bdf-4c65-b172-65caa864959f",
+    "clubId": "eco",
+    "img": "/uploads/eco/1774858182447-ac6a73b2-22a0-400f-af88-049fe9069221.jpg",
+    "title": "Making sustainable and beautiful pen holders",
+    "date": "2025-09-11",
+    "tag": "Project",
+    "desc": "The menmbers of Eco Club made sustainble and beautiful pen holders for students chasing astheticness and sustainablity",
+    "approved": true,
+    "uploadedAt": "2026-03-30T08:09:42.448Z",
+    "approvedAt": "2026-03-30T08:09:50.794Z"
+  },
+  {
+    "id": "e57dd7d0-cc89-4cf3-9999-b50c71ac325d",
+    "clubId": "eco",
+    "img": "/uploads/eco/1774858403025-368edf60-bffe-44d4-bb00-99756818de3d.jpg",
+    "title": "Discussion and project of saving the Earth",
+    "date": "2025-11-24",
+    "tag": "Talk",
+    "desc": "The members of Eco club made posters on the ways we ccan save the Earth and had a discussion on it",
+    "approved": true,
+    "uploadedAt": "2026-03-30T08:13:23.026Z",
+    "approvedAt": "2026-03-30T08:13:27.403Z"
+  },
+  {
+    "id": "9e7f83d4-5437-4d5e-a45e-ff6002078960",
+    "clubId": "Theatre",
+    "img": "/uploads/Theatre/1774907499719-e1f64577-ec85-47a8-8495-650c4e8b1e56.jpg",
+    "title": "Tragic Act in inter-school competiton",
+    "date": "2025-09-20",
+    "tag": "Competition",
+    "desc": "The members of Theatre club went to another school to present their tragic and thought-provoking act",
+    "approved": true,
+    "uploadedAt": "2026-03-30T21:51:39.721Z",
+    "approvedAt": "2026-03-30T21:57:38.732Z"
+  },
+  {
+    "id": "d5bbf255-6e6f-4547-84b0-4acbc3938e37",
+    "clubId": "Theatre",
+    "img": "/uploads/Theatre/1774907638771-4e8743bc-5629-4b8e-82f4-0fa16e573ac9.jpg",
+    "title": "Hindu story retold with an act",
+    "date": "2025-11-15",
+    "tag": "Performance",
+    "desc": "The members of Theatre club presented an act showing a classic story in Hinduism in front of other students",
+    "approved": true,
+    "uploadedAt": "2026-03-30T21:53:58.772Z",
+    "approvedAt": "2026-03-30T21:57:37.976Z"
+  },
+  {
+    "id": "997d51b3-3ce8-45ef-8c9b-6a7d8bb86143",
+    "clubId": "Theatre",
+    "img": "/uploads/Theatre/1774907814275-19c6145f-a056-47b4-996f-269402b9fa7c.jpg",
+    "title": "Member winning an award for his great perfomance",
+    "date": "2025-09-19",
+    "tag": "Competition",
+    "desc": "A member of Theatre club went to a prestigious acting competition and showed his skills and got an award for his performance by the organizers",
+    "approved": true,
+    "uploadedAt": "2026-03-30T21:56:54.276Z",
+    "approvedAt": "2026-03-30T21:57:36.837Z"
+  },
+  {
+    "id": "466f8caf-b006-41d0-a107-c4b258cbf5c8",
+    "clubId": "teded",
+    "img": "/uploads/teded/1774909225283-0f255c8e-12f3-4a9c-ab47-5ee968ec1b04.jpg",
+    "title": "The Idea Lab: Peer Pitch & Review Session",
+    "date": "2025-06-02",
+    "tag": "Talk",
+    "desc": "Members of the TED-Ed Club actively listen and provide critical feedback as a peer pitches their \"Idea Worth Spreading\" to refine its impact before the final script.",
+    "approved": true,
+    "uploadedAt": "2026-03-30T22:20:25.283Z",
+    "approvedAt": "2026-03-30T22:26:09.783Z"
+  },
+  {
+    "id": "af0c080c-2e6d-42f6-994a-4c2f8bad6a64",
+    "clubId": "teded",
+    "img": "/uploads/teded/1774909356324-8e97bd4e-1daf-4336-a830-cd53fb522e97.jpg",
+    "title": "Debate on global issues",
+    "date": "2025-12-26",
+    "tag": "Competition",
+    "desc": "The members of Ted-Ed club had a friendly debate competition on the topic of standardization of education across the globe.",
+    "approved": true,
+    "uploadedAt": "2026-03-30T22:22:36.326Z",
+    "approvedAt": "2026-03-30T22:26:08.759Z"
+  },
+  {
+    "id": "f1cdb5ed-4a3f-487b-9630-2c502d963d35",
+    "clubId": "teded",
+    "img": "/uploads/teded/1774909555532-2ba803bc-9885-413d-84a7-0d634e216010.jpg",
+    "title": "Taking tips about Story telling from the mentor",
+    "date": "2025-04-14",
+    "tag": "Talk",
+    "desc": "The members of Ted-Ed club had a massive discussion with their mentor about the best ways to deliver a story before a competition",
+    "approved": true,
+    "uploadedAt": "2026-03-30T22:25:55.534Z",
+    "approvedAt": "2026-03-30T22:26:08.066Z"
+  },
+  {
+    "id": "bbd47129-2a73-4c2f-9392-2152f8a1f9af",
+    "clubId": "Technocrates",
+    "img": "/uploads/Technocrates/1774918845459-519d473c-743c-4445-b564-668c031bfda2.jpeg",
+    "title": "The Sink or Float Experiment",
+    "date": "2026-03-30",
+    "tag": "Activity",
+    "desc": "Members of the Technogrades Club demonstrated the properties of buoyancy by testing various materials in water and explaining the science behind density to their peers.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T01:00:45.461Z",
+    "approvedAt": "2026-03-31T01:03:55.922Z"
+  },
+  {
+    "id": "6e64a0b0-bfbc-4467-9744-f6aa53181776",
+    "clubId": "Technocrates",
+    "img": "/uploads/Technocrates/1774918925598-13ed91f6-d4b1-45dd-93fa-9babd86d0733.jpeg",
+    "title": "Exploring the Science of Osmosis",
+    "date": "2026-03-31",
+    "tag": "Project",
+    "desc": "Exploring the Science of OsmosisMembers of the Technocrats Club delivered a presentation on the process of osmosis, using diagrams and experimental data to explain how water molecules move through biological membranes.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T01:02:05.600Z",
+    "approvedAt": "2026-03-31T01:03:57.016Z"
+  },
+  {
+    "id": "68e08567-3bfe-41f3-a8c9-084594f5ac83",
+    "clubId": "Technocrates",
+    "img": "/uploads/Technocrates/1774919007113-827c018b-4216-42db-856f-258fe1508af3.jpeg",
+    "title": "Mechanics on Wheel Photogame",
+    "date": "2025-11-17",
+    "tag": "Talk",
+    "desc": "Members of the club organized an interactive exhibit featuring mechanical models and digital displays to demonstrate the principles of automotive engineering and physics through a gamified learning experience.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T01:03:27.115Z",
+    "approvedAt": "2026-03-31T01:03:59.130Z"
   }
 ]

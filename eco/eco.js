@@ -94,24 +94,6 @@ async function loadActivities() {
 }
 loadActivities();
 
-// ─── MEMBERS ──────────────────────────────────────────
-const members = [
-  { name: "Aanya Sharma",    initials: "AS" },
-  { name: "James Okafor",    initials: "JO" },
-  { name: "Priya Nair",      initials: "PN" },
-  { name: "Luca Bianchi",    initials: "LB" },
-  { name: "Sofia Al-Hassan", initials: "SA" },
-  { name: "Ethan Park",      initials: "EP" },
-];
-
-const membersList = document.getElementById('membersList');
-members.forEach(m => {
-  const row = document.createElement('div');
-  row.className = 'member-row';
-  row.innerHTML = `<div class="member-avatar">${m.initials}</div><div class="member-name">${m.name}</div>`;
-  membersList.appendChild(row);
-});
-
 // ─── SCROLL ANIMATIONS ────────────────────────────────
 const observer = new IntersectionObserver(entries => {
   entries.forEach((e, i) => {
@@ -123,3 +105,112 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 
 document.querySelectorAll('.activity-card').forEach(c => observer.observe(c));
+
+// ─── CHATBOT LOGIC ────────────────────────────────────
+(function() {
+  if (!document.getElementById('chatPanel')) {
+    const chatHtml = `
+      <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <div class="chat-header-title">Club Finder AI</div>
+            <div class="chat-header-status">online</div>
+          </div>
+          <button class="chat-close" id="chatClose">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg bot">
+            Hello! I'm here to help you find the perfect club. What are your hobbies or interests?
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+          <button id="chatSend">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', chatHtml);
+  }
+
+  const chatFab = document.querySelector('.chat-fab');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
+  const chatMessages = document.getElementById('chatMessages');
+  const heroCta = document.querySelector('.hero-cta');
+  const navChatBtns = document.querySelectorAll('.nav-chat-btn');
+
+  let chatHistory = [];
+
+  function toggleChat() {
+    chatPanel.classList.toggle('active');
+    if (chatPanel.classList.contains('active')) {
+      chatInput.focus();
+    }
+  }
+
+  if (chatFab) chatFab.addEventListener('click', toggleChat);
+  if (chatClose) chatClose.addEventListener('click', toggleChat);
+  if (heroCta) heroCta.addEventListener('click', toggleChat);
+  navChatBtns.forEach(btn => btn.addEventListener('click', toggleChat));
+
+  async function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    chatInput.value = '';
+    addMessage(text, 'user');
+    const loadingMsg = addMessage('...', 'bot typing');
+    
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, history: chatHistory })
+      });
+
+      const data = await response.json();
+      loadingMsg.remove();
+
+      if (!response.ok || data.error) {
+        throw new Error(data.error || `Server responded with ${response.status}`);
+      }
+
+      addMessage(data.response, 'bot');
+      chatHistory.push({ role: 'user', content: text });
+      chatHistory.push({ role: 'assistant', content: data.response });
+      if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+    } catch (err) {
+      if (loadingMsg) loadingMsg.remove();
+      addMessage(`Sorry, I'm having trouble: ${err.message}`, 'bot');
+      console.error(err);
+    }
+  }
+
+  function addMessage(text, type) {
+    const msg = document.createElement('div');
+    msg.className = `msg ${type}`;
+    msg.textContent = text;
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return msg;
+  }
+
+  if (chatSend) chatSend.addEventListener('click', sendMessage);
+  if (chatInput) {
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  }
+})();
