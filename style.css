@@ -385,12 +385,22 @@ nav::-webkit-scrollbar { display: none; }
 /* ─── RESPONSIVE ───────────────────────────────────── */
 
 @media (max-width: 640px) {
+  nav { padding: 0 20px; }
+  .nav-logo { margin-right: 16px; font-size: 15px; }
+  .nav-links a { font-size: 12px; padding: 8px 10px; }
+  
+  .hero { padding: 40px 20px 30px; }
+  .clubs-list { padding: 0 20px 80px; }
+  
   .club-row,
   .club-row.flip {
     grid-template-columns: 1fr;
     direction: ltr;
-    gap: 16px;
+    gap: 20px;
+    padding: 28px 0;
   }
+  
+  .club-name { font-size: 22px; }
 }
 /* ─── CHATBOT PANEL ────────────────────────────── */
 

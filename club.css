@@ -529,6 +529,23 @@
   }
 
   .carousel-slide {
-    width: 340px;
+    width: 100%;
   }
+}
+
+@media (max-width: 640px) {
+  .breadcrumb { padding: 16px 20px 0; }
+  .carousel-wrap { padding: 0 20px; }
+  .page-body { padding: 32px 20px 80px; }
+  
+  .carousel { height: 280px; }
+  .carousel-slide { height: 280px; width: 100%; flex-shrink: 0; }
+  
+  .club-title { font-size: 34px; letter-spacing: -1px; word-break: break-word; }
+  
+  .carousel-btn { width: 34px; height: 34px; }
+  .carousel-btn.prev { left: 30px; }
+  .carousel-btn.next { right: 30px; }
+  
+  .activity-img { aspect-ratio: 16 / 9; }
 }
