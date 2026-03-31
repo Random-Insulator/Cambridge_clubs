@@ -319,6 +319,11 @@ app.delete("/api/activities/:clubId/:id", requireAuth, async (req, res) => {
   res.json({ message: "Activity deleted", id });
 });
 
+// ─── 404 Fallback ──────────────────────────────────────────────────────────────
+app.use((_req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "..", "404.html"));
+});
+
 // ─── Error handler ────────────────────────────────────────────────────────────
 app.use((err, _req, res, _next) => {
   console.error(err.message);
