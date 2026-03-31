@@ -1,0 +1,11 @@
+{
+  "name": "cambridge-clubs",
+  "version": "1.0.0",
+  "description": "Cambridge Clubs backend Node Server Deploy",
+  "scripts": {
+    "start": "cd backend && npm install && node server.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

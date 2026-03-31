@@ -2,7 +2,7 @@
   {
     "clubId": "teded",
     "name": "TedEd",
-    "mentorName": "Mr. Arjun Sharma",
+    "mentorName": "Ms. Shipika",
     "passwordHash": "$2a$10$G71Yd6E3Vw5kddQUQve40uPLSFlG5LFX0KPW8lIvhDIiYTLiouAfG"
   },
   {
@@ -20,13 +20,13 @@
   {
     "clubId": "cookery",
     "name": "Cookery",
-    "mentorName": "Ms. Priya Desai",
+    "mentorName": "Ms. Ankita",
     "passwordHash": "$2a$10$mu1Rd5ia0tenKuoDJ6wL9eagRoELg2OjH2cQ0ETVMRoY4waZfwOmG"
   },
   {
     "clubId": "quizzarders",
     "name": "Quizzarders",
-    "mentorName": "Mr. Vikram Nair",
+    "mentorName": "Ms. Akanksha",
     "passwordHash": "$2a$10$V0149EkjFqBoFvrlLqfX2.3AshhRlJNTxwN9szZ5rBX3PLFarPyim"
   },
   {
@@ -38,25 +38,25 @@
   {
     "clubId": "Theatre",
     "name": "Theatre",
-    "mentorName": "Ms. Sneha Iyer",
+    "mentorName": "Mr. Vikram",
     "passwordHash": "$2a$10$cLW.oVb/pqOoylUy7UAlnuJalnGkV5tn9DXDgs2fErSwjjwh/UrRu"
   },
   {
     "clubId": "eco",
     "name": "Eco",
-    "mentorName": "Mr. Swati mehata",
+    "mentorName": "Ms. Swati Mehata",
     "passwordHash": "$2a$10$UUXIO2vxZgiFjkT6T7MFG.wrBnFJmGzki3HYVCgOSkTEbg5OvcSZm"
   },
   {
     "clubId": "Technocrates",
     "name": "Technocrates",
-    "mentorName": "Mr. Kiran Bose",
+    "mentorName": "Ms. Nisha",
     "passwordHash": "$2a$10$dbxpC4RcFHRj7agQhE/yZu9ZPSdf1glUWQ2AcFv0ppzqBG/Ee4ma6"
   },
   {
     "clubId": "debate",
     "name": "Debate",
-    "mentorName": "Ms. Maya Sharma",
+    "mentorName": "Dr. Meenakshi",
     "passwordHash": "$2a$10$LCf7ErwFzYvUguDCuM1to.MqMaZz4aPWePiEqNAT2WkHi/klO2gza"
   }
 ]

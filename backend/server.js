@@ -11,9 +11,17 @@ const path       = require("path");
 const fs         = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // ─── Config ──────────────────────────────────────────────────────────────────
-const PORT         = 3001;
+const PORT         = process.env.PORT || 3001;
 const JWT_SECRET   = "cambridge_clubs_secret_2026"; // change in production
 const DATA_DIR     = path.join(__dirname, "data");
 const UPLOAD_DIR   = path.join(__dirname, "uploads");
@@ -55,13 +63,24 @@ app.use("/portal", express.static(path.join(__dirname, "portal")));
 // Serve the main club website (parent folder) at the root
 app.use("/", express.static(path.join(__dirname, "..")));
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function readActivities() {
-  return JSON.parse(fs.readFileSync(path.join(DATA_DIR, "activities.json"), "utf8"));
-}
-function writeActivities(data) {
-  fs.writeFileSync(path.join(DATA_DIR, "activities.json"), JSON.stringify(data, null, 2));
-}
+// ─── MongoDB / Mongoose Setup ───────────────────────────────────────────────
+const mongoose = require("mongoose");
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ Connected to MongoDB Atlas'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+const Activity = mongoose.model("Activity", new mongoose.Schema({
+  id: String,
+  clubId: String,
+  img: String,
+  title: String,
+  date: String,
+  tag: String,
+  desc: String,
+  approved: Boolean,
+  uploadedAt: String,
+  approvedAt: String
+}));
 
 // ─── Auth Middleware ──────────────────────────────────────────────────────────
 function requireAuth(req, res, next) {
@@ -93,14 +112,11 @@ function requireAdmin(req, res, next) {
 }
 
 // ─── Multer Storage ───────────────────────────────────────────────────────────
-const storage = multer.diskStorage({
-  destination(req, _file, cb) {
-    const dir = path.join(UPLOAD_DIR, req.params.clubId);
-    cb(null, dir);
-  },
-  filename(_req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, `${Date.now()}-${uuidv4()}${ext}`);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: (req, file) => `cambridge_clubs/${req.params.clubId}`,
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
   }
 });
 
@@ -126,31 +142,26 @@ app.post("/api/admin/login", (req, res) => {
 });
 
 // GET /api/admin/pending
-app.get("/api/admin/pending", requireAdmin, (_req, res) => {
-  const all = readActivities();
-  res.json(all.filter(a => !a.approved).reverse());
+app.get("/api/admin/pending", requireAdmin, async (_req, res) => {
+  const all = await Activity.find({ approved: false }).sort({ _id: -1 });
+  res.json(all);
 });
 
 // POST /api/admin/approve/:id
-app.post("/api/admin/approve/:id", requireAdmin, (req, res) => {
-  const all = readActivities();
-  const act = all.find(a => a.id === req.params.id);
+app.post("/api/admin/approve/:id", requireAdmin, async (req, res) => {
+  const act = await Activity.findOneAndUpdate(
+    { id: req.params.id }, 
+    { approved: true, approvedAt: new Date().toISOString() }, 
+    { new: true }
+  );
   if (!act) return res.status(404).json({ error: "Activity not found" });
-  act.approved = true;
-  act.approvedAt = new Date().toISOString();
-  writeActivities(all);
   res.json({ message: "Approved", activity: act });
 });
 
 // DELETE /api/admin/reject/:id
-app.delete("/api/admin/reject/:id", requireAdmin, (req, res) => {
-  const all = readActivities();
-  const idx = all.findIndex(a => a.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: "Activity not found" });
-  const [removed] = all.splice(idx, 1);
-  const imgPath = path.join(__dirname, removed.img);
-  if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-  writeActivities(all);
+app.delete("/api/admin/reject/:id", requireAdmin, async (req, res) => {
+  const removed = await Activity.findOneAndDelete({ id: req.params.id });
+  if (!removed) return res.status(404).json({ error: "Activity not found" });
   res.json({ message: "Rejected and deleted", id: req.params.id });
 });
 
@@ -263,11 +274,11 @@ app.post("/api/chat", async (req, res) => {
 
 
 // GET /api/activities/:clubId  — public
-app.get("/api/activities/:clubId", (req, res) => {
+app.get("/api/activities/:clubId", async (req, res) => {
   const { clubId } = req.params;
   if (!CLUB_IDS.includes(clubId)) return res.status(404).json({ error: "Unknown club" });
-  const all = readActivities();
-  res.json(all.filter(a => a.clubId === clubId && a.approved).reverse());
+  const all = await Activity.find({ clubId, approved: true }).sort({ _id: -1 });
+  res.json(all);
 });
 
 // POST /api/upload/:clubId  — protected
@@ -275,40 +286,33 @@ app.post("/api/upload/:clubId", requireAuth, (req, res, next) => {
   const { clubId } = req.params;
   if (req.mentor.clubId !== clubId) return res.status(403).json({ error: "You can only upload photos to your own club" });
   if (!CLUB_IDS.includes(clubId)) return res.status(404).json({ error: "Unknown club" });
-  upload.single("image")(req, res, err => {
+  upload.single("image")(req, res, async err => {
     if (err) return next(err);
     if (!req.file) return res.status(400).json({ error: "No image file provided" });
     const { title, date, tag, desc } = req.body;
     if (!title) return res.status(400).json({ error: "title is required" });
-    const activity = {
+    const activity = new Activity({
       id:       uuidv4(),
       clubId,
-      img:      `/uploads/${clubId}/${req.file.filename}`,
+      img:      req.file.path,
       title:    title.trim(),
       date:     (date || new Date().toISOString().split("T")[0]).trim(),
       tag:      (tag  || "Activity").trim(),
       desc:     (desc || "").trim(),
       approved: false,
       uploadedAt: new Date().toISOString()
-    };
-    const all = readActivities();
-    all.push(activity);
-    writeActivities(all);
+    });
+    await activity.save();
     res.status(201).json(activity);
   });
 });
 
 // DELETE /api/activities/:clubId/:id  — protected
-app.delete("/api/activities/:clubId/:id", requireAuth, (req, res) => {
+app.delete("/api/activities/:clubId/:id", requireAuth, async (req, res) => {
   const { clubId, id } = req.params;
   if (req.mentor.clubId !== clubId) return res.status(403).json({ error: "You can only delete activities from your own club" });
-  const all = readActivities();
-  const idx = all.findIndex(a => a.id === id && a.clubId === clubId);
-  if (idx === -1) return res.status(404).json({ error: "Activity not found" });
-  const [removed] = all.splice(idx, 1);
-  const imgPath = path.join(__dirname, removed.img);
-  if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-  writeActivities(all);
+  const removed = await Activity.findOneAndDelete({ id, clubId });
+  if (!removed) return res.status(404).json({ error: "Activity not found" });
   res.json({ message: "Activity deleted", id });
 });
 
