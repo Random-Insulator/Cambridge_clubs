@@ -59,26 +59,8 @@
     }
   });
 
-  // ── 4. Hover Detection on Chat FAB ────────────────────────────
-  let _ht = null;
-  document.addEventListener("mouseover", function (e) {
-    const fab = e.target.closest(".chat-fab");
-    if (!fab) return;
-    _ht = setTimeout(function () {
-      const _tip = document.createElement("div");
-      _tip.style.cssText = "position:fixed;bottom:100px;right:30px;z-index:99998;background:#1a1a2e;padding:12px 18px;border-radius:12px;color:#fff;font-size:13px;font-family:'DM Sans',sans-serif;box-shadow:0 8px 32px rgba(0,0,0,0.4);opacity:0;transition:opacity .4s ease;pointer-events:none";
-      _tip.textContent = "bro just click me already 💀";
-      document.body.appendChild(_tip);
-      requestAnimationFrame(() => _tip.style.opacity = "1");
-      setTimeout(() => {
-        _tip.style.opacity = "0";
-        setTimeout(() => _tip.remove(), 500);
-      }, 2500);
-    }, 5000);
-  });
-  document.addEventListener("mouseout", function (e) {
-    if (e.target.closest(".chat-fab")) clearTimeout(_ht);
-  });
+  // ── 4. Chat FAB Hover logic removed by request ─────────────────────────
+
 
   // ── 5. Animation keyframes injection ──────────────────────────
   const _style = document.createElement("style");

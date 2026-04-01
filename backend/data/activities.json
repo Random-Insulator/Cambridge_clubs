@@ -1,5 +1,6 @@
 [
   {
+    "_id": "69cbcb2f02493e22fc888723",
     "id": "30e5cf03-759b-44e6-b390-9f930fa57f56",
     "clubId": "cookery",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956873/cambridge_clubs/cookery/1774686808922-5f622d23-6b26-4320-bfad-e8c52be53bcd.jpg",
@@ -9,9 +10,11 @@
     "desc": "The Members of the club had a nutrition month, where they made a lot of dishes which were very healthy",
     "approved": true,
     "uploadedAt": "2026-03-28T08:33:28.925Z",
-    "approvedAt": "2026-03-28T08:33:59.588Z"
+    "approvedAt": "2026-03-28T08:33:59.588Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888724",
     "id": "6304abe6-1e9b-48a8-9c8c-0cbe293bebca",
     "clubId": "cookery",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956874/cambridge_clubs/cookery/1774730759504-2d9c0a61-737e-4375-a3a1-b81bab95f724.jpg",
@@ -21,9 +24,11 @@
     "desc": "The members of the club learned how to present the food that they made with the best manner because first impression is everything",
     "approved": true,
     "uploadedAt": "2026-03-28T20:45:59.507Z",
-    "approvedAt": "2026-03-28T20:46:33.042Z"
+    "approvedAt": "2026-03-28T20:46:33.042Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888725",
     "id": "0d695fc6-b20d-4198-abb9-01dcb2a3aee1",
     "clubId": "cookery",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956876/cambridge_clubs/cookery/1774730953438-2b9dcfdd-9263-463e-ac12-9aba2a725817.jpg",
@@ -33,9 +38,11 @@
     "desc": "The club members learned that making food doesn't always need fire.",
     "approved": true,
     "uploadedAt": "2026-03-28T20:49:13.440Z",
-    "approvedAt": "2026-03-28T20:49:28.584Z"
+    "approvedAt": "2026-03-28T20:49:28.584Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888726",
     "id": "513bc995-45eb-4dfb-aff2-e48ea5af2dc6",
     "clubId": "eco",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956878/cambridge_clubs/eco/1774857769414-babda69e-cc4c-4574-b718-373c3acb0370.jpg",
@@ -45,9 +52,11 @@
     "desc": "The memebers of eco club made sustainable bags out of cloth to combat the growing polution cased by single use plastic bags",
     "approved": true,
     "uploadedAt": "2026-03-30T08:02:49.416Z",
-    "approvedAt": "2026-03-30T08:04:10.397Z"
+    "approvedAt": "2026-03-30T08:04:10.397Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888727",
     "id": "801c5d7d-6bdf-4c65-b172-65caa864959f",
     "clubId": "eco",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956879/cambridge_clubs/eco/1774858182447-ac6a73b2-22a0-400f-af88-049fe9069221.jpg",
@@ -57,9 +66,11 @@
     "desc": "The menmbers of Eco Club made sustainble and beautiful pen holders for students chasing astheticness and sustainablity",
     "approved": true,
     "uploadedAt": "2026-03-30T08:09:42.448Z",
-    "approvedAt": "2026-03-30T08:09:50.794Z"
+    "approvedAt": "2026-03-30T08:09:50.794Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888728",
     "id": "e57dd7d0-cc89-4cf3-9999-b50c71ac325d",
     "clubId": "eco",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956880/cambridge_clubs/eco/1774858403025-368edf60-bffe-44d4-bb00-99756818de3d.jpg",
@@ -69,9 +80,11 @@
     "desc": "The members of Eco club made posters on the ways we ccan save the Earth and had a discussion on it",
     "approved": true,
     "uploadedAt": "2026-03-30T08:13:23.026Z",
-    "approvedAt": "2026-03-30T08:13:27.403Z"
+    "approvedAt": "2026-03-30T08:13:27.403Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888729",
     "id": "9e7f83d4-5437-4d5e-a45e-ff6002078960",
     "clubId": "Theatre",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956882/cambridge_clubs/Theatre/1774907499719-e1f64577-ec85-47a8-8495-650c4e8b1e56.jpg",
@@ -81,9 +94,11 @@
     "desc": "The members of Theatre club went to another school to present their tragic and thought-provoking act",
     "approved": true,
     "uploadedAt": "2026-03-30T21:51:39.721Z",
-    "approvedAt": "2026-03-30T21:57:38.732Z"
+    "approvedAt": "2026-03-30T21:57:38.732Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc88872a",
     "id": "d5bbf255-6e6f-4547-84b0-4acbc3938e37",
     "clubId": "Theatre",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956883/cambridge_clubs/Theatre/1774907638771-4e8743bc-5629-4b8e-82f4-0fa16e573ac9.jpg",
@@ -93,9 +108,11 @@
     "desc": "The members of Theatre club presented an act showing a classic story in Hinduism in front of other students",
     "approved": true,
     "uploadedAt": "2026-03-30T21:53:58.772Z",
-    "approvedAt": "2026-03-30T21:57:37.976Z"
+    "approvedAt": "2026-03-30T21:57:37.976Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc88872b",
     "id": "997d51b3-3ce8-45ef-8c9b-6a7d8bb86143",
     "clubId": "Theatre",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956884/cambridge_clubs/Theatre/1774907814275-19c6145f-a056-47b4-996f-269402b9fa7c.jpg",
@@ -105,9 +122,11 @@
     "desc": "A member of Theatre club went to a prestigious acting competition and showed his skills and got an award for his performance by the organizers",
     "approved": true,
     "uploadedAt": "2026-03-30T21:56:54.276Z",
-    "approvedAt": "2026-03-30T21:57:36.837Z"
+    "approvedAt": "2026-03-30T21:57:36.837Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc88872c",
     "id": "466f8caf-b006-41d0-a107-c4b258cbf5c8",
     "clubId": "teded",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956885/cambridge_clubs/teded/1774909225283-0f255c8e-12f3-4a9c-ab47-5ee968ec1b04.jpg",
@@ -117,9 +136,11 @@
     "desc": "Members of the TED-Ed Club actively listen and provide critical feedback as a peer pitches their \"Idea Worth Spreading\" to refine its impact before the final script.",
     "approved": true,
     "uploadedAt": "2026-03-30T22:20:25.283Z",
-    "approvedAt": "2026-03-30T22:26:09.783Z"
+    "approvedAt": "2026-03-30T22:26:09.783Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc88872d",
     "id": "af0c080c-2e6d-42f6-994a-4c2f8bad6a64",
     "clubId": "teded",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956886/cambridge_clubs/teded/1774909356324-8e97bd4e-1daf-4336-a830-cd53fb522e97.jpg",
@@ -129,9 +150,11 @@
     "desc": "The members of Ted-Ed club had a friendly debate competition on the topic of standardization of education across the globe.",
     "approved": true,
     "uploadedAt": "2026-03-30T22:22:36.326Z",
-    "approvedAt": "2026-03-30T22:26:08.759Z"
+    "approvedAt": "2026-03-30T22:26:08.759Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc88872e",
     "id": "f1cdb5ed-4a3f-487b-9630-2c502d963d35",
     "clubId": "teded",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956887/cambridge_clubs/teded/1774909555532-2ba803bc-9885-413d-84a7-0d634e216010.jpg",
@@ -141,9 +164,11 @@
     "desc": "The members of Ted-Ed club had a massive discussion with their mentor about the best ways to deliver a story before a competition",
     "approved": true,
     "uploadedAt": "2026-03-30T22:25:55.534Z",
-    "approvedAt": "2026-03-30T22:26:08.066Z"
+    "approvedAt": "2026-03-30T22:26:08.066Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc88872f",
     "id": "bbd47129-2a73-4c2f-9392-2152f8a1f9af",
     "clubId": "Technocrates",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956889/cambridge_clubs/Technocrates/1774918845459-519d473c-743c-4445-b564-668c031bfda2.jpg",
@@ -153,9 +178,11 @@
     "desc": "Members of the Technogrades Club demonstrated the properties of buoyancy by testing various materials in water and explaining the science behind density to their peers.",
     "approved": true,
     "uploadedAt": "2026-03-31T01:00:45.461Z",
-    "approvedAt": "2026-03-31T01:03:55.922Z"
+    "approvedAt": "2026-03-31T01:03:55.922Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888730",
     "id": "6e64a0b0-bfbc-4467-9744-f6aa53181776",
     "clubId": "Technocrates",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956890/cambridge_clubs/Technocrates/1774918925598-13ed91f6-d4b1-45dd-93fa-9babd86d0733.jpg",
@@ -165,9 +192,11 @@
     "desc": "Exploring the Science of OsmosisMembers of the Technocrats Club delivered a presentation on the process of osmosis, using diagrams and experimental data to explain how water molecules move through biological membranes.",
     "approved": true,
     "uploadedAt": "2026-03-31T01:02:05.600Z",
-    "approvedAt": "2026-03-31T01:03:57.016Z"
+    "approvedAt": "2026-03-31T01:03:57.016Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888731",
     "id": "68e08567-3bfe-41f3-a8c9-084594f5ac83",
     "clubId": "Technocrates",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956891/cambridge_clubs/Technocrates/1774919007113-827c018b-4216-42db-856f-258fe1508af3.jpg",
@@ -177,21 +206,11 @@
     "desc": "Members of the club organized an interactive exhibit featuring mechanical models and digital displays to demonstrate the principles of automotive engineering and physics through a gamified learning experience.",
     "approved": true,
     "uploadedAt": "2026-03-31T01:03:27.115Z",
-    "approvedAt": "2026-03-31T01:03:59.130Z"
+    "approvedAt": "2026-03-31T01:03:59.130Z",
+    "__v": 0
   },
   {
-    "id": "51a56f24-d764-4ecc-b06f-d770bc3973b0",
-    "clubId": "debate",
-    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774956892/cambridge_clubs/debate/1774956724162-46f37d20-b814-499d-b5df-9e9fb0cbbfa0.png",
-    "title": "Test Cloudinary Upload",
-    "date": "2026-03-31",
-    "tag": "Activity",
-    "desc": "Just checking if it works!",
-    "approved": true,
-    "uploadedAt": "2026-03-31T11:32:04.164Z",
-    "approvedAt": "2026-03-31T12:26:47.450Z"
-  },
-  {
+    "_id": "69cbcb2f02493e22fc888733",
     "id": "af39d15e-68b3-4541-8ef4-f471c10de415",
     "clubId": "robotics",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774959851/cambridge_clubs/robotics/e5ow7txlfqrjhm9gvxmw.jpg",
@@ -201,9 +220,11 @@
     "desc": "The members of the Robotics Club designed and engineered a functional \"Automatic Toll Gate\" prototype to demonstrate how sensor-based automation can streamline traffic flow and modernize transit infrastructure.",
     "approved": true,
     "uploadedAt": "2026-03-31T12:24:12.248Z",
-    "approvedAt": "2026-03-31T12:27:10.475Z"
+    "approvedAt": "2026-03-31T12:27:10.475Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888734",
     "id": "3f89b1df-3d33-4014-8856-77b1b36247b6",
     "clubId": "robotics",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774960040/cambridge_clubs/robotics/vh0kuuvwmczh1o0to448.jpg",
@@ -213,9 +234,11 @@
     "desc": "The members of the Robotics Club engaged in a dynamic, hands-on workshop, working together with their mentor to build and program a robotic component. This session focused on integrating physical engineering with core programming logic, helping students move from theory to actual implementation.",
     "approved": true,
     "uploadedAt": "2026-03-31T12:27:21.088Z",
-    "approvedAt": "2026-03-31T12:27:28.148Z"
+    "approvedAt": "2026-03-31T12:27:28.148Z",
+    "__v": 0
   },
   {
+    "_id": "69cbcb2f02493e22fc888735",
     "id": "d21aa395-5cc3-449d-bfcc-067b505e4478",
     "clubId": "robotics",
     "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1774960256/cambridge_clubs/robotics/qzou015h9bdmn7xgucpm.jpg",
@@ -225,6 +248,343 @@
     "desc": "The members of the Robotics Club applied their engineering and programming knowledge to develop a real-time \"Sonar Radar System.\" Students constructed the hardware using sensor technology and designed a dynamic software interface to detect object positions, demonstrating practical applications of detection systems.",
     "approved": true,
     "uploadedAt": "2026-03-31T12:30:57.206Z",
-    "approvedAt": "2026-03-31T12:31:00.441Z"
+    "approvedAt": "2026-03-31T12:31:00.441Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94d5",
+    "id": "56e7b56b-7f62-437d-9191-afdc7e709578",
+    "clubId": "debate",
+    "img": "/uploads/debate/roundtable_discussion.jpg",
+    "title": "Current Affairs Discussion Sessions",
+    "date": "2026-03-31",
+    "tag": "Talk",
+    "desc": "A lively roundtable dissecting this week's most pressing global news and developing well-informed, nuanced perspectives.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94d6",
+    "id": "f9a872ea-e12c-4446-99b6-21e5d2aaee23",
+    "clubId": "debate",
+    "img": "/uploads/debate/script_writing.jpg",
+    "title": "Debate Script Writing Workshops",
+    "date": "2026-03-31",
+    "tag": "Workshop",
+    "desc": "Mastering the art of structure. Members learned how to draft compelling arguments and anticipate strong counter-points.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94d7",
+    "id": "2c34c591-e38f-4fbc-bbcd-4f536eb2ad36",
+    "clubId": "debate",
+    "img": "/uploads/debate/formal_debate.jpg",
+    "title": "In-House Debate Competitions",
+    "date": "2026-03-31",
+    "tag": "Competition",
+    "desc": "Putting skills to the test in a high-energy, friendly in-house debate covering technology verses data privacy.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94d8",
+    "id": "e5a4a892-8fab-4475-990d-b7a42b0a9c94",
+    "clubId": "quizzarders",
+    "img": "/uploads/quizzarders/world_map.jpg",
+    "title": "Discussing General Knowledge",
+    "date": "2026-03-31",
+    "tag": "Talk",
+    "desc": "Sharpening our brains by exploring broad general knowledge topics covering world geography, science, and history.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94d9",
+    "id": "647c36b7-3263-4b60-8a2e-09f56ab6c3a0",
+    "clubId": "quizzarders",
+    "img": "/uploads/quizzarders/indian_heritage.jpg",
+    "title": "Current Affairs & Heritage",
+    "date": "2026-03-31",
+    "tag": "Discussion",
+    "desc": "A special deep-dive into our rich cultural heritage and how it continues to intertwine with modern current affairs.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94da",
+    "id": "11bda53c-9bdb-40b0-852a-6b1b2c5047f3",
+    "clubId": "quizzarders",
+    "img": "/uploads/quizzarders/quiz_competition.jpg",
+    "title": "Participating in Competitions",
+    "date": "2026-03-31",
+    "tag": "Competition",
+    "desc": "Representing our school in regional quiz bowls and bringing home top prizes for incredibly quick thinking.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94db",
+    "id": "12e75372-388b-4373-a0e2-892b48e14742",
+    "clubId": "finance",
+    "img": "/uploads/finance/stock_market.jpg",
+    "title": "Stock Market Simulation",
+    "date": "2026-03-31",
+    "tag": "Activity",
+    "desc": "Members competed in a virtual stock market, practicing trading strategies with a mock $100,000 investment portfolio.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94dc",
+    "id": "08ef34a8-609b-4546-ba59-7438ccaf4764",
+    "clubId": "finance",
+    "img": "/uploads/finance/personal_budgeting.jpg",
+    "title": "Personal Budgeting Workshop",
+    "date": "2026-03-31",
+    "tag": "Workshop",
+    "desc": "Learning the essential life skill of budgeting, managing long-term expenses, and understanding the power of compound interest.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cbf8c73246d865b8ea94dd",
+    "id": "7c06d593-4a75-4491-8b4b-8622fa7e35f9",
+    "clubId": "finance",
+    "img": "/uploads/finance/crypto_presentation.jpg",
+    "title": "Cryptocurrency Panel",
+    "date": "2026-03-31",
+    "tag": "Talk",
+    "desc": "A demystifying session breaking down exactly how blockchain technology and digital currencies work in the real world economy.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T16:39:35.102Z",
+    "approvedAt": "2026-03-31T16:39:35.102Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cc1ce3513634018f7abdaf",
+    "id": "38124ce2-1dda-4285-b2a7-ae6279a02252",
+    "clubId": "cybersonic",
+    "img": "/uploads/cybersonic/ai_chatbot.png",
+    "title": "Making an AI Chatbot",
+    "date": "2026-03-31",
+    "tag": "Software",
+    "desc": "Students collaboratively building an AI-powered chatbot from scratch.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T19:13:39.902Z",
+    "approvedAt": "2026-03-31T19:13:39.902Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cc1ce4513634018f7abdb1",
+    "id": "8a871c42-943a-4083-843e-415910e82773",
+    "clubId": "cybersonic",
+    "img": "/uploads/cybersonic/gen_ai_presentation.png",
+    "title": "Gen AI Topics Presentation",
+    "date": "2026-03-31",
+    "tag": "AI",
+    "desc": "Students presenting on Gen AI topics including applications and ethics.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T19:13:40.929Z",
+    "approvedAt": "2026-03-31T19:13:40.929Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cc1ce6513634018f7abdb3",
+    "id": "a1360018-2e41-4537-8237-69214ea51ac6",
+    "clubId": "cybersonic",
+    "img": "/uploads/cybersonic/python_screensaver.png",
+    "title": "Python Screensaver Project",
+    "date": "2026-03-31",
+    "tag": "Coding",
+    "desc": "Students coding a Python screensaver project in the computer lab.",
+    "approved": true,
+    "uploadedAt": "2026-03-31T19:13:42.047Z",
+    "approvedAt": "2026-03-31T19:13:42.047Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda6fc15349879870ab6b2",
+    "id": "bvj774mw6",
+    "clubId": "cybersonic",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085307/cambridge_clubs/cybersonic/kvgxoj6qnukyxkcfaxt8.jpg",
+    "title": "Python Screensaver Development",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "Students learn how to build a dynamic, colorful screensaver using Python's math and turtle modules.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:08.238Z",
+    "approvedAt": "2026-04-01T23:15:08.238Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda6fd15349879870ab6b4",
+    "id": "4s818149w",
+    "clubId": "cybersonic",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085308/cambridge_clubs/cybersonic/fuu5stzeidvgrdafk9ev.jpg",
+    "title": "Gen AI & Future Tech",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "A deep dive into how Generative AI works, with students discussing its impact on the future of software development.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:09.108Z",
+    "approvedAt": "2026-04-01T23:15:09.108Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda6fe15349879870ab6b6",
+    "id": "6z6m7vfbq",
+    "clubId": "cybersonic",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085309/cambridge_clubs/cybersonic/onrgs2czacfmntx5f0jg.jpg",
+    "title": "AI Chatbot Workshop",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "A hands-on session where students build their own AI-powered chatbot using modern NLP frameworks.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:10.261Z",
+    "approvedAt": "2026-04-01T23:15:10.261Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda6ff15349879870ab6b8",
+    "id": "9yvl8xp0v",
+    "clubId": "quizzarders",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085310/cambridge_clubs/quizzarders/ygs7ijjmfqexd64e6vpn.jpg",
+    "title": "Intra-School Quiz Championship",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "A fierce competition between grades testing general knowledge on global events and technology.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:11.324Z",
+    "approvedAt": "2026-04-01T23:15:11.324Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda70015349879870ab6ba",
+    "id": "b3jv2x58a",
+    "clubId": "quizzarders",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085311/cambridge_clubs/quizzarders/m1tbkyv86xfsasagxyoh.jpg",
+    "title": "Indian Heritage Quiz",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "Exploring the rich history and culture of India through an interactive multimedia quiz session.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:12.489Z",
+    "approvedAt": "2026-04-01T23:15:12.489Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda70115349879870ab6bc",
+    "id": "bmt598rro",
+    "clubId": "quizzarders",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085312/cambridge_clubs/quizzarders/zro9htf6fuuqdsqubag3.jpg",
+    "title": "Geography & Mapping Contest",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "Students identifying world capitals and geographical landmarks in a fast-paced map challenge.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:13.385Z",
+    "approvedAt": "2026-04-01T23:15:13.385Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda70215349879870ab6be",
+    "id": "pkfzkkz3x",
+    "clubId": "finance",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085313/cambridge_clubs/finance/syvim5ws7csz5umfdmu6.jpg",
+    "title": "Stock Market Simulation",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "Learning the basics of trading and investment by managing a virtual portfolio in real-time.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:14.383Z",
+    "approvedAt": "2026-04-01T23:15:14.383Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda70315349879870ab6c0",
+    "id": "61k568y9m",
+    "clubId": "finance",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085314/cambridge_clubs/finance/att2vuwgu4ip6h0e08pw.jpg",
+    "title": "Personal Budgeting Workshop",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "High schoolers learning to manage their future allowances and the power of compound interest.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:15.292Z",
+    "approvedAt": "2026-04-01T23:15:15.292Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda70415349879870ab6c2",
+    "id": "o08yxtje4",
+    "clubId": "finance",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085315/cambridge_clubs/finance/voiwgmsqj3dkw6vqqn3n.jpg",
+    "title": "The Future of Digital Finance",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "Discussing blockchain, cryptocurrency, and how digital wallets are changing the global economy.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:16.180Z",
+    "approvedAt": "2026-04-01T23:15:16.180Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda70515349879870ab6c4",
+    "id": "x1n57urt9",
+    "clubId": "debate",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085316/cambridge_clubs/debate/zjdqrtya80ghmidhjfpz.jpg",
+    "title": "Formal School Debate",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "Students at the CCWS podium debating critical social issues in front of their peers.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:17.037Z",
+    "approvedAt": "2026-04-01T23:15:17.037Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda70615349879870ab6c6",
+    "id": "ruykk6fgq",
+    "clubId": "debate",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085317/cambridge_clubs/debate/osrtyq140qmq2kvqxqa3.jpg",
+    "title": "Roundtable Discussion",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "Collaborative debate workshop led by an Indian mentor to refine research skills and strategy.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:18.061Z",
+    "approvedAt": "2026-04-01T23:15:18.061Z",
+    "__v": 0
+  },
+  {
+    "_id": "69cda70715349879870ab6c8",
+    "id": "7wglmd19j",
+    "clubId": "debate",
+    "img": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085318/cambridge_clubs/debate/k7vbddutkw5lgbkshciy.jpg",
+    "title": "Script Writing Session",
+    "date": "2026-04-01",
+    "tag": "Activity",
+    "desc": "Detailed drafting of constructive arguments and rebuttals for an upcoming inter-school competition.",
+    "approved": true,
+    "uploadedAt": "2026-04-01T23:15:19.089Z",
+    "approvedAt": "2026-04-01T23:15:19.089Z",
+    "__v": 0
   }
 ]
