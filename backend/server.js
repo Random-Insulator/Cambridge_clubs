@@ -32,7 +32,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIza_PlaCEHoldingKeY_DoNoT
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const { HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 const model = genAI.getGenerativeModel({ 
-  model: "gemma-3-1b-it",
+  model: "gemini-2.5-flash",
   safetySettings: [
     { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE },
     { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE },
@@ -183,15 +183,19 @@ app.post("/api/auth/login", (req, res) => {
   res.json({ token, clubId: mentor.clubId, clubName: mentor.name, mentorName: mentor.mentorName });
 });
 
-// POST /api/chat — Chatbot endpoint
+const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
+const Groq = require("groq-sdk");
+const groq = new Groq({ apiKey: GROQ_API_KEY });
+
+// POST /api/chat — Chatbot endpoint (Upgraded to Groq for speed)
 app.post("/api/chat", async (req, res) => {
   const { message, history } = req.body;
   if (!message) return res.status(400).json({ error: "Message is required" });
-  try {
-    if (GEMINI_API_KEY === "AIza_PlaCEHoldingKeY_DoNoTUsE") {
-      return res.json({ response: "I'm in 'Demo Mode' (No Gemini API key found). But if I was alive, I'd suggest checking out Cybersonic or Technocrates!" });
-    }
+  if (!GROQ_API_KEY || GROQ_API_KEY === "") {
+    return res.json({ response: "I'm in 'Demo Mode' (No Groq API key found). Use Groq for lightning speed and smart recommendations!" });
+  }
 
+  try {
     // Hardcoded Safety Filter
     const inappropriateKeywords = [
       "porn", "sex", "naked", "xxx", "fuck", "dick", "pussy", "nude", "hentai", "dih", "dihh",
@@ -215,70 +219,44 @@ app.post("/api/chat", async (req, res) => {
       return res.json({ response: "I'm sorry, I cannot respond to that. Please keep our conversation school-appropriate and focused on finding a club!" });
     }
 
-    const systemPrompt = `You are the "Cambridge Clubs Bot".
-You are a friendly, concise assistant that helps students find an extracurricular club to join.
-Ask them questions to understand their interests, then recommend one of our official clubs: 
+    const turnCount = Math.floor((history || []).length / 2) + 1;
+    const isFinalRecommendation = turnCount >= 4;
 
-- Robotics Club: Students make hardware using programming.
-- Cybersonic Club: Students make software using programming (games, apps, websites, AI).
-- Technocrates Club: Students learn science using hands-on experiments.
-- Finance Club: Students learn how the world of finance and investing works.
-- Eco Club: Students create art sustainably and learn about the environment.
-- TedEd Club: Students learn public speaking and how to deliver a story confidently.
-- Theatre Club: Students learn how to act and deliver a story through performance.
-- Quizzarders Club: Students learn about the latest global events and general knowledge.
-- Cookery Club: Students learn the essential skill of cooking and making food presentable.
-- Debate Club: Students debate with each other on classic topics and recent issues.
+    const systemInstruction = `You are the "Cambridge Clubs Bot". 
+Role: Help students find ONE official club from this list: Robotics, Cybersonic, Technocrates, Finance, Eco, TedEd, Theatre, Quizzarders, Cookery, Debate.
+Phase Control:
+- Turn 1: Ask a broad question to understand their area of interest.
+- Turn 2: Ask a targeted follow-up.
+- Turn 3: Ask ONE more narrowing question.
+- Turn 4: RECOMMEND EXACTLY ONE CLUB. Never ask another question.
+Rules:
+- Never ask the user to 'propose' or 'create' a club.
+- Use explicit mapping: Computers -> Cybersonic; Hardware -> Robotics; Science -> Technocrates; Money -> Finance; Art -> Eco; Speaking -> TedEd; Drama -> Theatre; Facts -> Quizzarders; Cooking -> Cookery; Discussion -> Debate.
+- Max 35 words per response.
+- CURRENT TURN: ${turnCount}/3. ${isFinalRecommendation ? "STOP QUESTIONS. MUST RECOMMEND CLUB NOW." : ""}`;
 
-Also, here is a strict mapping list to help in specific cases:
-- Art -> Eco Club
-- Hardware -> Robotics Club
-- Software -> Cybersonic Club
-- Books (loves talking) -> TedEd Club
-- Books (introverted/just wants to learn) -> Quizzarders Club
- **GIVE THE USER A CLUB AFTER U ASK 3 QUESTIONS, NO MORE, NO LESS, it should be like
-u ask basic question
-answer
-another related
-answer
-related question
-answer
-FINAL CLUB**
-Do not invent or suggest any clubs outside of this specific list.`;
+    const groqHistory = (history || []).map(h => ({
+      role: h.role === "assistant" ? "assistant" : "user",
+      content: h.content,
+    }));
 
-
-
-    const chat = model.startChat({
-      history: (history || []).map(h => ({
-        role: h.role === "assistant" ? "model" : "user",
-        parts: [{ text: h.content }],
-      })),
-      generationConfig: { maxOutputTokens: 300 },
+    const completion = await groq.chat.completions.create({
+      messages: [
+        { role: "system", content: systemInstruction },
+        ...groqHistory,
+        { role: "user", content: message }
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.7,
+      max_tokens: 150,
+      top_p: 1,
     });
-    const result = await chat.sendMessage(`${systemPrompt}\n\nUser: ${message}`);
 
-    const response = await result.response;
-    
-    // Check for safety blocks at the response level
-    if (response.promptFeedback && response.promptFeedback.blockReason) {
-      return res.json({ response: "I'm sorry, I can't discuss that. Please keep our conversation school-appropriate!" });
-    }
-
-    try {
-      res.json({ response: response.text() });
-    } catch (e) {
-      // Handle blocked candidates
-      return res.json({ response: "I'm sorry, I cannot respond to that. Please keep our conversation focused on finding a club!" });
-    }
+    res.json({ response: completion.choices[0].message.content });
   } catch (error) {
     const errMsg = error.message || "Unknown error";
-    console.error("Gemini API Error details:", error);
-    
-    if (errMsg.includes("SAFETY")) {
-      return res.json({ response: "I'm sorry, I cannot respond to that. Please keep our conversation school-appropriate!" });
-    }
-    
-    res.status(500).json({ error: `The chatbot is taking a quick nap (Reason: ${errMsg}). Please try again soon!` });
+    console.error("Groq API Error details:", error);
+    res.status(500).json({ error: `The Groq bot is having a high-speed nap (Reason: ${errMsg}). Please try again soon!` });
   }
 });
 

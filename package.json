@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Cambridge Clubs backend Node Server Deploy",
   "scripts": {
-    "start": "cd backend && npm install && node server.js"
+    "start": "cd backend && npm install --force && node server.js"
   },
   "engines": {
     "node": ">=20.0.0"
