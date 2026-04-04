@@ -212,7 +212,7 @@ app.post("/api/chat", async (req, res) => {
       "dickhead", "fucking", "fucks", "shithead", "shitting", "bitching", "assholes", "cunts", "sluts",
       "nudes", "nudez", "nudity", "booty", "ass", "arses", "arse", "boob", "titties", "titty", "foreskin",
       "smegma", "queer", "homo", "lesbo", "shite", "shitebag", "wankstain", "jerkoff", "toss", "tossing",
-      "deepthroat", "gangbang", "threesome", "orgy", "squirt", "scat", "golden shower"
+      "deepthroat", "gangbang", "threesome", "orgy", "squirt", "scat", "golden shower", "gooning"
     ];
     const lowerMessage = message.toLowerCase();
     if (inappropriateKeywords.some(word => lowerMessage.includes(word))) {
