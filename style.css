@@ -1,14 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap');
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  background: #f6bb69;
+  /* Warmer light brown/sand base */
+}
+
 body {
   font-family: 'DM Sans', sans-serif;
-  background: radial-gradient(circle at 50% 0%, #fffbf6 0%, #fdf9f2 100%); /* Warmer premium gradient */
   color: #1a1a1a;
   min-height: 100vh;
   overflow-x: hidden;
@@ -20,20 +26,32 @@ body::before {
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 65vw;
-  height: 65vw;
-  max-width: 900px;
-  max-height: 900px;
+  width: 45vw;
+  height: 45vw;
+  max-width: 600px;
+  max-height: 600px;
   background-image: url('images/favicon.jpg');
+  /* Simplified path */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  border-radius: 50%; /* Match logo style */
-  transform: translate(-50%, -50%) rotate(-12deg);
-  opacity: 0.038; /* Very subtle watermark */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.1;
+  /* Increased opacity to 10% for definite visibility */
   pointer-events: none;
   z-index: -1;
-  filter: grayscale(20%); /* Blend better with warm background */
+  mix-blend-mode: multiply;
+  /* Helps it blend with the warm brown background */
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.4) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: -2;
 }
 
 /* ─── NAV ─────────────────────────────────────────── */
@@ -42,7 +60,8 @@ nav {
   display: flex;
   align-items: center;
   padding: 0 40px;
-  background: rgba(255, 255, 255, 0.75); /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.75);
+  /* Glassmorphism */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -55,11 +74,20 @@ nav {
   animation: slideDown 0.5s ease both;
 }
 
-nav::-webkit-scrollbar { display: none; }
+nav::-webkit-scrollbar {
+  display: none;
+}
 
 @keyframes slideDown {
-  from { transform: translateY(-100%); opacity: 0; }
-  to   { transform: translateY(0);     opacity: 1; }
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .nav-logo {
@@ -74,7 +102,10 @@ nav::-webkit-scrollbar { display: none; }
   text-decoration: none;
 }
 
-.nav-logo span { color: #e02020; }
+.nav-logo span {
+  color: #e02020;
+}
+
 .nav-logo .cool-clubs {
   font-family: 'Caveat', cursive;
   font-size: 1.45em;
@@ -136,8 +167,15 @@ nav::-webkit-scrollbar { display: none; }
   margin-left: 8px;
 }
 
-.nav-chat-btn:hover { background: #c01818; transform: scale(1.05); }
-.nav-chat-btn svg { width: 16px; height: 16px; }
+.nav-chat-btn:hover {
+  background: #c01818;
+  transform: scale(1.05);
+}
+
+.nav-chat-btn svg {
+  width: 16px;
+  height: 16px;
+}
 
 /* ─── HERO ─────────────────────────────────────────── */
 
@@ -173,7 +211,10 @@ nav::-webkit-scrollbar { display: none; }
   animation: fadeUp 0.6s 0.35s ease both;
 }
 
-.hero h1 em { font-style: normal; color: #e02020; }
+.hero h1 em {
+  font-style: normal;
+  color: #e02020;
+}
 
 .hero p {
   font-size: 15px;
@@ -201,11 +242,21 @@ nav::-webkit-scrollbar { display: none; }
   animation: fadeUp 0.6s 0.55s ease both;
 }
 
-.hero-cta:hover { background: #c01818; transform: translateY(-2px); }
+.hero-cta:hover {
+  background: #c01818;
+  transform: translateY(-2px);
+}
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ─── CLUBS LIST ───────────────────────────────────── */
@@ -230,12 +281,22 @@ nav::-webkit-scrollbar { display: none; }
   transition: opacity 0.55s ease, transform 0.55s ease;
 }
 
-.club-row:first-child { border-top: 1px solid rgba(0, 0, 0, 0.07); }
+.club-row:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
 
-.club-row.visible { opacity: 1; transform: translateY(0); }
+.club-row.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-.club-row.flip { direction: rtl; }
-.club-row.flip > * { direction: ltr; }
+.club-row.flip {
+  direction: rtl;
+}
+
+.club-row.flip>* {
+  direction: ltr;
+}
 
 /* ─── IMAGE ─────────────────────────────────────────── */
 
@@ -263,7 +324,9 @@ nav::-webkit-scrollbar { display: none; }
   transition: transform 0.4s ease;
 }
 
-.club-row:hover .club-img-wrap img { transform: scale(1.06); }
+.club-row:hover .club-img-wrap img {
+  transform: scale(1.06);
+}
 
 /* Placeholder */
 .img-placeholder {
@@ -294,7 +357,9 @@ nav::-webkit-scrollbar { display: none; }
 .img-placeholder::after {
   content: '';
   position: absolute;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 3px;
   background: var(--cc);
   opacity: 0.5;
@@ -355,7 +420,10 @@ nav::-webkit-scrollbar { display: none; }
   display: inline-block;
 }
 
-.learn-btn:hover { transform: translateX(3px); opacity: 0.85; }
+.learn-btn:hover {
+  transform: translateX(3px);
+  opacity: 0.85;
+}
 
 /* ─── CHATBOT FAB ──────────────────────────────────── */
 
@@ -379,12 +447,26 @@ nav::-webkit-scrollbar { display: none; }
 }
 
 @keyframes fabPop {
-  from { transform: scale(0); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-.chat-fab:hover { transform: scale(1.08); background: #c01818; }
-.chat-fab svg { width: 20px; height: 20px; }
+.chat-fab:hover {
+  transform: scale(1.08);
+  background: #c01818;
+}
+
+.chat-fab svg {
+  width: 20px;
+  height: 20px;
+}
 
 .chat-fab-label {
   position: absolute;
@@ -402,7 +484,9 @@ nav::-webkit-scrollbar { display: none; }
   transition: opacity 0.2s;
 }
 
-.chat-fab:hover .chat-fab-label { opacity: 1; }
+.chat-fab:hover .chat-fab-label {
+  opacity: 1;
+}
 
 .chat-pulse {
   position: absolute;
@@ -414,20 +498,42 @@ nav::-webkit-scrollbar { display: none; }
 }
 
 @keyframes pulse {
-  0%   { transform: scale(1);   opacity: 0.6; }
-  100% { transform: scale(1.5); opacity: 0;   }
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
 }
 
 /* ─── RESPONSIVE ───────────────────────────────────── */
 
 @media (max-width: 640px) {
-  nav { padding: 0 20px; }
-  .nav-logo { margin-right: 16px; font-size: 15px; }
-  .nav-links a { font-size: 12px; padding: 8px 10px; }
-  
-  .hero { padding: 40px 20px 30px; }
-  .clubs-list { padding: 0 20px 80px; }
-  
+  nav {
+    padding: 0 20px;
+  }
+
+  .nav-logo {
+    margin-right: 16px;
+    font-size: 15px;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .hero {
+    padding: 40px 20px 30px;
+  }
+
+  .clubs-list {
+    padding: 0 20px 80px;
+  }
+
   .club-row,
   .club-row.flip {
     grid-template-columns: 1fr;
@@ -435,9 +541,12 @@ nav::-webkit-scrollbar { display: none; }
     gap: 20px;
     padding: 28px 0;
   }
-  
-  .club-name { font-size: 22px; }
+
+  .club-name {
+    font-size: 22px;
+  }
 }
+
 /* ─── CHATBOT PANEL ────────────────────────────── */
 
 .chat-panel {
@@ -508,8 +617,14 @@ nav::-webkit-scrollbar { display: none; }
   transition: opacity 0.2s;
 }
 
-.chat-close:hover { opacity: 1; }
-.chat-close svg { width: 18px; height: 18px; }
+.chat-close:hover {
+  opacity: 1;
+}
+
+.chat-close svg {
+  width: 18px;
+  height: 18px;
+}
 
 .chat-messages {
   flex: 1;
@@ -531,8 +646,15 @@ nav::-webkit-scrollbar { display: none; }
 }
 
 @keyframes msgFade {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .msg.bot {
@@ -568,7 +690,9 @@ nav::-webkit-scrollbar { display: none; }
   transition: border-color 0.2s;
 }
 
-#chatInput:focus { border-color: #e02020; }
+#chatInput:focus {
+  border-color: #e02020;
+}
 
 #chatSend {
   width: 38px;
@@ -584,8 +708,15 @@ nav::-webkit-scrollbar { display: none; }
   transition: transform 0.2s, background 0.2s;
 }
 
-#chatSend:hover { transform: scale(1.05); background: #c01818; }
-#chatSend svg { width: 18px; height: 18px; }
+#chatSend:hover {
+  transform: scale(1.05);
+  background: #c01818;
+}
+
+#chatSend svg {
+  width: 18px;
+  height: 18px;
+}
 
 .typing {
   font-style: italic;
