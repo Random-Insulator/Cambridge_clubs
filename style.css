@@ -8,10 +8,32 @@
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: #f5f5f5;
+  background: radial-gradient(circle at 50% 0%, #fffbf6 0%, #fdf9f2 100%); /* Warmer premium gradient */
   color: #1a1a1a;
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 65vw;
+  height: 65vw;
+  max-width: 900px;
+  max-height: 900px;
+  background-image: url('images/favicon.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 50%; /* Match logo style */
+  transform: translate(-50%, -50%) rotate(-12deg);
+  opacity: 0.038; /* Very subtle watermark */
+  pointer-events: none;
+  z-index: -1;
+  filter: grayscale(20%); /* Blend better with warm background */
 }
 
 /* ─── NAV ─────────────────────────────────────────── */
@@ -20,8 +42,10 @@ nav {
   display: flex;
   align-items: center;
   padding: 0 40px;
-  background: #ffffff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.75); /* Glassmorphism */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   height: 56px;
   position: sticky;
   top: 0;
