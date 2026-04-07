@@ -54,7 +54,15 @@ function goTo(idx) {
 
 document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
 document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
-setInterval(() => { if (totalSlides > 1) goTo(current + 1); }, 3000);
+
+let isPaused = false;
+const carouselContainer = document.querySelector('.carousel-wrap');
+if (carouselContainer) {
+  carouselContainer.addEventListener('mouseenter', () => isPaused = true);
+  carouselContainer.addEventListener('mouseleave', () => isPaused = false);
+}
+setInterval(() => { if (totalSlides > 1 && !isPaused) goTo(current + 1); }, 2500); // 2.5s for smoother scrolling
+
 
 // ─── RECENT ACTIVITIES — fetched from API ─────────────
 const actList = document.getElementById('activitiesList');
@@ -116,8 +124,8 @@ document.querySelectorAll('.activity-card').forEach(c => observer.observe(c));
       <div class="chat-panel" id="chatPanel">
         <div class="chat-header">
           <div class="chat-header-info">
-            <div class="chat-header-title">Club Finder AI</div>
-            <div class="chat-header-status">online</div>
+            <div class="chat-header-title">Club Explorer AI</div>
+            <div class="chat-header-status">Online</div>
           </div>
           <button class="chat-close" id="chatClose">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

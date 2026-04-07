@@ -10,7 +10,6 @@ const multer     = require("multer");
 const path       = require("path");
 const fs         = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
@@ -27,19 +26,6 @@ const DATA_DIR     = path.join(__dirname, "data");
 const UPLOAD_DIR   = path.join(__dirname, "uploads");
 const MENTORS      = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "mentors.json"), "utf8"));
 const ADMIN_CREDS  = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "admin.json"), "utf8"));
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "AIza_PlaCEHoldingKeY_DoNoTUsE";
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const { HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
-const model = genAI.getGenerativeModel({ 
-  model: "gemini-2.5-flash",
-  safetySettings: [
-    { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE },
-    { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE },
-    { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE },
-    { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE },
-  ]
-});
 
 
 
