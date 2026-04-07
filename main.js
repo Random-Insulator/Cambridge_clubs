@@ -1,6 +1,7 @@
 const clubs = [
   {
     name: "TedEd",
+    formattedName: "Ted<em>Ed.</em>",
     category: "Speaking",
     desc: "Ideas worth spreading. Student-led talks on topics that matter to you — science, society, art, tech, anything.",
     color: "#e8504a",
@@ -11,6 +12,7 @@ const clubs = [
   },
   {
     name: "Cybersonic",
+    formattedName: "Cyber<em>sonic.</em>",
     category: "Technology",
     desc: ".Cybersonic Club transforms students from digital consumers into sophisticated tech architects by mastering the full computing stack, from Python and AI to robust cybersecurity.",
     color: "#7c6ef7",
@@ -21,6 +23,7 @@ const clubs = [
   },
   {
     name: "Robotics",
+    formattedName: "Robot<em>ics.</em>",
     category: "Technology",
     desc: "Build, program, and compete with robots. No experience needed — just curiosity and a willingness to break things.",
     color: "#3b9cf5",
@@ -31,6 +34,7 @@ const clubs = [
   },
   {
     name: "Cookery",
+    formattedName: "Cook<em>ery.</em>",
     category: "Life Skills",
     desc: "Provides an engaging platform for students to explore fireless cooking, sustainable practices, and healthy dishes in a fun and creative environment.",
     color: "#f59e3b",
@@ -41,6 +45,7 @@ const clubs = [
   },
   {
     name: "Quizzarders",
+    formattedName: "Quiz<em>zarders.</em>",
     category: "Academic",
     desc: "Quiz champions in the making. Trivia, general knowledge, and inter-school competitions every term.",
     color: "#22c97a",
@@ -51,6 +56,7 @@ const clubs = [
   },
   {
     name: "Finance",
+    formattedName: "Fin<em>ance.</em>",
     category: "Finance",
     desc: "Stocks, budgeting, investing. Learn to understand money before you actually need to manage it.",
     color: "#06b6d4",
@@ -61,6 +67,7 @@ const clubs = [
   },
   {
     name: "Theatre",
+    formattedName: "Thea<em>tre.</em>",
     category: "Arts",
     desc: "Stage performances, improv nights, and storytelling workshop.",
     color: "#d946b0",
@@ -71,6 +78,7 @@ const clubs = [
   },
   {
     name: "Eco",
+    formattedName: "Eco<em>.</em>",
     category: "Environment",
     desc: "Campus sustainability projects, school gardening, and climate action campaigns that actually make a difference.",
     color: "#65c948",
@@ -81,6 +89,7 @@ const clubs = [
   },
   {
     name: "Technocrates",
+    formattedName: "Techno<em>crates.</em>",
     category: "Academic",
     desc: "Technocrates Club transforms students into active innovators through hands-on scientific experimentation and real-world discovery.",
     color: "#f97316",
@@ -91,6 +100,7 @@ const clubs = [
   },
   {
     name: "Debate",
+    formattedName: "De<em>bate.</em>",
     category: "Speaking",
     desc: "Acclimatize students and develop their mindset for debating, structuring arguments, presenting facts, and anticipating counter-points.",
     color: "#4f46e5",
@@ -98,7 +108,7 @@ const clubs = [
     border: "rgba(79,70,229,0.2)",
     img: "images/debate.png",
     link: "debate/debate.html"
-  }
+  },
 ];
 
 const imgIcon = `
@@ -132,7 +142,7 @@ clubs.forEach((c, i) => {
     </div>
     <div class="club-info">
       <div class="club-category">${c.category}</div>
-      <div class="club-name">${c.name}</div>
+      <div class="club-name">${c.formattedName}</div>
       <div class="club-desc">${c.desc}</div>
       <div class="club-footer">
         <a href="${c.link}" class="learn-btn">Learn more →</a>
