@@ -37,9 +37,9 @@ const clubs = [
     formattedName: "Cook<em>ery.</em>",
     category: "Life Skills",
     desc: "Provides an engaging platform for students to explore fireless cooking, sustainable practices, and healthy dishes in a fun and creative environment.",
-    color: "#f59e3b",
-    bg: "rgba(245,158,59,0.1)",
-    border: "rgba(245,158,59,0.2)",
+    color: "#df4615",
+    bg: "rgba(223,70,21,0.1)",
+    border: "rgba(223,70,21,0.2)",
     img: "images/cookery.jpg",
     link: "cookery/cookery.html"
   },
