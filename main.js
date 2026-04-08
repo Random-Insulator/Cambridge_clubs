@@ -1,3 +1,4 @@
+(() => {
 const clubs = [
   {
     name: "TedEd",
@@ -121,36 +122,38 @@ const imgIcon = `
 
 const list = document.getElementById('clubsList');
 
-clubs.forEach((c, i) => {
-  const row = document.createElement('div');
-  row.className = 'club-row' + (i % 2 !== 0 ? ' flip' : '');
-  row.style.cssText = `--cc:${c.color}; --cb:${c.bg}; --cbr:${c.border}`;
+if (list) {
+  clubs.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'club-row' + (i % 2 !== 0 ? ' flip' : '');
+    row.style.cssText = `--cc:${c.color}; --cb:${c.bg}; --cbr:${c.border}`;
 
-  // whole row is clickable
-  row.style.cursor = 'pointer';
-  row.addEventListener('click', () => window.location.href = c.link);
+    // whole row is clickable
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', () => window.location.href = c.link);
 
-  row.innerHTML = `
-    <div class="club-img-wrap">
-      <img src="${c.img}" alt="${c.name} club photo"
-           onload="this.nextElementSibling.style.display='none'"
-           onerror="this.style.display='none'">
-      <div class="img-placeholder">
-        ${imgIcon}
-        <span>${c.name}</span>
+    row.innerHTML = `
+      <div class="club-img-wrap">
+        <img src="${c.img}" alt="${c.name} club photo"
+             onload="this.nextElementSibling.style.display='none'"
+             onerror="this.style.display='none'">
+        <div class="img-placeholder">
+          ${imgIcon}
+          <span>${c.name}</span>
+        </div>
       </div>
-    </div>
-    <div class="club-info">
-      <div class="club-category">${c.category}</div>
-      <div class="club-name">${c.formattedName}</div>
-      <div class="club-desc">${c.desc}</div>
-      <div class="club-footer">
-        <a href="${c.link}" class="learn-btn">Learn more →</a>
+      <div class="club-info">
+        <div class="club-category">${c.category}</div>
+        <div class="club-name">${c.formattedName}</div>
+        <div class="club-desc">${c.desc}</div>
+        <div class="club-footer">
+          <a href="${c.link}" class="learn-btn">Learn more →</a>
+        </div>
       </div>
-    </div>
-  `;
-  list.appendChild(row);
-});
+    `;
+    list.appendChild(row);
+  });
+}
 
 // ─── Scroll-triggered fade-in ──────────────────────────
 const observer = new IntersectionObserver((entries) => {
@@ -290,3 +293,4 @@ chatSend.addEventListener('click', sendMessage);
 chatInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') sendMessage();
 });
+})();
