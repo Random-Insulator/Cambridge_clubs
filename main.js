@@ -198,8 +198,27 @@ let chatHistory = [];
 
 function toggleChat() {
   chatPanel.classList.toggle('active');
+  const chatPulse = document.querySelector('.chat-pulse');
+  
   if (chatPanel.classList.contains('active')) {
     chatInput.focus();
+    chatFab.style.animation = 'none';
+    chatFab.style.webkitAnimation = 'none';
+    setTimeout(() => {
+      chatFab.style.bottom = '70px';
+    }, 50);
+    chatFab.style.transform = 'none';
+    chatFab.style.boxShadow = 'none';
+    chatPulse.style.display = 'none';
+  } else {
+    chatFab.style.bottom = '24px';
+    setTimeout(() => {
+      chatFab.style.animation = 'mascotBob 3s ease-in-out infinite';
+      chatFab.style.webkitAnimation = 'mascotBob 3s ease-in-out infinite';
+    }, 50);
+    chatFab.style.transform = 'none';
+    chatFab.style.boxShadow = '';
+    chatPulse.style.display = '';
   }
 }
 
