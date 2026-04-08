@@ -12,10 +12,10 @@ async function update() {
     console.log('Connected to DB');
 
     const updates = [
-      // Quizzarders
-      { id: '11bda53c-9bdb-40b0-852a-6b1b2c5047f3', img: '/uploads/quizzarders/quiz_competition.jpg' },
-      { id: '647c36b7-3263-4b60-8a2e-09f56ab6c3a0', img: '/uploads/quizzarders/indian_heritage.jpg' },
-      { id: 'e5a4a892-8fab-4475-990d-b7a42b0a9c94', img: '/uploads/quizzarders/world_map.jpg' },
+      // Quizzaders
+      { id: '11bda53c-9bdb-40b0-852a-6b1b2c5047f3', img: '/uploads/quizzaders/quiz_competition.jpg' },
+      { id: '647c36b7-3263-4b60-8a2e-09f56ab6c3a0', img: '/uploads/quizzaders/indian_heritage.jpg' },
+      { id: 'e5a4a892-8fab-4475-990d-b7a42b0a9c94', img: '/uploads/quizzaders/world_map.jpg' },
       // Finance
       { id: '7c06d593-4a75-4491-8b4b-8622fa7e35f9', img: '/uploads/finance/crypto_presentation.jpg' },
       { id: '08ef34a8-609b-4546-ba59-7438ccaf4764', img: '/uploads/finance/personal_budgeting.jpg' },

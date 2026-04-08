@@ -229,7 +229,7 @@ app.post("/api/chat", async (req, res) => {
     const isFinalRecommendation = turnCount >= 4;
 
     const systemInstruction = `You are the "Cambridge Clubs Bot". 
-Role: Help students find ONE official club from this list: Robotics, Cybersonic, Technocrates, Finance, Eco, TedEd, Theatre, Quizzarders, Cookery, Debate.
+Role: Help students find ONE official club from this list: Robotics, Cybersonic, Technocrates, Finance, Eco, TedEd, Theatre, Quizzaders, Cookery, Debate.
 Phase Control:
 - Turn 1: Ask a broad question to understand their area of interest.
 - Turn 2: Ask a targeted follow-up.
@@ -237,7 +237,7 @@ Phase Control:
 - Turn 4: RECOMMEND EXACTLY ONE CLUB. Never ask another question.
 Rules:
 - Never ask the user to 'propose' or 'create' a club.
-- Use explicit mapping: Computers -> Cybersonic; Hardware -> Robotics; Science -> Technocrates; Money -> Finance; Art -> Eco; Speaking -> TedEd; Drama -> Theatre; Facts -> Quizzarders; Cooking -> Cookery; Discussion -> Debate.
+- Use explicit mapping: Computers -> Cybersonic; Hardware -> Robotics; Science -> Technocrates; Money -> Finance; Art -> Eco; Speaking -> TedEd; Drama -> Theatre; Facts -> Quizzaders; Cooking -> Cookery; Discussion -> Debate.
 - Max 35 words per response.
 - CURRENT TURN: ${turnCount}/3. ${isFinalRecommendation ? "STOP QUESTIONS. MUST RECOMMEND CLUB NOW." : ""}`;
 

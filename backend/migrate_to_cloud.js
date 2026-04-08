@@ -48,20 +48,20 @@ async function migrate() {
       desc: "A hands-on session where students build their own AI-powered chatbot using modern NLP frameworks."
     },
     {
-      clubId: "quizzarders",
-      local: "uploads/quizzarders/quiz_competition.jpg",
+      clubId: "quizzaders",
+      local: "uploads/quizzaders/quiz_competition.jpg",
       title: "Intra-School Quiz Championship",
       desc: "A fierce competition between grades testing general knowledge on global events and technology."
     },
     {
-      clubId: "quizzarders",
-      local: "uploads/quizzarders/indian_heritage.jpg",
+      clubId: "quizzaders",
+      local: "uploads/quizzaders/indian_heritage.jpg",
       title: "Indian Heritage Quiz",
       desc: "Exploring the rich history and culture of India through an interactive multimedia quiz session."
     },
     {
-      clubId: "quizzarders",
-      local: "uploads/quizzarders/world_map.jpg",
+      clubId: "quizzaders",
+      local: "uploads/quizzaders/world_map.jpg",
       title: "Geography & Mapping Contest",
       desc: "Students identifying world capitals and geographical landmarks in a fast-paced map challenge."
     },

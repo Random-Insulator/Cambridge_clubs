@@ -20,7 +20,7 @@
       img: 'images/cookery.jpg',
       desc: 'Engaging platform to explore fireless cooking and sustainable practices.'
     },
-    'Quizzarders': {
+    'Quizzaders': {
       tag: 'Academic',
       img: 'images/quizzarders.jpg',
       desc: 'Quiz champions in the making. Trivia, general knowledge, and competitions.'

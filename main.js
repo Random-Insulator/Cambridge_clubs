@@ -45,7 +45,7 @@ const clubs = [
     link: "cookery/cookery.html"
   },
   {
-    name: "Quizzarders",
+    name: "Quizzaders",
     formattedName: "Quiz<em>zarders.</em>",
     category: "Academic",
     desc: "Quiz champions in the making. Trivia, general knowledge, and inter-school competitions every term.",
@@ -173,7 +173,7 @@ const navMap = {
   'Cybersonic':   'cybersonic/cybersonic.html',
   'Robotics':     'robotics/robotics.html',
   'Cookery':      'cookery/cookery.html',
-  'Quizzarders':  'quizzarders/quizzarders.html',
+  'Quizzaders':  'quizzarders/quizzarders.html',
   'Finance':      'finance/finance.html',
   'Theatre':        'drama/drama.html',
   'Eco':          'eco/eco.html',

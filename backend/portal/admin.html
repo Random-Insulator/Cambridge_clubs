@@ -312,7 +312,7 @@
         const pending = await pendingRes.json();
 
         // Also fetch approved for each club to build full list
-        const clubs = ['teded','cybersonic','robotics','cookery','quizzarders','finance','Theatre','eco','Technocrates'];
+        const clubs = ['teded','cybersonic','robotics','cookery','quizzaders','finance','Theatre','eco','Technocrates'];
         const approvedAll = (await Promise.all(
           clubs.map(c => fetch(`${API}/api/activities/${c}`).then(r => r.json()))
         )).flat();
