@@ -15,7 +15,7 @@ const clubs = [
     name: "Cybersonic",
     formattedName: "Cyber<em>sonic.</em>",
     category: "Technology",
-    desc: ".Cybersonic Club transforms students from digital consumers into sophisticated tech architects by mastering the full computing stack, from Python and AI to robust cybersecurity.",
+    desc: "Cybersonic Club transforms students from digital consumers into sophisticated tech architects by mastering the full computing stack, from Python and AI to robust cybersecurity.",
     color: "#7c6ef7",
     bg: "rgba(124,110,247,0.1)",
     border: "rgba(124,110,247,0.2)",
