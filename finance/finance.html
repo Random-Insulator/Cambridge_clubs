@@ -88,9 +88,31 @@
     </div>
 
     <aside class="sidebar">
-      <div class="sidebar-card">
-        <button class="join-btn" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSd3xvyh201gn3BJKcMsP9XizXj8MEzj4VJZh903YDPbuktZMw/viewform', '_blank')">+ Join this club</button>
+      <div class="sidebar-card" style="position:relative;">
+        <button class="join-btn" id="financeJoinBtn" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSd3xvyh201gn3BJKcMsP9XizXj8MEzj4VJZh903YDPbuktZMw/viewform', '_blank')">+ Join this club</button>
+        <!-- 🥚 Easter egg overlay -->
+        <div id="financeEgg" style="
+          display:none;
+          position:fixed;
+          inset:0;
+          background:rgba(0,0,0,0.85);
+          z-index:9999;
+          align-items:center;
+          justify-content:center;
+          flex-direction:column;
+          cursor:pointer;
+        " onclick="this.style.display='none'">
+          <img src="../images/finance_egg.png" style="
+            max-width:min(420px,90vw);
+            max-height:80vh;
+            border-radius:20px;
+            box-shadow:0 30px 80px rgba(0,0,0,0.6);
+            animation:eggPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+          " alt="🥚">
+          <p style="color:#fff;margin-top:18px;font-size:13px;opacity:0.6;font-family:'DM Sans',sans-serif;">click anywhere to close</p>
+        </div>
       </div>
+
       <div class="sidebar-card">
         <div class="sidebar-card-title">Club mentor</div>
         <div class="mentor-row">
@@ -161,7 +183,31 @@
   <script src="../nav-previews.js"></script>
   <script src="../main.js"></script>
   <script src="finance.js"></script>
+  <style>
+    @keyframes eggPop {
+      from { transform: scale(0.5) rotate(-8deg); opacity:0; }
+      to   { transform: scale(1) rotate(0deg); opacity:1; }
+    }
+  </style>
   <script>
+    // 🥚 Easter egg: hover the join button for 15 seconds
+    (function() {
+      var btn = document.getElementById('financeJoinBtn');
+      var egg = document.getElementById('financeEgg');
+      var timer = null;
+      if (!btn || !egg) return;
+
+      btn.addEventListener('mouseenter', function() {
+        timer = setTimeout(function() {
+          egg.style.display = 'flex';
+        }, 15000);
+      });
+
+      btn.addEventListener('mouseleave', function() {
+        clearTimeout(timer);
+      });
+    })();
+  </script>
     document.addEventListener('DOMContentLoaded', function() {
       var fab = document.querySelector('.chat-fab');
       var panel = document.getElementById('chatPanel');
