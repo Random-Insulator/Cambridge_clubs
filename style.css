@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&family=Playfair+Display:wght@400;600;700&display=swap');
 
 *,
 *::before,
@@ -295,14 +295,33 @@ nav::-webkit-scrollbar {
 
 .band-1 {
   color: #FFFDFB;
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 30px 20px;
+  padding: 40px 20px;
 }
 .band-1::before { background: #6B4219; animation-delay: 0.1s; }
 .band-1 .band-content { animation-delay: 0.5s; }
+
+.presents-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.school-name {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(20px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.presents {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
 
 .band-2 {
   color: #FFFFFF;
@@ -315,11 +334,32 @@ nav::-webkit-scrollbar {
 .band-2::before { background: #8F5B27; animation-delay: 1.6s; }
 .band-2 .band-content { animation-delay: 2.0s; }
 
+.ccws-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.ccws-logo .cool-clubs {
+  font-family: 'Caveat', cursive;
+  font-size: 1.1em;
+  background: linear-gradient(135deg, #e02020, #ff8a00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-left: 5px;
+  display: inline-block;
+  line-height: 1;
+  transform: translateY(4px);
+}
+
 .band-3 {
   color: #FFFFFF;
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(24px, 4vw, 36px);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 5vw, 48px);
   font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.02em;
   padding: 40px 20px;
 }
 .band-3::before { background: #B37837; animation-delay: 3.1s; }
@@ -555,9 +595,9 @@ nav::-webkit-scrollbar {
 
 .chat-fab {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  /* Keep standard 24px spacing as fallback to ensure it renders */
+  bottom: 24px !important;
+  right: 40px;
+  left: auto;
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -567,12 +607,17 @@ nav::-webkit-scrollbar {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  position: relative;
   box-shadow: 0 8px 30px rgba(45, 29, 5, 0.4);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, transform 0.3s ease;
   z-index: 200;
   animation: fabPop 0.5s 1s cubic-bezier(0.34, 1.56, 0.64, 1) both, mascotBob 3s ease-in-out 1.5s infinite;
 }
+
+.chat-fab.chat-closed {
+  animation: mascotBob 3s ease-in-out infinite;
+}
+
+
 
 @keyframes mascotBob {
   0% { transform: translateY(0) scale(1); }
@@ -592,6 +637,10 @@ nav::-webkit-scrollbar {
   background: radial-gradient(circle at top left, rgba(255,255,255,0.4), transparent);
   animation: glowPulse 3s infinite;
   pointer-events: none;
+}
+
+.chat-fab.chat-closed::before {
+  display: none;
 }
 
 @keyframes glowPulse {
@@ -633,6 +682,7 @@ nav::-webkit-scrollbar {
 .chat-fab:hover {
   transform: scale(1.1) rotate(5deg);
   background: #6B4219;
+  animation-play-state: paused;
 }
 
 .chat-fab svg {
@@ -726,8 +776,9 @@ nav::-webkit-scrollbar {
 
 .chat-panel {
   position: fixed;
-  bottom: 90px;
-  right: 24px;
+  bottom: 95px;
+  right: 40px;
+  left: auto;
   width: 360px;
   height: 500px;
   background: rgba(255, 255, 255, 0.95);

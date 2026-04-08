@@ -51,9 +51,29 @@ app.use("/", express.static(path.join(__dirname, "..")));
 
 // ─── MongoDB / Mongoose Setup ───────────────────────────────────────────────
 const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ Connected to MongoDB Atlas'))
-  .catch(err => console.error('MongoDB connection error:', err));
+
+let mongoServer;
+
+async function connectDB() {
+  if (process.env.MONGODB_URI) {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI);
+      console.log('✅ Connected to MongoDB Atlas');
+      return;
+    } catch (err) {
+      console.error('MongoDB Atlas connection error:', err.message);
+    }
+  }
+  try {
+    const { MongoMemoryServer } = require("mongodb-memory-server");
+    mongoServer = await MongoMemoryServer.create();
+    await mongoose.connect(mongoServer.getUri());
+    console.log('✅ Connected to MongoDB Memory Server');
+  } catch (err) {
+    console.error('MongoDB Memory Server error:', err.message);
+    console.log('⚠️  Running without database');
+  }
+}
 
 const Activity = mongoose.model("Activity", new mongoose.Schema({
   id: String,
@@ -302,6 +322,11 @@ app.use((err, _req, res, _next) => {
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n✅  Cambridge Clubs backend running on http://localhost:${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`\n✅  Cambridge Clubs backend running on http://localhost:${PORT}`);
+  });
+}).catch(err => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });
