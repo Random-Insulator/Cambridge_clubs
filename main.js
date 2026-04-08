@@ -181,10 +181,16 @@ const navMap = {
   'Debate':       'debate/debate.html',
 };
 
+// Detect if we are in a subdirectory (club page) vs root (index)
+const _pathDepth = window.location.pathname.split('/').filter(Boolean).length;
+const _isSubPage = _pathDepth > 1 || (window.location.protocol === 'file:' && window.location.href.includes('/cambridge_clubs/') && !window.location.href.endsWith('/cambridge_clubs/index.html') && !window.location.href.endsWith('/cambridge_clubs/'));
+const _prefix = _isSubPage ? '../' : '';
+
 document.querySelectorAll('.nav-links a').forEach(a => {
   const name = a.textContent.trim();
-  if (navMap[name]) a.href = navMap[name];
+  if (navMap[name]) a.href = _prefix + navMap[name];
 });
+
 
 // ─── CHATBOT LOGIC ────────────────────────────────────
 
