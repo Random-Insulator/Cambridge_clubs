@@ -123,8 +123,91 @@
     </svg>
   </button>
 
+  <div class="chat-panel" id="chatPanel">
+    <img src="../images/giti.png" class="giti-mascot-img" alt="Giti">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-header-title"><span style="font-size:18px; margin-right:4px;">✨</span> Giti</div>
+        <div class="chat-header-status">Club Finder AI</div>
+      </div>
+      <button class="chat-close" id="chatClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot">
+        <div style="font-size:11px; color:#c17d12; margin-bottom:4px; font-weight:700;">Giti</div>
+        Hi! I'm Giti. Tell me what you're passionate about, and I'll find the perfect club for you.
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+      <button id="chatSend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+
   <script src="../nav-previews.js"></script>
+  <script src="../main.js"></script>
   <script src="debate.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var fab = document.querySelector('.chat-fab');
+      var panel = document.getElementById('chatPanel');
+      var chatPulse = document.querySelector('.chat-pulse');
+      var navChatBtn = document.querySelector('.nav-chat-btn');
+      var chatClose = document.getElementById('chatClose');
+      
+      function openChat() {
+        if (!panel) return;
+        panel.classList.add('active');
+        if (fab) {
+          fab.style.animation = 'none';
+          fab.style.webkitAnimation = 'none';
+          setTimeout(function() {
+            fab.style.bottom = '70px';
+          }, 50);
+          fab.style.transform = 'none';
+          fab.style.boxShadow = 'none';
+          if (chatPulse) chatPulse.style.display = 'none';
+        }
+      }
+      
+      function closeChat() {
+        if (!panel) return;
+        panel.classList.remove('active');
+        if (fab) {
+          fab.style.bottom = '24px';
+          setTimeout(function() {
+            fab.style.animation = 'mascotBob 3s ease-in-out infinite';
+            fab.style.webkitAnimation = 'mascotBob 3s ease-in-out infinite';
+          }, 50);
+          fab.style.transform = 'none';
+          fab.style.boxShadow = '';
+          if (chatPulse) chatPulse.style.display = '';
+        }
+      }
+      
+      if (fab) fab.addEventListener('click', function() {
+        if (panel.classList.contains('active')) {
+          closeChat();
+        } else {
+          openChat();
+        }
+      });
+      if (navChatBtn) navChatBtn.addEventListener('click', openChat);
+      if (chatClose) chatClose.addEventListener('click', closeChat);
+    });
+  </script>
   
   <footer style="text-align:center;padding:2rem 1rem 1.5rem;color:#444;font-size:0.8rem;font-family:'DM Sans',sans-serif;letter-spacing:0.3px;">
     Presented By Cybersonic Club ✌️

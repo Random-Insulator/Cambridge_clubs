@@ -196,36 +196,48 @@ const navChatBtn = document.querySelector('.nav-chat-btn');
 
 let chatHistory = [];
 
-function toggleChat() {
-  chatPanel.classList.toggle('active');
+function openChat() {
+  if (!chatPanel || !chatFab) return;
+  chatPanel.classList.add('active');
+  if (chatInput) chatInput.focus();
+  chatFab.style.animation = 'none';
+  chatFab.style.webkitAnimation = 'none';
+  setTimeout(() => {
+    chatFab.style.bottom = '70px';
+  }, 50);
+  chatFab.style.transform = 'none';
+  chatFab.style.boxShadow = 'none';
   const chatPulse = document.querySelector('.chat-pulse');
-  
+  if (chatPulse) chatPulse.style.display = 'none';
+}
+
+function closeChat() {
+  if (!chatPanel || !chatFab) return;
+  chatPanel.classList.remove('active');
+  chatFab.style.bottom = '24px';
+  setTimeout(() => {
+    chatFab.style.animation = 'mascotBob 3s ease-in-out infinite';
+    chatFab.style.webkitAnimation = 'mascotBob 3s ease-in-out infinite';
+  }, 50);
+  chatFab.style.transform = 'none';
+  chatFab.style.boxShadow = '';
+  const chatPulse = document.querySelector('.chat-pulse');
+  if (chatPulse) chatPulse.style.display = '';
+}
+
+function toggleChat() {
+  if (!chatPanel || !chatFab) return;
   if (chatPanel.classList.contains('active')) {
-    chatInput.focus();
-    chatFab.style.animation = 'none';
-    chatFab.style.webkitAnimation = 'none';
-    setTimeout(() => {
-      chatFab.style.bottom = '70px';
-    }, 50);
-    chatFab.style.transform = 'none';
-    chatFab.style.boxShadow = 'none';
-    chatPulse.style.display = 'none';
+    closeChat();
   } else {
-    chatFab.style.bottom = '24px';
-    setTimeout(() => {
-      chatFab.style.animation = 'mascotBob 3s ease-in-out infinite';
-      chatFab.style.webkitAnimation = 'mascotBob 3s ease-in-out infinite';
-    }, 50);
-    chatFab.style.transform = 'none';
-    chatFab.style.boxShadow = '';
-    chatPulse.style.display = '';
+    openChat();
   }
 }
 
-chatFab.addEventListener('click', toggleChat);
-chatClose.addEventListener('click', toggleChat);
-heroCta.addEventListener('click', toggleChat);
-navChatBtn.addEventListener('click', toggleChat);
+if (chatFab) chatFab.addEventListener('click', toggleChat);
+if (chatClose) chatClose.addEventListener('click', closeChat);
+if (heroCta) heroCta.addEventListener('click', openChat);
+if (navChatBtn) navChatBtn.addEventListener('click', openChat);
 
 async function sendMessage() {
   const text = chatInput.value.trim();
