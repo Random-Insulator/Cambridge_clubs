@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&family=Playfair+Display:wght@400;600;700&display=swap');
-
 *,
 *::before,
 *::after {
@@ -355,7 +354,7 @@ nav::-webkit-scrollbar {
 
 .band-3 {
   color: #FFFFFF;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Caveat', cursive;
   font-size: clamp(28px, 5vw, 48px);
   font-weight: 600;
   font-style: italic;
