@@ -46,7 +46,7 @@ const clubs = [
   },
   {
     name: "Quizzaders",
-    formattedName: "Quiz<em>zarders.</em>",
+    formattedName: "Quiz<em>zaders.</em>",
     category: "Academic",
     desc: "Quiz champions in the making. Trivia, general knowledge, and inter-school competitions every term.",
     color: "#22c97a",
