@@ -3,60 +3,60 @@
     "clubId": "teded",
     "name": "TedEd",
     "mentorName": "Ms. Shipika",
-    "passwordHash": "$2a$10$G71Yd6E3Vw5kddQUQve40uPLSFlG5LFX0KPW8lIvhDIiYTLiouAfG"
+    "passwordHash": "$2a$10$SGgbHVFaKrxgKRoHYDaMveVy94yt2tH8pZBT6Bn7.KI0AONK7sNv2"
   },
   {
     "clubId": "cybersonic",
     "name": "Cybersonic",
     "mentorName": "Ms. Richa",
-    "passwordHash": "$2a$10$JIv4mWj8Jgstx252gU6ZruU4ScSAswBxJM25vxIc/h1gzDP2Xw9IW"
+    "passwordHash": "$2a$10$Mim/owwKdsCuVK9XNGILDeOoulPJ3OTUqIiswvfiSBPfUmrcQigVC"
   },
   {
     "clubId": "robotics",
     "name": "Robotics",
     "mentorName": "Mr. Jatin",
-    "passwordHash": "$2a$10$VPATqLkLw4wpY3p6JUsGjeiKd71FmXEXLscP/pLkL2vs56UDSraWC"
+    "passwordHash": "$2a$10$cRG3nvu9hmDv4YV1jv5sJu4p62/3.Spnsk7W.vd4NHLs.2Aq3v.Fi"
   },
   {
     "clubId": "cookery",
     "name": "Cookery",
     "mentorName": "Ms. Ankita",
-    "passwordHash": "$2a$10$mu1Rd5ia0tenKuoDJ6wL9eagRoELg2OjH2cQ0ETVMRoY4waZfwOmG"
+    "passwordHash": "$2a$10$Jf8UCo1ILZE/iu1fuNZ/GOeYVKUR4FPl5gPPjAjvvW34C7RzG6Kku"
   },
   {
     "clubId": "quizzarders",
     "name": "Quizzaders",
     "mentorName": "Ms. Akanksha",
-    "passwordHash": "$2a$10$V0149EkjFqBoFvrlLqfX2.3AshhRlJNTxwN9szZ5rBX3PLFarPyim"
+    "passwordHash": "$2a$10$BsqFl5hHyTTlL6iasJgNw.wzcu6TGZ1t8E22rHSfDnOMp0v4iSzcG"
   },
   {
     "clubId": "finance",
     "name": "Finance",
     "mentorName": "Ms. Ekta",
-    "passwordHash": "$2a$10$yzUOdLn9NDL641b0KfS4rOjmlnG2hVG6xFicGhlmYh7qTUaiuBNmK"
+    "passwordHash": "$2a$10$L3qCSh2B5uX768DQyqIlLO6P9vbvqQMnp1FOUr2qmyQSnoNIs060i"
   },
   {
     "clubId": "Theatre",
     "name": "Theatre",
     "mentorName": "Mr. Vikram",
-    "passwordHash": "$2a$10$cLW.oVb/pqOoylUy7UAlnuJalnGkV5tn9DXDgs2fErSwjjwh/UrRu"
+    "passwordHash": "$2a$10$S0348mkY0.ziI8GC/aCcvOUb.LNd1jUWZtCBOC2hYMKk8dubjFZEy"
   },
   {
     "clubId": "eco",
     "name": "Eco",
     "mentorName": "Ms. Swati Mehata",
-    "passwordHash": "$2a$10$UUXIO2vxZgiFjkT6T7MFG.wrBnFJmGzki3HYVCgOSkTEbg5OvcSZm"
+    "passwordHash": "$2a$10$GYMJo0KffeYaWNfxJhccRuX4zTMan/jPvPIRDEkjw2K1A3GQbybcS"
   },
   {
     "clubId": "Technocrates",
     "name": "Technocrates",
     "mentorName": "Ms. Nisha",
-    "passwordHash": "$2a$10$dbxpC4RcFHRj7agQhE/yZu9ZPSdf1glUWQ2AcFv0ppzqBG/Ee4ma6"
+    "passwordHash": "$2a$10$DcSYdxZUBZs/RghVCUMeIe4MCtm.i5vy8AzEIsXhNT9CTnrObQkgS"
   },
   {
     "clubId": "debate",
     "name": "Debate",
     "mentorName": "Dr. Meenakshi",
-    "passwordHash": "$2a$10$LCf7ErwFzYvUguDCuM1to.MqMaZz4aPWePiEqNAT2WkHi/klO2gza"
+    "passwordHash": "$2a$10$hyLwXPIRtzW3fFI/USvqA.9W38CLvBVWOVv8cTJFIMBI.o6eUYOGK"
   }
 ]
