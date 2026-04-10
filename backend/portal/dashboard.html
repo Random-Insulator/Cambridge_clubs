@@ -134,6 +134,102 @@
     /* Preview image */
     #imgPreview { display: none; width: 100%; height: 160px; object-fit: cover; border-radius: 10px; margin-top: 12px; }
 
+    /* ── Crop modal ──────────────────────────── */
+    #cropModal {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    #cropModal.open { display: flex; }
+
+    .crop-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      width: min(760px, 96vw);
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .crop-title {
+      font-size: 1rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .crop-title small { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+
+    #cropStage {
+      position: relative;
+      width: 100%; aspect-ratio: 16/10;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+    #cropStage.dragging { cursor: grabbing; }
+    #cropCanvas {
+      display: block; width: 100%; height: 100%;
+      image-rendering: auto;
+    }
+    /* semi-transparent frame overlay — shows crop boundary */
+    #cropFrame {
+      position: absolute; inset: 0;
+      border: 2px solid rgba(124,110,247,0.9);
+      border-radius: 12px;
+      pointer-events: none;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+    }
+    /* rule-of-thirds grid */
+    #cropFrame::before, #cropFrame::after {
+      content: '';
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    #cropFrame::before {
+      border-left:  1px solid rgba(255,255,255,0.15);
+      border-right: 1px solid rgba(255,255,255,0.15);
+      left: 33.3%; right: 33.3%;
+    }
+    #cropFrame::after {
+      border-top:    1px solid rgba(255,255,255,0.15);
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      top: 33.3%; bottom: 33.3%;
+    }
+
+    .crop-controls {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .crop-controls label { margin: 0; font-size: 0.78rem; color: var(--muted); white-space: nowrap; text-transform: none; letter-spacing: 0; }
+    #zoomSlider {
+      flex: 1; appearance: none; height: 4px;
+      background: var(--surface2); border-radius: 2px; outline: none;
+      cursor: pointer;
+    }
+    #zoomSlider::-webkit-slider-thumb {
+      appearance: none; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--accent); cursor: pointer;
+    }
+    #zoomVal { font-size: 0.78rem; color: var(--muted); width: 36px; text-align: right; }
+    .crop-actions { display: flex; gap: 12px; }
+    .crop-cancel {
+      flex: 1; padding: 11px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--muted);
+      font-family: inherit; font-size: 0.9rem; cursor: pointer;
+      transition: color 0.2s;
+    }
+    .crop-cancel:hover { color: var(--text); }
+    .crop-confirm {
+      flex: 2; padding: 11px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: var(--radius);
+      color: #fff; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .crop-confirm:hover { opacity: 0.88; }
+
     .submit-btn {
       width: 100%; margin-top: 20px;
       padding: 13px; background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -249,6 +345,7 @@
             <div class="file-zone-name" id="fileName"></div>
           </div>
           <img id="imgPreview" alt="Preview" />
+          <div id="cropBadge" style="display:none;margin-top:8px;font-size:0.78rem;color:var(--accent2);font-weight:600;">✓ Image cropped &amp; ready</div>
 
           <button type="submit" class="submit-btn" id="uploadBtn">Upload Activity</button>
           <div class="status-msg" id="statusMsg"></div>
@@ -270,6 +367,29 @@
       </div>
     </div>
   </main>
+
+  <!-- ── Crop Modal ───────────────────────────────────────── -->
+  <div id="cropModal" role="dialog" aria-modal="true" aria-label="Crop image">
+    <div class="crop-box">
+      <div class="crop-title">
+        Crop Photo
+        <small>Drag to reposition · scroll or slider to zoom</small>
+      </div>
+      <div id="cropStage">
+        <canvas id="cropCanvas"></canvas>
+        <div id="cropFrame"></div>
+      </div>
+      <div class="crop-controls">
+        <label>Zoom</label>
+        <input type="range" id="zoomSlider" min="100" max="400" value="100" step="1">
+        <span id="zoomVal">1×</span>
+      </div>
+      <div class="crop-actions">
+        <button class="crop-cancel" id="cropCancel">Cancel</button>
+        <button class="crop-confirm" id="cropConfirm">✓ Use this crop</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const API = '';
@@ -295,27 +415,178 @@
       window.location.href = 'login.html';
     });
 
-    // ── File preview ────────────────────────────────────────────────
+    // ── File / crop logic ───────────────────────────────────────────
     const fileInput  = document.getElementById('imageInput');
     const fileZone   = document.getElementById('fileZone');
     const fileName   = document.getElementById('fileName');
     const imgPreview = document.getElementById('imgPreview');
+    const cropBadge  = document.getElementById('cropBadge');
+    const cropModal  = document.getElementById('cropModal');
+    const cropStage  = document.getElementById('cropStage');
+    const cropCanvas = document.getElementById('cropCanvas');
+    const zoomSlider = document.getElementById('zoomSlider');
+    const zoomVal    = document.getElementById('zoomVal');
 
-    fileInput.addEventListener('change', () => {
-      const f = fileInput.files[0];
-      if (!f) return;
-      fileName.textContent = f.name;
-      const url = URL.createObjectURL(f);
-      imgPreview.src = url;
-      imgPreview.style.display = 'block';
+    let croppedBlob  = null;   // holds the final cropped image blob
+    let srcImage     = null;   // the original Image element
+    let zoom         = 1;      // 1 = fit-to-stage
+    let baseScale    = 1;      // scale at zoom=1 (fit)
+    let offsetX      = 0;      // image draw offset from stage top-left
+    let offsetY      = 0;
+    let dragStart    = null;
+
+    /* ── draw frame ── */
+    function drawCrop() {
+      if (!srcImage) return;
+      const ctx = cropCanvas.getContext('2d');
+      const W = cropCanvas.width, H = cropCanvas.height;
+      ctx.clearRect(0, 0, W, H);
+      const drawW = srcImage.naturalWidth  * baseScale * zoom;
+      const drawH = srcImage.naturalHeight * baseScale * zoom;
+      ctx.drawImage(srcImage, offsetX, offsetY, drawW, drawH);
+    }
+
+    /* ── clamp so image always covers canvas ── */
+    function clampOffset() {
+      if (!srcImage) return;
+      const drawW = srcImage.naturalWidth  * baseScale * zoom;
+      const drawH = srcImage.naturalHeight * baseScale * zoom;
+      const W = cropCanvas.width, H = cropCanvas.height;
+      offsetX = Math.min(0, Math.max(offsetX, W - drawW));
+      offsetY = Math.min(0, Math.max(offsetY, H - drawH));
+    }
+
+    /* ── open cropper with a given File ── */
+    function openCropper(file) {
+      const url = URL.createObjectURL(file);
+      srcImage = new Image();
+      srcImage.onload = () => {
+        // Size canvas to stage's rendered pixel size
+        const rect = cropStage.getBoundingClientRect();
+        const W = Math.round(rect.width)  || 680;
+        const H = Math.round(rect.height) || 425;
+        cropCanvas.width  = W;
+        cropCanvas.height = H;
+
+        // Fit image so it covers the canvas (like object-fit:cover)
+        const scaleX = W / srcImage.naturalWidth;
+        const scaleY = H / srcImage.naturalHeight;
+        baseScale = Math.max(scaleX, scaleY);
+
+        zoom = 1;
+        zoomSlider.value = 100;
+        zoomVal.textContent = '1×';
+
+        // Centre image
+        offsetX = (W - srcImage.naturalWidth  * baseScale) / 2;
+        offsetY = (H - srcImage.naturalHeight * baseScale) / 2;
+
+        drawCrop();
+        cropModal.classList.add('open');
+      };
+      srcImage.src = url;
+    }
+
+    /* ── zoom slider ── */
+    zoomSlider.addEventListener('input', () => {
+      const newZoom = zoomSlider.value / 100;
+      // Zoom around canvas centre
+      const W = cropCanvas.width, H = cropCanvas.height;
+      offsetX = W/2 - (W/2 - offsetX) * (newZoom / zoom);
+      offsetY = H/2 - (H/2 - offsetY) * (newZoom / zoom);
+      zoom = newZoom;
+      zoomVal.textContent = zoom.toFixed(1) + '×';
+      clampOffset();
+      drawCrop();
     });
+
+    /* ── wheel zoom ── */
+    cropStage.addEventListener('wheel', e => {
+      e.preventDefault();
+      const delta = -e.deltaY * 0.001;
+      const newZoom = Math.min(4, Math.max(1, zoom + delta));
+      const rect = cropCanvas.getBoundingClientRect();
+      const px = (e.clientX - rect.left) * (cropCanvas.width / rect.width);
+      const py = (e.clientY - rect.top)  * (cropCanvas.height / rect.height);
+      offsetX = px - (px - offsetX) * (newZoom / zoom);
+      offsetY = py - (py - offsetY) * (newZoom / zoom);
+      zoom = newZoom;
+      zoomSlider.value = Math.round(zoom * 100);
+      zoomVal.textContent = zoom.toFixed(1) + '×';
+      clampOffset();
+      drawCrop();
+    }, { passive: false });
+
+    /* ── drag ── */
+    cropStage.addEventListener('pointerdown', e => {
+      cropStage.setPointerCapture(e.pointerId);
+      cropStage.classList.add('dragging');
+      dragStart = { x: e.clientX - offsetX, y: e.clientY - offsetY };
+    });
+    cropStage.addEventListener('pointermove', e => {
+      if (!dragStart) return;
+      offsetX = e.clientX - dragStart.x;
+      offsetY = e.clientY - dragStart.y;
+      clampOffset();
+      drawCrop();
+    });
+    cropStage.addEventListener('pointerup', () => {
+      dragStart = null;
+      cropStage.classList.remove('dragging');
+    });
+
+    /* ── confirm: export canvas -> blob ── */
+    document.getElementById('cropConfirm').addEventListener('click', () => {
+      // Render at 2× for quality
+      const OUT_W = cropCanvas.width  * 2;
+      const OUT_H = cropCanvas.height * 2;
+      const offscreen = document.createElement('canvas');
+      offscreen.width  = OUT_W;
+      offscreen.height = OUT_H;
+      const ctx = offscreen.getContext('2d');
+      const drawW = srcImage.naturalWidth  * baseScale * zoom * 2;
+      const drawH = srcImage.naturalHeight * baseScale * zoom * 2;
+      ctx.drawImage(srcImage, offsetX * 2, offsetY * 2, drawW, drawH);
+      offscreen.toBlob(blob => {
+        croppedBlob = blob;
+        // Show preview
+        const previewUrl = URL.createObjectURL(blob);
+        imgPreview.src = previewUrl;
+        imgPreview.style.display = 'block';
+        cropBadge.style.display = 'block';
+        cropModal.classList.remove('open');
+      }, 'image/jpeg', 0.92);
+    });
+
+    /* ── cancel ── */
+    document.getElementById('cropCancel').addEventListener('click', () => {
+      cropModal.classList.remove('open');
+      // If nothing was cropped yet, clear file input too
+      if (!croppedBlob) {
+        fileInput.value = '';
+        fileName.textContent = '';
+        imgPreview.style.display = 'none';
+        cropBadge.style.display = 'none';
+      }
+    });
+
+    /* ── file input change -> open cropper ── */
+    function handleFile(file) {
+      if (!file) return;
+      croppedBlob = null;
+      cropBadge.style.display = 'none';
+      fileName.textContent = file.name;
+      openCropper(file);
+    }
+
+    fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
     fileZone.addEventListener('dragover', e => { e.preventDefault(); fileZone.classList.add('drag-over'); });
     fileZone.addEventListener('dragleave', () => fileZone.classList.remove('drag-over'));
     fileZone.addEventListener('drop', e => {
       e.preventDefault(); fileZone.classList.remove('drag-over');
       if (e.dataTransfer.files.length) {
         fileInput.files = e.dataTransfer.files;
-        fileInput.dispatchEvent(new Event('change'));
+        handleFile(e.dataTransfer.files[0]);
       }
     });
 
@@ -378,7 +649,9 @@
       formData.append('date',  document.getElementById('dateInput').value);
       formData.append('tag',   document.getElementById('tagInput').value);
       formData.append('desc',  document.getElementById('descInput').value);
-      formData.append('image', fileInput.files[0]);
+      const imageData = croppedBlob || fileInput.files[0];
+      if (!imageData) { msg.textContent = 'Please select and crop a photo first.'; msg.className = 'status-msg error'; return; }
+      formData.append('image', imageData, 'photo.jpg');
 
       btn.disabled = true; btn.textContent = 'Uploading…';
 
@@ -393,9 +666,11 @@
 
         msg.textContent = '✓ Activity uploaded successfully!';
         msg.className = 'status-msg success';
+        croppedBlob = null;
         e.target.reset();
         fileName.textContent = '';
         imgPreview.style.display = 'none';
+        cropBadge.style.display = 'none';
         document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
         loadActivities();
       } catch (ex) {
