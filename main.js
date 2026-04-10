@@ -300,3 +300,86 @@
     if (e.key === 'Enter') sendMessage();
   });
 })();
+
+// ─── CAROUSEL LIGHTBOX ────────────────────────────────
+// Called by each club's buildCarousel() after slides are ready.
+// slides: array of { img, title } as used by buildCarousel.
+window.initCarouselLightbox = function(slides) {
+  if (!slides || !slides.length) return;
+
+  // Build overlay once
+  if (!document.getElementById('lightbox-overlay')) {
+    document.body.insertAdjacentHTML('beforeend', `
+      <div id="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Image viewer">
+        <div id="lb-counter"></div>
+        <button id="lb-close" title="Close (Esc)">✕</button>
+        <button class="lb-nav" id="lb-prev" title="Previous">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <img id="lb-img" src="" alt="">
+        <button class="lb-nav" id="lb-next" title="Next">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div id="lb-caption"></div>
+      </div>
+    `);
+  }
+
+  const overlay  = document.getElementById('lightbox-overlay');
+  const lbImg    = document.getElementById('lb-img');
+  const lbCap    = document.getElementById('lb-caption');
+  const lbCount  = document.getElementById('lb-counter');
+  const lbClose  = document.getElementById('lb-close');
+  const lbPrev   = document.getElementById('lb-prev');
+  const lbNext   = document.getElementById('lb-next');
+  let lbIndex    = 0;
+
+  function showSlide(idx) {
+    lbIndex = (idx + slides.length) % slides.length;
+    const s = slides[lbIndex];
+    lbImg.src = s.img;
+    lbImg.alt = s.title || '';
+    lbCap.textContent = s.title || '';
+    lbCount.textContent = `${lbIndex + 1} / ${slides.length}`;
+  }
+
+  function openLightbox(idx) {
+    showSlide(idx);
+    overlay.classList.add('lb-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    overlay.classList.remove('lb-open');
+    document.body.style.overflow = '';
+  }
+
+  // Wire up controls (replace old listeners by cloning nodes)
+  [lbClose, lbPrev, lbNext].forEach(el => {
+    const clone = el.cloneNode(true);
+    el.parentNode.replaceChild(clone, el);
+  });
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  document.getElementById('lb-prev').addEventListener('click', () => showSlide(lbIndex - 1));
+  document.getElementById('lb-next').addEventListener('click', () => showSlide(lbIndex + 1));
+
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeLightbox(); });
+
+  // Keyboard nav
+  document.removeEventListener('keydown', window._lbKeyHandler);
+  window._lbKeyHandler = (e) => {
+    if (!overlay.classList.contains('lb-open')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')   showSlide(lbIndex - 1);
+    if (e.key === 'ArrowRight')  showSlide(lbIndex + 1);
+  };
+  document.addEventListener('keydown', window._lbKeyHandler);
+
+  // Attach click handlers to carousel slide images
+  const track = document.getElementById('carouselTrack');
+  if (!track) return;
+  track.querySelectorAll('.carousel-slide img').forEach((img, i) => {
+    img.addEventListener('click', () => openLightbox(i));
+  });
+};
+

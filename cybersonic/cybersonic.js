@@ -41,6 +41,7 @@ function buildCarousel(slides) {
     dot.addEventListener('click', () => goTo(i));
     dotsEl.appendChild(dot);
   });
+  if (typeof window.initCarouselLightbox === 'function') window.initCarouselLightbox(slides);
 }
 
 function goTo(idx) {
