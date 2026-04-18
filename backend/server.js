@@ -1,17 +1,53 @@
 "use strict";
 require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 
-
-const express    = require("express");
-const cors       = require("cors");
-const bcrypt     = require("bcryptjs");
-const jwt        = require("jsonwebtoken");
-const multer     = require("multer");
-const path       = require("path");
-const fs         = require("fs");
+const express       = require("express");
+const cors          = require("cors");
+const bcrypt        = require("bcryptjs");
+const jwt           = require("jsonwebtoken");
+const multer        = require("multer");
+const path          = require("path");
+const fs            = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const cloudinary = require("cloudinary").v2;
+const cloudinary    = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
+
+// ─── In-Memory Cache (for public activities endpoint) ────────────────────────
+// Caches DB results for 60 seconds so 200 parents don't hammer MongoDB
+const _cache = new Map(); // key: clubId → { data, expiresAt }
+const CACHE_TTL_MS = 60 * 1000; // 60 seconds
+function getCached(key) {
+  const entry = _cache.get(key);
+  if (!entry || Date.now() > entry.expiresAt) return null;
+  return entry.data;
+}
+function setCache(key, data) {
+  _cache.set(key, { data, expiresAt: Date.now() + CACHE_TTL_MS });
+}
+function invalidateCache(clubId) {
+  _cache.delete(clubId); // call this after approve/reject
+}
+
+// ─── Rate Limiter (for expensive AI chat endpoint) ────────────────────────────
+// Allows max 10 chat requests per IP per minute to prevent abuse
+const _chatHits = new Map();
+function chatRateLimit(req, res, next) {
+  const ip = req.ip;
+  const now = Date.now();
+  const windowMs = 60 * 1000;
+  const maxRequests = 10;
+  const entry = _chatHits.get(ip) || { count: 0, start: now };
+  if (now - entry.start > windowMs) {
+    _chatHits.set(ip, { count: 1, start: now });
+    return next();
+  }
+  entry.count++;
+  _chatHits.set(ip, entry);
+  if (entry.count > maxRequests) {
+    return res.status(429).json({ response: "Whoa, slow down! You're chatting too fast. Try again in a minute 😅" });
+  }
+  next();
+}
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -38,7 +74,14 @@ CLUB_IDS.forEach(id => fs.mkdirSync(path.join(UPLOAD_DIR, id), { recursive: true
 // ─── App ──────────────────────────────────────────────────────────────────────
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "2mb" })); // Prevent oversized request payloads
+
+// Enable gzip compression — reduces response size ~70%, faster for parents on mobile
+try {
+  const compression = require("compression");
+  app.use(compression());
+  console.log("✅ Gzip compression enabled");
+} catch { console.log("⚠️  compression package not found — run: npm install compression"); }
 
 // Serve uploaded images statically
 app.use("/uploads", express.static(UPLOAD_DIR));
@@ -161,6 +204,7 @@ app.post("/api/admin/approve/:id", requireAdmin, async (req, res) => {
     { new: true }
   );
   if (!act) return res.status(404).json({ error: "Activity not found" });
+  invalidateCache(act.clubId); // bust cache so parents see new activity immediately
   res.json({ message: "Approved", activity: act });
 });
 
@@ -194,7 +238,7 @@ const Groq = require("groq-sdk");
 const groq = new Groq({ apiKey: GROQ_API_KEY });
 
 // POST /api/chat — Chatbot endpoint (Upgraded to Groq for speed)
-app.post("/api/chat", async (req, res) => {
+app.post("/api/chat", chatRateLimit, async (req, res) => {
   const { message, history } = req.body;
   if (!message) return res.status(400).json({ error: "Message is required" });
   if (!GROQ_API_KEY || GROQ_API_KEY === "") {
@@ -260,18 +304,36 @@ Rules:
 
     res.json({ response: completion.choices[0].message.content });
   } catch (error) {
-    const errMsg = error.message || "Unknown error";
     console.error("Groq API Error details:", error);
+
+    // Detect Groq rate limit specifically (429) — happens if many parents use chatbot at once
+    const isRateLimit = error?.status === 429 || error?.statusCode === 429 ||
+                        (error?.message || "").toLowerCase().includes("rate limit");
+    if (isRateLimit) {
+      // Return a 200 with a friendly message so the frontend chat UI displays it gracefully
+      return res.json({
+        response: "The chatbot is a little busy right now — lots of people exploring clubs at once! 😊 Give it 30 seconds and try again, or just browse the club pages directly above."
+      });
+    }
+
+    const errMsg = error.message || "Unknown error";
     res.status(500).json({ error: `The Groq bot is having a high-speed nap (Reason: ${errMsg}). Please try again soon!` });
   }
 });
 
 
-// GET /api/activities/:clubId  — public
+// GET /api/activities/:clubId  — public (with 60-second cache)
 app.get("/api/activities/:clubId", async (req, res) => {
   const { clubId } = req.params;
   if (!CLUB_IDS.includes(clubId)) return res.status(404).json({ error: "Unknown club" });
+  const cached = getCached(clubId);
+  if (cached) {
+    res.setHeader("X-Cache", "HIT");
+    return res.json(cached);
+  }
   const all = await Activity.find({ clubId, approved: true }).sort({ _id: -1 });
+  setCache(clubId, all);
+  res.setHeader("X-Cache", "MISS");
   res.json(all);
 });
 

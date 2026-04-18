@@ -204,51 +204,28 @@
   const navChatBtn = document.querySelector('.nav-chat-btn');
 
   let chatHistory = [];
+  let _postRecoBonusCount = 0;  // how many extra chats after club recommendation
+  const MAX_BONUS_CHATS = 2;    // close after this many post-recommendation exchanges
+  let _chatLocked = false;
 
-  function openChat() {
-    if (!chatPanel || !chatFab) return;
-    chatPanel.classList.add('active');
-    if (chatInput) chatInput.focus();
-    chatFab.style.animation = 'none';
-    chatFab.style.webkitAnimation = 'none';
-    setTimeout(() => {
-      chatFab.style.bottom = '70px';
-    }, 50);
-    chatFab.style.transform = 'none';
-    chatFab.style.boxShadow = 'none';
-    const chatPulse = document.querySelector('.chat-pulse');
-    if (chatPulse) chatPulse.style.display = 'none';
+  // Detects if the bot's message is a final club recommendation (turn 4)
+  function _isRecommendation(text) {
+    const t = text.toLowerCase();
+    const clubNames = ['robotics','cybersonic','technocrates','finance','eco','teded','ted ed','theatre','theater','quizzaders','cookery','debate'];
+    const recommendWords = ['recommend','join','perfect for you','check out','suggest','go for','i think you','you should'];
+    return clubNames.some(c => t.includes(c)) && recommendWords.some(w => t.includes(w));
   }
 
-  function closeChat() {
-    if (!chatPanel || !chatFab) return;
-    chatPanel.classList.remove('active');
-    chatFab.style.bottom = '24px';
-    setTimeout(() => {
-      chatFab.style.animation = 'mascotBob 3s ease-in-out infinite';
-      chatFab.style.webkitAnimation = 'mascotBob 3s ease-in-out infinite';
-    }, 50);
-    chatFab.style.transform = 'none';
-    chatFab.style.boxShadow = '';
-    const chatPulse = document.querySelector('.chat-pulse');
-    if (chatPulse) chatPulse.style.display = '';
+  function _lockChat() {
+    _chatLocked = true;
+    if (chatInput)  { chatInput.disabled = true; chatInput.placeholder = 'Chat ended for this session'; }
+    if (chatSend)   { chatSend.disabled = true; chatSend.style.opacity = '0.4'; }
+    // Dim the FAB so people know it's done
+    if (chatFab)    { chatFab.style.opacity = '0.5'; chatFab.title = 'Chat session ended'; }
   }
-
-  function toggleChat() {
-    if (!chatPanel || !chatFab) return;
-    if (chatPanel.classList.contains('active')) {
-      closeChat();
-    } else {
-      openChat();
-    }
-  }
-
-  if (chatFab) chatFab.addEventListener('click', toggleChat);
-  if (chatClose) chatClose.addEventListener('click', closeChat);
-  if (heroCta) heroCta.addEventListener('click', openChat);
-  if (navChatBtn) navChatBtn.addEventListener('click', openChat);
 
   async function sendMessage() {
+    if (_chatLocked) return;
     const text = chatInput.value.trim();
     if (!text) return;
 
@@ -277,6 +254,24 @@
       chatHistory.push({ role: 'assistant', content: data.response });
 
       if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+
+      // ── Post-recommendation session limiter ──────────────
+      // If the bot just gave a recommendation, start tracking bonus chats
+      if (_isRecommendation(data.response)) {
+        _postRecoBonusCount = 0; // reset / mark we're in bonus territory
+      } else if (chatHistory.length >= 8) {
+        // We're past the 4-turn recommendation phase — count bonus exchanges
+        _postRecoBonusCount++;
+        if (_postRecoBonusCount >= MAX_BONUS_CHATS) {
+          setTimeout(() => {
+            addMessage(
+              "Alright, that's a wrap from me! 🎉 You've got everything you need — go check out the club and show them what you've got. See you around! 👋",
+              'bot'
+            );
+            _lockChat();
+          }, 800);
+        }
+      }
 
     } catch (err) {
       if (loadingMsg) loadingMsg.remove();

@@ -1,0 +1,80 @@
+config:
+  # ─── Change this to your live Render URL when testing in production ───
+  # target: "https://your-app.onrender.com"
+  target: "http://localhost:3001"
+  phases:
+    # Phase 1: Warm up (30 seconds, 10 users/sec)
+    - duration: 30
+      arrivalRate: 10
+      name: "Warm up"
+
+    # Phase 2: Ramp up to simulate parents arriving before/after school assembly
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 50
+      name: "Ramp up to 50 users/sec"
+
+    # Phase 3: Peak load — hundreds of parents browsing simultaneously
+    - duration: 60
+      arrivalRate: 50
+      name: "Sustained peak load"
+
+    # Phase 4: Cool down
+    - duration: 30
+      arrivalRate: 10
+      name: "Cool down"
+
+  # Report thresholds — test FAILS if these are breached
+  ensure:
+    thresholds:
+      - http.response_time.p99: 3000   # 99% of requests under 3 seconds
+      - http.response_time.p95: 1500   # 95% of requests under 1.5 seconds
+      - http.codes.200: 95             # At least 95% success rate
+
+scenarios:
+  # Scenario 1: Parent browses main page (most common)
+  - name: "Browse homepage"
+    weight: 40
+    flow:
+      - get:
+          url: "/"
+      - think: 2         # 2 second pause (reading the page)
+      - get:
+          url: "/main.js"
+      - get:
+          url: "/style.css"
+
+  # Scenario 2: Parent checks a specific club's activities (most API-heavy)
+  - name: "View club activities"
+    weight: 40
+    flow:
+      - get:
+          url: "/api/activities/robotics"
+          expect:
+            - statusCode: 200
+      - think: 3
+      - get:
+          url: "/api/activities/eco"
+          expect:
+            - statusCode: 200
+      - think: 2
+      - get:
+          url: "/api/activities/debate"
+          expect:
+            - statusCode: 200
+
+  # Scenario 3: Parent explores multiple clubs
+  - name: "Browse multiple clubs"
+    weight: 20
+    flow:
+      - get:
+          url: "/api/activities/cookery"
+      - think: 1
+      - get:
+          url: "/api/activities/finance"
+      - think: 1
+      - get:
+          url: "/api/activities/cybersonic"
+      - think: 1
+      - get:
+          url: "/api/activities/teded"

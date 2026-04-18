@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "description": "Cambridge Clubs backend Node Server Deploy",
   "scripts": {
-    "start": "cd backend && npm install --force && node server.js"
+    "start": "cd backend && npm install --force && node server.js",
+    "load:test": "npx artillery run load_test.yml",
+    "load:test:prod": "npx artillery run --target https://your-app.onrender.com load_test.yml"
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "artillery": "^2.0.21"
   }
 }

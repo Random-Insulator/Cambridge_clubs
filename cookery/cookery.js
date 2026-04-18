@@ -164,6 +164,9 @@ document.querySelectorAll('.activity-card').forEach(c => observer.observe(c));
   const navChatBtns = document.querySelectorAll('.nav-chat-btn');
 
   let chatHistory = [];
+  let _postRecoBonusCount = 0;  // extra chats after recommendation
+  const MAX_BONUS_CHATS = 2;    // lock after this many post-recommendation exchanges
+  let _chatLocked = false;
 
   function toggleChat() {
     chatPanel.classList.toggle('active');
@@ -177,7 +180,23 @@ document.querySelectorAll('.activity-card').forEach(c => observer.observe(c));
   if (heroCta) heroCta.addEventListener('click', toggleChat);
   navChatBtns.forEach(btn => btn.addEventListener('click', toggleChat));
 
+  // Detects if the bot's message is a club recommendation
+  function _isRecommendation(text) {
+    const t = text.toLowerCase();
+    const clubNames = ['robotics','cybersonic','technocrates','finance','eco','teded','ted ed','theatre','theater','quizzaders','cookery','debate'];
+    const recommendWords = ['recommend','join','perfect for you','check out','suggest','go for','i think you','you should'];
+    return clubNames.some(c => t.includes(c)) && recommendWords.some(w => t.includes(w));
+  }
+
+  function _lockChat() {
+    _chatLocked = true;
+    if (chatInput) { chatInput.disabled = true; chatInput.placeholder = 'Chat ended for this session'; }
+    if (chatSend)  { chatSend.disabled = true; chatSend.style.opacity = '0.4'; }
+    if (chatFab)   { chatFab.style.opacity = '0.5'; chatFab.title = 'Chat session ended'; }
+  }
+
   async function sendMessage() {
+    if (_chatLocked) return;
     const text = chatInput.value.trim();
     if (!text) return;
 
@@ -203,6 +222,23 @@ document.querySelectorAll('.activity-card').forEach(c => observer.observe(c));
       chatHistory.push({ role: 'user', content: text });
       chatHistory.push({ role: 'assistant', content: data.response });
       if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+
+      // ── Post-recommendation session limiter ──────────────
+      if (_isRecommendation(data.response)) {
+        _postRecoBonusCount = 0;
+      } else if (chatHistory.length >= 8) {
+        _postRecoBonusCount++;
+        if (_postRecoBonusCount >= MAX_BONUS_CHATS) {
+          setTimeout(() => {
+            addMessage(
+              "Alright, that's a wrap from me! 🎉 You've got everything you need — go check out the club and show them what you've got. See you around! 👋",
+              'bot'
+            );
+            _lockChat();
+          }, 800);
+        }
+      }
+
     } catch (err) {
       if (loadingMsg) loadingMsg.remove();
       addMessage(`Sorry, I'm having trouble: ${err.message}`, 'bot');
