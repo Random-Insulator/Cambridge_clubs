@@ -29,23 +29,34 @@ function invalidateCache(clubId) {
 }
 
 // ─── Rate Limiter (for expensive AI chat endpoint) ────────────────────────────
-// Allows max 10 chat requests per IP per minute to prevent abuse
+// Bans an IP for the remainder of the current 1-minute window only.
+// After 60s from their first request, the window resets automatically.
 const _chatHits = new Map();
 function chatRateLimit(req, res, next) {
   const ip = req.ip;
   const now = Date.now();
   const windowMs = 60 * 1000;
-  const maxRequests = 10;
+  const maxRequests = 30;
   const entry = _chatHits.get(ip) || { count: 0, start: now };
+
+  // Window expired — reset and allow
   if (now - entry.start > windowMs) {
     _chatHits.set(ip, { count: 1, start: now });
     return next();
   }
+
   entry.count++;
   _chatHits.set(ip, entry);
+
   if (entry.count > maxRequests) {
-    return res.status(429).json({ response: "Whoa, slow down! You're chatting too fast. Try again in a minute 😅" });
+    const secondsLeft = Math.ceil((windowMs - (now - entry.start)) / 1000);
+    console.warn(`⚠️  Rate limit hit by IP: ${ip} — resets in ${secondsLeft}s`);
+    res.setHeader('Retry-After', secondsLeft);
+    return res.status(429).json({
+      response: `Too many messages! Give it ${secondsLeft} second${secondsLeft !== 1 ? 's' : ''} and try again 😅`
+    });
   }
+
   next();
 }
 
