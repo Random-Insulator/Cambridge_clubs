@@ -78,9 +78,13 @@ const ADMIN_CREDS  = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "admin.json"
 
 
 
-// Ensure uploads directory and per-club sub-dirs exist
+// Ensure uploads directory and per-club sub-dirs exist (safe for read-only Vercel)
 const CLUB_IDS = MENTORS.map(m => m.clubId);
-CLUB_IDS.forEach(id => fs.mkdirSync(path.join(UPLOAD_DIR, id), { recursive: true }));
+try {
+  CLUB_IDS.forEach(id => fs.mkdirSync(path.join(UPLOAD_DIR, id), { recursive: true }));
+} catch (e) {
+  console.warn("⚠️ Could not create uploads directory (expected in read-only environments like Vercel). Using Cloudinary.");
+}
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 const app = express();
@@ -395,11 +399,18 @@ app.use((err, _req, res, _next) => {
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`\n✅  Cambridge Clubs backend running on http://localhost:${PORT}`);
+module.exports = app;
+
+if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`\n✅  Cambridge Clubs backend running on http://localhost:${PORT}`);
+    });
+  }).catch(err => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
   });
-}).catch(err => {
-  console.error('Failed to start server:', err);
-  process.exit(1);
-});
+} else {
+  // Always trigger connection in Vercel/production
+  connectDB().catch(console.error);
+}
