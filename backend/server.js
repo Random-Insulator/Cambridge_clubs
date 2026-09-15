@@ -416,10 +416,30 @@ app.get("/api/activities/:clubId", async (req, res) => {
     console.warn("MongoDB fetch error, falling back to JSON:", err.message);
   }
 
+  // Filter local JSON for this club
+  const localClubActivities = LOCAL_ACTIVITIES.filter(a => 
+    a.approved && (a.clubId.toLowerCase() === normalizedId || a.clubId.toLowerCase() === rawClubId)
+  );
+
   if (!activities || activities.length === 0) {
-    activities = LOCAL_ACTIVITIES.filter(a => 
-      a.approved && (a.clubId.toLowerCase() === normalizedId || a.clubId.toLowerCase() === rawClubId)
-    );
+    activities = localClubActivities;
+  } else {
+    // Sanitize any MongoDB items that point to non-existent /uploads/ paths
+    activities = activities.map(act => {
+      const item = act.toObject ? act.toObject() : { ...act };
+      if (item.img && item.img.startsWith("/uploads/")) {
+        const match = localClubActivities.find(l => l.title === item.title || l.desc === item.desc);
+        if (match && match.img && match.img.startsWith("http")) {
+          item.img = match.img;
+        }
+      }
+      return item;
+    }).filter(a => !a.img || !a.img.startsWith("/uploads/"));
+
+    // If filtering removed all activities, fall back to local JSON
+    if (activities.length === 0) {
+      activities = localClubActivities;
+    }
   }
 
   setCache(normalizedId, activities);
