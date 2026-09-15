@@ -390,6 +390,21 @@ Rules:
   }
 });
 
+const LEGACY_UPLOADS_MAP = {
+  "/uploads/cybersonic/ai_chatbot.png": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085309/cambridge_clubs/cybersonic/onrgs2czacfmntx5f0jg.jpg",
+  "/uploads/cybersonic/gen_ai_presentation.png": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085308/cambridge_clubs/cybersonic/fuu5stzeidvgrdafk9ev.jpg",
+  "/uploads/cybersonic/python_screensaver.png": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085307/cambridge_clubs/cybersonic/kvgxoj6qnukyxkcfaxt8.jpg",
+  "/uploads/finance/stock_market.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085313/cambridge_clubs/finance/syvim5ws7csz5umfdmu6.jpg",
+  "/uploads/finance/personal_budgeting.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085314/cambridge_clubs/finance/att2vuwgu4ip6h0e08pw.jpg",
+  "/uploads/finance/crypto_presentation.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085315/cambridge_clubs/finance/voiwgmsqj3dkw6vqqn3n.jpg",
+  "/uploads/debate/roundtable_discussion.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085317/cambridge_clubs/debate/osrtyq140qmq2kvqxqa3.jpg",
+  "/uploads/debate/script_writing.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085318/cambridge_clubs/debate/k7vbddutkw5lgbkshciy.jpg",
+  "/uploads/debate/formal_debate.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085316/cambridge_clubs/debate/zjdqrtya80ghmidhjfpz.jpg",
+  "/uploads/quizzaders/world_map.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085312/cambridge_clubs/quizzaders/zro9htf6fuuqdsqubag3.jpg",
+  "/uploads/quizzaders/indian_heritage.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085311/cambridge_clubs/quizzaders/m1tbkyv86xfsasagxyoh.jpg",
+  "/uploads/quizzaders/quiz_competition.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085310/cambridge_clubs/quizzaders/ygs7ijjmfqexd64e6vpn.jpg"
+};
+
 // GET /api/activities/:clubId — public (with 60-second cache & fallback)
 app.get("/api/activities/:clubId", async (req, res) => {
   const rawClubId = (req.params.clubId || "").toLowerCase();
@@ -425,21 +440,33 @@ app.get("/api/activities/:clubId", async (req, res) => {
     activities = localClubActivities;
   } else {
     // Sanitize any MongoDB items that point to non-existent /uploads/ paths
-    activities = activities.map(act => {
+    const seenTitles = new Set();
+    const cleanList = [];
+
+    for (const act of activities) {
       const item = act.toObject ? act.toObject() : { ...act };
-      if (item.img && item.img.startsWith("/uploads/")) {
+      if (item.img && LEGACY_UPLOADS_MAP[item.img]) {
+        item.img = LEGACY_UPLOADS_MAP[item.img];
+      } else if (item.img && item.img.startsWith("/uploads/")) {
         const match = localClubActivities.find(l => l.title === item.title || l.desc === item.desc);
         if (match && match.img && match.img.startsWith("http")) {
           item.img = match.img;
+        } else {
+          const fallback = localClubActivities.find(l => l.img && l.img.startsWith("http"));
+          if (fallback) item.img = fallback.img;
         }
       }
-      return item;
-    }).filter(a => !a.img || !a.img.startsWith("/uploads/"));
 
-    // If filtering removed all activities, fall back to local JSON
-    if (activities.length === 0) {
-      activities = localClubActivities;
+      if (item.img && !item.img.startsWith("/uploads/")) {
+        const key = (item.title || "").toLowerCase();
+        if (!seenTitles.has(key)) {
+          seenTitles.add(key);
+          cleanList.push(item);
+        }
+      }
     }
+
+    activities = cleanList.length > 0 ? cleanList : localClubActivities;
   }
 
   setCache(normalizedId, activities);
