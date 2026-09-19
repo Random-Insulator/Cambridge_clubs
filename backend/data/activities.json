@@ -418,5 +418,41 @@
     "uploadedAt": "2026-04-01T23:15:19.089Z",
     "approvedAt": "2026-04-01T23:15:19.089Z",
     "__v": 0
+  },
+  {
+    "id": "lit-act-001",
+    "clubId": "literary",
+    "img": "",
+    "title": "Annual Poetry Slam & Open Mic",
+    "date": "2026-04-10",
+    "tag": "Event",
+    "desc": "Members performed original spoken-word poetry and acoustic lyrics in front of an enthusiastic audience. The evening celebrated self-expression, rhythm, and creative storytelling.",
+    "approved": true,
+    "uploadedAt": "2026-04-10T10:00:00.000Z",
+    "approvedAt": "2026-04-10T10:00:00.000Z"
+  },
+  {
+    "id": "lit-act-002",
+    "clubId": "literary",
+    "img": "",
+    "title": "Character Design & Micro-Fiction Workshop",
+    "date": "2026-04-05",
+    "tag": "Workshop",
+    "desc": "Students engaged in a 60-minute flash fiction sprint, designing intricate character profiles and building compelling miniature worlds under the guidance of Ms. Shikha Bedi.",
+    "approved": true,
+    "uploadedAt": "2026-04-05T10:00:00.000Z",
+    "approvedAt": "2026-04-05T10:00:00.000Z"
+  },
+  {
+    "id": "lit-act-003",
+    "clubId": "literary",
+    "img": "",
+    "title": "Campus Literary Anthology Compilation",
+    "date": "2026-03-25",
+    "tag": "Project",
+    "desc": "The editorial committee assembled and proofread short stories, essays, and illustrations submitted by students across grades VIII to X for the upcoming spring edition.",
+    "approved": true,
+    "uploadedAt": "2026-03-25T10:00:00.000Z",
+    "approvedAt": "2026-03-25T10:00:00.000Z"
   }
 ]

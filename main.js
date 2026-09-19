@@ -110,6 +110,17 @@
       img: "images/debate.png",
       link: "debate/debate.html"
     },
+    {
+      name: "Literary",
+      formattedName: "Liter<em>ary.</em>",
+      category: "Arts",
+      desc: "Sanctuary for young writers, poets, and avid readers. Engage in poetry slams, book discussions, micro-fiction, and student anthologies.",
+      color: "#d97706",
+      bg: "rgba(217,119,6,0.1)",
+      border: "rgba(217,119,6,0.2)",
+      img: "images/literary.jpg",
+      link: "literary/literary.html"
+    },
   ];
 
   const imgIcon = `
@@ -179,6 +190,7 @@
     'Eco': 'eco/eco.html',
     'Technocrates': 'technogrades/technogrades.html',
     'Debate': 'debate/debate.html',
+    'Literary': 'literary/literary.html',
   };
 
   // Detect if we are in a subdirectory (club page) vs root (index)

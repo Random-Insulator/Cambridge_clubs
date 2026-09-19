@@ -58,5 +58,11 @@
     "name": "Debate",
     "mentorName": "Dr. Meenakshi",
     "passwordHash": "$2a$10$hyLwXPIRtzW3fFI/USvqA.9W38CLvBVWOVv8cTJFIMBI.o6eUYOGK"
+  },
+  {
+    "clubId": "literary",
+    "name": "Literary",
+    "mentorName": "Ms. Shikha Bedi (Grades 8-10)",
+    "passwordHash": "$2a$10$SGgbHVFaKrxgKRoHYDaMveVy94yt2tH8pZBT6Bn7.KI0AONK7sNv2"
   }
 ]
