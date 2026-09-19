@@ -422,11 +422,11 @@
   {
     "id": "lit-act-001",
     "clubId": "literary",
-    "img": "",
-    "title": "Annual Poetry Slam & Open Mic",
+    "img": "/images/literary1.jpg",
+    "title": "Classic Literature & Book Circle",
     "date": "2026-04-10",
-    "tag": "Event",
-    "desc": "Members performed original spoken-word poetry and acoustic lyrics in front of an enthusiastic audience. The evening celebrated self-expression, rhythm, and creative storytelling.",
+    "tag": "Discussion",
+    "desc": "Members gathered for an in-depth book discussion analyzing thematic structure, narrative perspective, and symbolism in classic 19th and 20th-century novels under the guidance of Ms. Shikha Bedi.",
     "approved": true,
     "uploadedAt": "2026-04-10T10:00:00.000Z",
     "approvedAt": "2026-04-10T10:00:00.000Z"
@@ -434,11 +434,11 @@
   {
     "id": "lit-act-002",
     "clubId": "literary",
-    "img": "",
-    "title": "Character Design & Micro-Fiction Workshop",
+    "img": "/images/literary2.jpg",
+    "title": "Contemporary Fiction & Chapter Review",
     "date": "2026-04-05",
-    "tag": "Workshop",
-    "desc": "Students engaged in a 60-minute flash fiction sprint, designing intricate character profiles and building compelling miniature worlds under the guidance of Ms. Shikha Bedi.",
+    "tag": "Reading",
+    "desc": "A quiet reading and interactive roundtable session where students shared favorite chapter highlights, character motives, and plot twists from contemporary young adult novels.",
     "approved": true,
     "uploadedAt": "2026-04-05T10:00:00.000Z",
     "approvedAt": "2026-04-05T10:00:00.000Z"
@@ -446,11 +446,11 @@
   {
     "id": "lit-act-003",
     "clubId": "literary",
-    "img": "",
-    "title": "Campus Literary Anthology Compilation",
+    "img": "/images/literary3.jpg",
+    "title": "Library Shelf Exploration & Book Recommendations",
     "date": "2026-03-25",
-    "tag": "Project",
-    "desc": "The editorial committee assembled and proofread short stories, essays, and illustrations submitted by students across grades VIII to X for the upcoming spring edition.",
+    "tag": "Library",
+    "desc": "Students spent the session curating a recommended reading list for grades VIII to X, exploring diverse literary genres across the school library shelves.",
     "approved": true,
     "uploadedAt": "2026-03-25T10:00:00.000Z",
     "approvedAt": "2026-03-25T10:00:00.000Z"

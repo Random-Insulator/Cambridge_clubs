@@ -114,7 +114,7 @@
       name: "Literary",
       formattedName: "Liter<em>ary.</em>",
       category: "Arts",
-      desc: "Sanctuary for young writers, poets, and avid readers. Engage in poetry slams, book discussions, micro-fiction, and student anthologies.",
+      desc: "Sanctuary for passionate readers and book lovers. Engage in book circles, novel analysis, chapter reviews, and thoughtful group discussions.",
       color: "#d97706",
       bg: "rgba(217,119,6,0.1)",
       border: "rgba(217,119,6,0.2)",
