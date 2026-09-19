@@ -217,44 +217,88 @@ app.post("/api/admin/login", (req, res) => {
   res.json({ token });
 });
 
+// ─── In-Memory Store (initialized with local json data) ────────────────────────
+const STORE = JSON.parse(JSON.stringify(LOCAL_ACTIVITIES));
+
 // GET /api/admin/pending
 app.get("/api/admin/pending", requireAdmin, async (_req, res) => {
-  let all = [];
+  let dbPending = [];
   try {
+    await connectDB();
     if (mongoose.connection.readyState === 1) {
-      all = await Activity.find({ approved: false }).sort({ _id: -1 });
+      dbPending = await Activity.find({ approved: false }).sort({ _id: -1 });
     }
   } catch (err) {
     console.warn("Failed to fetch pending from DB:", err.message);
   }
-  res.json(all);
+
+  const dbIds = new Set(dbPending.map(p => p.id));
+  const memPending = STORE.filter(a => !a.approved && !dbIds.has(a.id));
+  const allPending = [
+    ...dbPending.map(p => p.toObject ? p.toObject() : p),
+    ...memPending
+  ].sort((a, b) => new Date(b.uploadedAt || 0) - new Date(a.uploadedAt || 0));
+
+  res.json(allPending);
 });
 
 // POST /api/admin/approve/:id
 app.post("/api/admin/approve/:id", requireAdmin, async (req, res) => {
-  try {
-    const act = await Activity.findOneAndUpdate(
-      { id: req.params.id }, 
-      { approved: true, approvedAt: new Date().toISOString() }, 
-      { new: true }
-    );
-    if (!act) return res.status(404).json({ error: "Activity not found" });
-    invalidateCache(act.clubId);
-    return res.json({ message: "Approved", activity: act });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
+  const { id } = req.params;
+  const now = new Date().toISOString();
+
+  const memItem = STORE.find(a => a.id === id);
+  if (memItem) {
+    memItem.approved = true;
+    memItem.approvedAt = now;
+    invalidateCache(memItem.clubId);
   }
+
+  let dbAct = null;
+  try {
+    await connectDB();
+    if (mongoose.connection.readyState === 1) {
+      dbAct = await Activity.findOneAndUpdate(
+        { id }, 
+        { approved: true, approvedAt: now }, 
+        { new: true }
+      );
+      if (dbAct) invalidateCache(dbAct.clubId);
+    }
+  } catch (err) {
+    console.warn("DB approve warning:", err.message);
+  }
+
+  if (!memItem && !dbAct) return res.status(404).json({ error: "Activity not found" });
+
+  res.json({ message: "Approved", activity: dbAct || memItem });
 });
 
 // DELETE /api/admin/reject/:id
 app.delete("/api/admin/reject/:id", requireAdmin, async (req, res) => {
-  try {
-    const removed = await Activity.findOneAndDelete({ id: req.params.id });
-    if (!removed) return res.status(404).json({ error: "Activity not found" });
-    return res.json({ message: "Rejected and deleted", id: req.params.id });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
+  const { id } = req.params;
+
+  const idx = STORE.findIndex(a => a.id === id);
+  let removedMem = null;
+  if (idx !== -1) {
+    removedMem = STORE.splice(idx, 1)[0];
+    invalidateCache(removedMem.clubId);
   }
+
+  let removedDb = null;
+  try {
+    await connectDB();
+    if (mongoose.connection.readyState === 1) {
+      removedDb = await Activity.findOneAndDelete({ id });
+      if (removedDb) invalidateCache(removedDb.clubId);
+    }
+  } catch (err) {
+    console.warn("DB reject warning:", err.message);
+  }
+
+  if (!removedMem && !removedDb) return res.status(404).json({ error: "Activity not found" });
+
+  res.json({ message: "Rejected and deleted", id });
 });
 
 // POST /api/auth/login
@@ -405,73 +449,77 @@ const LEGACY_UPLOADS_MAP = {
   "/uploads/quizzaders/quiz_competition.jpg": "https://res.cloudinary.com/dynno0f9q/image/upload/v1775085310/cambridge_clubs/quizzaders/ygs7ijjmfqexd64e6vpn.jpg"
 };
 
-// GET /api/activities/:clubId — public (with 60-second cache & fallback)
+// GET /api/activities/:clubId — public or mentor full list (with 60-second cache & fallback)
 app.get("/api/activities/:clubId", async (req, res) => {
   const rawClubId = (req.params.clubId || "").toLowerCase();
-  
+  const showAll = req.query.all === "true" || req.query.includePending === "true";
+
   let normalizedId = rawClubId;
   if (rawClubId === "drama") normalizedId = "theatre";
   if (rawClubId === "technogrades") normalizedId = "technocrates";
 
-  const cached = getCached(normalizedId);
-  if (cached && cached.length > 0) {
-    res.setHeader("X-Cache", "HIT");
-    return res.json(cached);
+  if (!showAll) {
+    const cached = getCached(normalizedId);
+    if (cached && cached.length > 0) {
+      res.setHeader("X-Cache", "HIT");
+      return res.json(cached);
+    }
   }
 
-  let activities = [];
+  let dbActivities = [];
   try {
+    await connectDB();
     if (mongoose.connection.readyState === 1) {
-      activities = await Activity.find({ 
-        clubId: { $regex: new RegExp(`^${normalizedId}$`, 'i') }, 
-        approved: true 
-      }).sort({ _id: -1 });
+      const query = { clubId: { $regex: new RegExp(`^${normalizedId}$`, 'i') } };
+      if (!showAll) query.approved = true;
+      dbActivities = await Activity.find(query).sort({ _id: -1 });
     }
   } catch (err) {
-    console.warn("MongoDB fetch error, falling back to JSON:", err.message);
+    console.warn("MongoDB fetch error, falling back to STORE:", err.message);
   }
 
-  // Filter local JSON for this club
-  const localClubActivities = LOCAL_ACTIVITIES.filter(a => 
-    a.approved && (a.clubId.toLowerCase() === normalizedId || a.clubId.toLowerCase() === rawClubId)
-  );
+  const memActivities = STORE.filter(a => {
+    const clubMatch = (a.clubId || "").toLowerCase() === normalizedId || (a.clubId || "").toLowerCase() === rawClubId;
+    return clubMatch && (showAll || a.approved);
+  });
 
-  if (!activities || activities.length === 0) {
-    activities = localClubActivities;
-  } else {
-    // Sanitize any MongoDB items that point to non-existent /uploads/ paths
-    const seenTitles = new Set();
-    const cleanList = [];
+  const dbIds = new Set(dbActivities.map(a => a.id));
+  const mergedRaw = [
+    ...dbActivities.map(a => a.toObject ? a.toObject() : a),
+    ...memActivities.filter(a => !dbIds.has(a.id))
+  ];
 
-    for (const act of activities) {
-      const item = act.toObject ? act.toObject() : { ...act };
-      if (item.img && LEGACY_UPLOADS_MAP[item.img]) {
-        item.img = LEGACY_UPLOADS_MAP[item.img];
-      } else if (item.img && item.img.startsWith("/uploads/")) {
-        const match = localClubActivities.find(l => l.title === item.title || l.desc === item.desc);
-        if (match && match.img && match.img.startsWith("http")) {
-          item.img = match.img;
-        } else {
-          const fallback = localClubActivities.find(l => l.img && l.img.startsWith("http"));
-          if (fallback) item.img = fallback.img;
-        }
-      }
+  const seenTitles = new Set();
+  const cleanList = [];
 
-      if (item.img && !item.img.startsWith("/uploads/")) {
-        const key = (item.title || "").toLowerCase();
-        if (!seenTitles.has(key)) {
-          seenTitles.add(key);
-          cleanList.push(item);
-        }
+  for (const act of mergedRaw) {
+    const item = { ...act };
+    if (item.img && LEGACY_UPLOADS_MAP[item.img]) {
+      item.img = LEGACY_UPLOADS_MAP[item.img];
+    } else if (item.img && item.img.startsWith("/uploads/")) {
+      const match = STORE.find(l => (l.title === item.title || l.desc === item.desc) && l.img && l.img.startsWith("http"));
+      if (match) {
+        item.img = match.img;
+      } else {
+        const fallback = STORE.find(l => (l.clubId || "").toLowerCase() === normalizedId && l.img && l.img.startsWith("http"));
+        if (fallback) item.img = fallback.img;
       }
     }
 
-    activities = cleanList.length > 0 ? cleanList : localClubActivities;
+    if (item.img && !item.img.startsWith("/uploads/")) {
+      const key = `${(item.title || "").toLowerCase()}-${item.id || ""}`;
+      if (!seenTitles.has(key)) {
+        seenTitles.add(key);
+        cleanList.push(item);
+      }
+    }
   }
 
-  setCache(normalizedId, activities);
-  res.setHeader("X-Cache", "MISS");
-  res.json(activities);
+  const finalActivities = cleanList.length > 0 ? cleanList : memActivities;
+
+  if (!showAll) setCache(normalizedId, finalActivities);
+  res.setHeader("X-Cache", showAll ? "BYPASS" : "MISS");
+  res.json(finalActivities);
 });
 
 // POST /api/upload/:clubId — protected
@@ -485,21 +533,35 @@ app.post("/api/upload/:clubId", requireAuth, (req, res, next) => {
     if (!req.file) return res.status(400).json({ error: "No image file provided" });
     const { title, date, tag, desc } = req.body;
     if (!title) return res.status(400).json({ error: "title is required" });
-    const activity = new Activity({
+
+    const activityObj = {
       id:       uuidv4(),
-      clubId,
+      clubId:   clubId.toLowerCase(),
       img:      req.file.path,
       title:    title.trim(),
       date:     (date || new Date().toISOString().split("T")[0]).trim(),
       tag:      (tag  || "Activity").trim(),
       desc:     (desc || "").trim(),
-      approved: false,
+      approved: false, // goes to admin approval queue
       uploadedAt: new Date().toISOString()
-    });
-    if (mongoose.connection.readyState === 1) {
-      await activity.save();
+    };
+
+    // Store in-memory immediately so it never vanishes!
+    STORE.unshift(activityObj);
+    invalidateCache(clubId.toLowerCase());
+
+    // Also persist to MongoDB Atlas if connected
+    try {
+      await connectDB();
+      if (mongoose.connection.readyState === 1) {
+        const activity = new Activity(activityObj);
+        await activity.save();
+      }
+    } catch (dbErr) {
+      console.warn("MongoDB save error (stored in memory fallback):", dbErr.message);
     }
-    res.status(201).json(activity);
+
+    res.status(201).json(activityObj);
   });
 });
 
@@ -509,10 +571,27 @@ app.delete("/api/activities/:clubId/:id", requireAuth, async (req, res) => {
   if (req.mentor.clubId.toLowerCase() !== clubId.toLowerCase()) {
     return res.status(403).json({ error: "You can only delete activities from your own club" });
   }
-  if (mongoose.connection.readyState === 1) {
-    const removed = await Activity.findOneAndDelete({ id, clubId });
-    if (!removed) return res.status(404).json({ error: "Activity not found" });
+
+  const idx = STORE.findIndex(a => a.id === id);
+  let removedMem = null;
+  if (idx !== -1) {
+    removedMem = STORE.splice(idx, 1)[0];
+    invalidateCache(clubId.toLowerCase());
   }
+
+  let removedDb = null;
+  try {
+    await connectDB();
+    if (mongoose.connection.readyState === 1) {
+      removedDb = await Activity.findOneAndDelete({ id, clubId });
+      if (removedDb) invalidateCache(clubId.toLowerCase());
+    }
+  } catch (dbErr) {
+    console.warn("DB delete warning:", dbErr.message);
+  }
+
+  if (!removedMem && !removedDb) return res.status(404).json({ error: "Activity not found" });
+
   res.json({ message: "Activity deleted", id });
 });
 
