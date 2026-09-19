@@ -383,12 +383,17 @@
       appBtn.disabled = rejBtn.disabled = true;
       appBtn.textContent = 'Approving…';
       try {
+        const act = allActivities.find(a => a.id === id);
         const res = await fetch(`${API}/api/admin/approve/${id}`, {
-          method: 'POST', headers: { 'Authorization': `Bearer ${token}` }
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ activity: act })
         });
         if (!res.ok) throw new Error((await res.json()).error);
         // Update local state
-        const act = allActivities.find(a => a.id === id);
         if (act) { act._status = 'approved'; act.approvedAt = new Date().toISOString(); act.approved = true; }
         // Update badge
         const pending = allActivities.filter(a => a._status === 'pending').length;

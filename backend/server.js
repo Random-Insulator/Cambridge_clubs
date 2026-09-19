@@ -217,11 +217,36 @@ app.post("/api/admin/login", (req, res) => {
   res.json({ token });
 });
 
-// ─── In-Memory Store (initialized with local json data) ────────────────────────
-const STORE = JSON.parse(JSON.stringify(LOCAL_ACTIVITIES));
+// ─── File-backed /tmp persistence for Serverless & DB Fallback ───────────────
+const TMP_FILE = path.join("/tmp", "cambridge_clubs_activities.json");
+
+function getPersistedActivities() {
+  try {
+    if (fs.existsSync(TMP_FILE)) {
+      const data = fs.readFileSync(TMP_FILE, "utf8");
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (err) {
+    console.warn("Failed reading /tmp activities file:", err.message);
+  }
+  return JSON.parse(JSON.stringify(LOCAL_ACTIVITIES));
+}
+
+function savePersistedActivities(activities) {
+  try {
+    fs.writeFileSync(TMP_FILE, JSON.stringify(activities, null, 2), "utf8");
+  } catch (err) {
+    console.warn("Failed writing /tmp activities file:", err.message);
+  }
+}
+
+// Global in-memory reference initialized with persisted activities
+let STORE = getPersistedActivities();
 
 // GET /api/admin/pending
 app.get("/api/admin/pending", requireAdmin, async (_req, res) => {
+  STORE = getPersistedActivities();
   let dbPending = [];
   try {
     await connectDB();
@@ -246,11 +271,28 @@ app.get("/api/admin/pending", requireAdmin, async (_req, res) => {
 app.post("/api/admin/approve/:id", requireAdmin, async (req, res) => {
   const { id } = req.params;
   const now = new Date().toISOString();
+  STORE = getPersistedActivities();
 
-  const memItem = STORE.find(a => a.id === id);
+  let memItem = STORE.find(a => a.id === id);
   if (memItem) {
     memItem.approved = true;
     memItem.approvedAt = now;
+  } else {
+    // If not found in current cold-start instance, use payload passed from Admin frontend!
+    const bodyAct = req.body?.activity;
+    if (bodyAct && (bodyAct.id === id || bodyAct.title)) {
+      memItem = {
+        ...bodyAct,
+        id: bodyAct.id || id,
+        approved: true,
+        approvedAt: now
+      };
+      STORE.unshift(memItem);
+    }
+  }
+
+  if (memItem) {
+    savePersistedActivities(STORE);
     invalidateCache(memItem.clubId);
   }
 
@@ -277,11 +319,13 @@ app.post("/api/admin/approve/:id", requireAdmin, async (req, res) => {
 // DELETE /api/admin/reject/:id
 app.delete("/api/admin/reject/:id", requireAdmin, async (req, res) => {
   const { id } = req.params;
+  STORE = getPersistedActivities();
 
   const idx = STORE.findIndex(a => a.id === id);
   let removedMem = null;
   if (idx !== -1) {
     removedMem = STORE.splice(idx, 1)[0];
+    savePersistedActivities(STORE);
     invalidateCache(removedMem.clubId);
   }
 
@@ -296,7 +340,10 @@ app.delete("/api/admin/reject/:id", requireAdmin, async (req, res) => {
     console.warn("DB reject warning:", err.message);
   }
 
-  if (!removedMem && !removedDb) return res.status(404).json({ error: "Activity not found" });
+  if (!removedMem && !removedDb) {
+    // Graceful response for serverless cold starts
+    return res.json({ message: "Rejected and deleted", id });
+  }
 
   res.json({ message: "Rejected and deleted", id });
 });
@@ -546,8 +593,10 @@ app.post("/api/upload/:clubId", requireAuth, (req, res, next) => {
       uploadedAt: new Date().toISOString()
     };
 
-    // Store in-memory immediately so it never vanishes!
+    // Store in-memory and in file persistence immediately so it never vanishes!
+    STORE = getPersistedActivities();
     STORE.unshift(activityObj);
+    savePersistedActivities(STORE);
     invalidateCache(clubId.toLowerCase());
 
     // Also persist to MongoDB Atlas if connected
