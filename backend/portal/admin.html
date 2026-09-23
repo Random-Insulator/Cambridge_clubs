@@ -5,132 +5,225 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Portal — CambridgeClubs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="icon" href="../images/favicon.jpg" type="image/jpeg">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html {
-      background: #f6bb69;
-    }
+    html, body { height: 100%; min-height: 100vh; }
 
     body {
-      min-height: 100vh;
-      background: #f6bb69;
       font-family: 'DM Sans', sans-serif;
+      background: #5A390C;
       color: #1a1a1a;
       position: relative;
       overflow-x: hidden;
     }
 
-    /* Watermark logo background aligned with main website */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 45vw;
-      height: 45vw;
-      max-width: 550px;
-      max-height: 550px;
-      background-image: url('../images/favicon.jpg');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0.12;
-      pointer-events: none;
-      z-index: -1;
-      mix-blend-mode: multiply;
-    }
+    /* ── Login State: full-screen split layout ── */
+    body.login-mode { display: flex; overflow: hidden; }
 
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.45) 0%, transparent 100%);
-      pointer-events: none;
-      z-index: -2;
-    }
-
-    /* ── Login Screen ─────────────────── */
-    #loginScreen {
+    /* ─── LEFT PANEL ─────────────────────────────────── */
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(145deg, #1a0f02 0%, #3a2204 30%, #6B4219 65%, #8F5B27 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 48px;
+      overflow: hidden;
       min-height: 100vh;
-      display: flex; align-items: center; justify-content: center; padding: 32px 20px;
     }
-    .login-card-wrapper {
-      position: relative; z-index: 1; width: 100%; max-width: 440px;
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      animation: float 14s ease-in-out infinite;
+      pointer-events: none;
     }
-    .login-card {
-      background: rgba(255, 253, 249, 0.82);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.75);
-      border-radius: 28px; padding: 44px 40px;
-      box-shadow: 
-        0 20px 50px rgba(90, 57, 12, 0.12),
-        0 1px 3px rgba(0, 0, 0, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    .blob-1 { width: 380px; height: 380px; background: rgba(224, 32, 32, 0.12); top: -120px; right: -60px; animation-delay: 0s; }
+    .blob-2 { width: 300px; height: 300px; background: rgba(246, 187, 105, 0.14); bottom: -80px; left: -80px; animation-delay: -5s; }
+    .blob-3 { width: 180px; height: 180px; background: rgba(255, 255, 255, 0.06); top: 55%; right: 55%; animation-delay: -10s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(-18px, 25px) scale(1.04); }
+      66%       { transform: translate(20px, -18px) scale(0.97); }
     }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
+
+    .logo-ring {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      margin-bottom: 32px;
+      animation: pulse-ring 3.5s ease-in-out infinite;
     }
-    .logo-container {
-      display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px;
+    .logo-ring::before {
+      content: ''; position: absolute; inset: -14px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06); animation: pulse-ring 3.5s ease-in-out infinite reverse;
     }
-    .brand-logo {
-      display: flex; align-items: center; gap: 10px;
+    .logo-ring::after {
+      content: ''; position: absolute; inset: -28px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.03);
     }
-    .brand-logo img {
-      width: 34px; height: 34px; border-radius: 50%; object-fit: cover; box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    @keyframes pulse-ring { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+    .logo-ring img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+
+    .left-eyebrow {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
+      margin-bottom: 12px; text-align: center;
     }
-    .brand-text {
-      font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.3px; color: #000; line-height: 1;
+    .left-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800; color: #fff; text-align: center;
+      line-height: 1.1; letter-spacing: -1px; margin-bottom: 12px;
     }
-    .brand-text span { color: #e02020; }
-    .admin-badge {
-      display: inline-block; background: rgba(224, 32, 32, 0.12);
-      color: #dc2626; border: 1px solid rgba(224, 32, 32, 0.25);
-      border-radius: 20px; padding: 4px 12px; font-size: 0.75rem;
-      font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+    .left-title .accent {
+      font-family: 'Caveat', cursive; font-size: 1.1em;
+      background: linear-gradient(135deg, #f6bb69, #ff8a00);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; display: block; line-height: 1;
     }
-    h1 { font-family: 'Syne', sans-serif; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.6px; color: #2D1D05; margin-bottom: 8px; }
-    .subtitle { color: #7a5426; font-size: 0.92rem; margin-bottom: 32px; line-height: 1.5; }
-    .form-group { margin-bottom: 20px; }
-    label { display: block; font-size: 0.75rem; font-weight: 800; color: #6B4219; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-    .input-field {
-      width: 100%; padding: 14px 16px;
-      background: rgba(255, 255, 255, 0.9); border: 1.5px solid rgba(138, 92, 36, 0.18);
-      border-radius: 14px; color: #2D1D05;
+    .left-subtitle {
+      font-size: 0.9rem; color: rgba(255,255,255,0.5); text-align: center;
+      line-height: 1.65; max-width: 300px; margin-bottom: 40px;
+    }
+
+    .features { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 320px; }
+    .feature {
+      display: flex; align-items: center; gap: 16px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 14px 16px; backdrop-filter: blur(8px);
+      animation: fadeUp 0.6s ease both;
+    }
+    .feature:nth-child(1) { animation-delay: 0.1s; }
+    .feature:nth-child(2) { animation-delay: 0.2s; }
+    .feature:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    .feature-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(224, 32, 32, 0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem; }
+    .feature-text strong { display: block; font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.88); margin-bottom: 2px; }
+    .feature-text span { font-size: 0.76rem; color: rgba(255,255,255,0.4); line-height: 1.4; }
+    .left-footer { position: absolute; bottom: 24px; left: 0; right: 0; text-align: center; font-size: 0.68rem; color: rgba(255,255,255,0.18); letter-spacing: 0.06em; }
+
+    /* ─── RIGHT PANEL ─────────────────────────────────── */
+    .right-panel {
+      width: 480px; flex-shrink: 0; background: #FFFDFB;
+      display: flex; flex-direction: column; align-items: stretch; justify-content: center;
+      padding: 56px 48px; position: relative; overflow: hidden; min-height: 100vh;
+    }
+    .right-panel::before {
+      content: ''; position: absolute; top: -100px; right: -60px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(224, 32, 32, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .right-panel::after {
+      content: ''; position: absolute; bottom: -80px; left: -60px;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(246, 187, 105, 0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.82rem; font-weight: 600; color: #7a5426; text-decoration: none;
+      margin-bottom: 44px; position: relative; z-index: 1; transition: color 0.2s; width: fit-content;
+    }
+    .back-link:hover { color: #2D1D05; }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    .form-wrap {
+      position: relative; z-index: 1;
+      animation: slideInRight 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+
+    .form-eyebrow { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #e02020; margin-bottom: 10px; }
+    .admin-badge-inline {
+      display: inline-block; background: rgba(224, 32, 32, 0.1); color: #dc2626;
+      border: 1px solid rgba(224, 32, 32, 0.22); border-radius: 20px;
+      padding: 3px 10px; font-size: 0.68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.08em; margin-left: 8px; vertical-align: middle;
+    }
+
+    h1 { font-family: 'Syne', sans-serif; font-size: 2.1rem; font-weight: 800; letter-spacing: -0.7px; color: #1a1a1a; margin-bottom: 6px; line-height: 1.1; }
+    .subtitle { color: #8a6035; font-size: 0.93rem; margin-bottom: 36px; line-height: 1.55; }
+
+    .form-group { margin-bottom: 22px; }
+    label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 800; color: #5A390C;
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 9px;
+    }
+    .field-wrap { position: relative; }
+    .field-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #b08d66; pointer-events: none; }
+    input[type="password"] {
+      width: 100%; padding: 14px 16px 14px 46px;
+      background: #F5EFE6; border: 1.5px solid transparent;
+      border-radius: 14px; color: #1a1a1a;
       font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; outline: none;
-      transition: all 0.2s ease; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+      transition: all 0.22s ease;
     }
-    .input-field:focus { border-color: #d97706; background: #ffffff; box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15); }
+    input[type="password"]:focus { background: #fff; border-color: #c17d17; box-shadow: 0 0 0 4px rgba(193, 125, 23, 0.14); }
+    input[type="password"]::placeholder { color: #b8956a; }
+
     .submit-btn {
-      width: 100%; padding: 15px;
-      background: linear-gradient(135deg, #3a2204, #1a0f02);
-      border: none; border-radius: 14px;
+      width: 100%; padding: 16px;
+      background: #2D1D05; border: none; border-radius: 14px;
       color: #FFFDFB; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700;
       cursor: pointer; position: relative; overflow: hidden;
-      transition: all 0.25s ease; box-shadow: 0 6px 20px rgba(45, 29, 5, 0.25); margin-top: 8px;
+      transition: all 0.22s ease; box-shadow: 0 8px 24px rgba(45, 29, 5, 0.22);
+      margin-top: 4px; letter-spacing: 0.01em;
     }
     .submit-btn::before {
-      content: ""; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-      animation: shine 3.5s infinite;
+      content: ''; position: absolute; top: 0; left: -120%; width: 70%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+      animation: shimmer 3.5s infinite;
     }
-    @keyframes shine { 0% { left: -100%; } 30%, 100% { left: 120%; } }
-    .submit-btn:hover { background: linear-gradient(135deg, #4d2d05, #261603); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(45, 29, 5, 0.35); }
+    @keyframes shimmer { 0% { left: -120%; } 40%, 100% { left: 130%; } }
+    .btn-inner { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-arrow { display: inline-flex; transition: transform 0.22s ease; }
+    .submit-btn:hover .btn-arrow { transform: translateX(4px); }
+    .submit-btn:hover { background: #422A08; transform: translateY(-2px); box-shadow: 0 14px 32px rgba(45, 29, 5, 0.3); }
     .submit-btn:active { transform: translateY(0); }
-    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
-    .error-msg { display: none; color: #b91c1c; font-size: 0.88rem; font-weight: 600; margin-top: 16px;
-      padding: 12px 16px; background: rgba(254, 226, 226, 0.9); border: 1px solid #fca5a5; border-radius: 12px; line-height: 1.4; }
-    .error-msg.show { display: block; }
+    .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .error-msg { display: none; align-items: center; gap: 10px; color: #b91c1c; font-size: 0.88rem; font-weight: 600; margin-top: 16px; padding: 13px 16px; background: rgba(254, 226, 226, 0.9); border: 1px solid #fca5a5; border-radius: 12px; line-height: 1.4; }
+    .error-msg.show { display: flex; }
+
+    .trust-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 24px; padding-top: 22px; border-top: 1px solid rgba(90, 57, 12, 0.07); }
+    .trust-item { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: #b08d66; font-weight: 600; }
+    .trust-item svg { color: #c17d17; }
+
+    @media (max-width: 860px) {
+      body.login-mode { flex-direction: column; overflow: auto; }
+      .left-panel { min-height: auto; padding: 40px 28px; flex: none; }
+      .right-panel { width: 100%; min-height: auto; padding: 36px 28px 48px; }
+    }
 
     /* ── Dashboard ────────────────────── */
     #dashboard { display: none; }
+
+    html { background: #f6bb69; }
+    body.dash-mode { min-height: 100vh; background: #f6bb69; position: relative; overflow-x: hidden; display: block; }
+
+    body.dash-mode::before {
+      content: ""; position: fixed; top: 50%; left: 50%;
+      width: 45vw; height: 45vw; max-width: 550px; max-height: 550px;
+      background-image: url('../images/favicon.jpg'); background-size: contain;
+      background-repeat: no-repeat; background-position: center; border-radius: 50%;
+      transform: translate(-50%, -50%); opacity: 0.1; pointer-events: none; z-index: -1; mix-blend-mode: multiply;
+    }
 
     header {
       position: sticky; top: 0; z-index: 100;
@@ -140,126 +233,164 @@
       display: flex; align-items: center; justify-content: space-between;
     }
     .header-left { display: flex; align-items: center; gap: 12px; }
-    .logout-btn {
-      background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(90, 57, 12, 0.2); border-radius: 20px;
-      padding: 6px 16px; color: #5A390C; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
-      cursor: pointer; transition: all 0.2s ease;
-    }
+    .logo-dash { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: #000; display: flex; align-items: center; gap: 10px; }
+    .logo-dash span { color: #e02020; }
+    .admin-badge { display: inline-block; background: rgba(224, 32, 32, 0.1); color: #dc2626; border: 1px solid rgba(224, 32, 32, 0.22); border-radius: 20px; padding: 3px 10px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-left: 6px; vertical-align: middle; }
+    .logout-btn { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(90, 57, 12, 0.2); border-radius: 20px; padding: 6px 16px; color: #5A390C; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
     .logout-btn:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
 
     main { max-width: 950px; margin: 0 auto; padding: 36px 24px; }
-
     .page-header { margin-bottom: 28px; }
     .page-header h2 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: #2D1D05; margin-bottom: 4px; }
     .page-header p { color: #6B4219; font-size: 0.92rem; font-weight: 500; }
 
-    /* Tabs */
-    .tabs { display: flex; gap: 6px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(90, 57, 12, 0.15);
-      border-radius: 14px; padding: 5px; margin-bottom: 24px; width: fit-content; }
-    .tab-btn {
-      padding: 9px 20px; border: none; border-radius: 10px; cursor: pointer;
-      font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700; color: #6B4219;
-      background: none; transition: all 0.2s ease;
-    }
+    .tabs { display: flex; gap: 6px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(90, 57, 12, 0.15); border-radius: 14px; padding: 5px; margin-bottom: 24px; width: fit-content; }
+    .tab-btn { padding: 9px 20px; border: none; border-radius: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700; color: #6B4219; background: none; transition: all 0.2s ease; }
     .tab-btn.active { background: #5A390C; color: #FFFDFB; box-shadow: 0 4px 12px rgba(90, 57, 12, 0.25); }
 
-    /* Cards */
-    .pending-card {
-      display: flex; gap: 16px; align-items: flex-start;
-      background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 18px; padding: 20px; margin-bottom: 16px;
-      box-shadow: 0 6px 20px rgba(90, 57, 12, 0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      animation: fadeIn 0.3s ease;
-    }
+    .pending-card { display: flex; gap: 16px; align-items: flex-start; background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 18px; padding: 20px; margin-bottom: 16px; box-shadow: 0 6px 20px rgba(90, 57, 12, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease; animation: fadeIn 0.3s ease; }
     .pending-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(90, 57, 12, 0.14); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .pending-card.approved { border-color: #86efac; background: rgba(255, 255, 255, 0.92); }
     .pending-card.rejected { opacity: 0.6; }
 
-    .card-thumb {
-      width: 96px; height: 96px; border-radius: 14px; object-fit: cover;
-      background: #f8f3ed; border: 1px solid rgba(90, 57, 12, 0.15); flex-shrink: 0;
-    }
-    .card-thumb-ph {
-      width: 96px; height: 96px; border-radius: 14px;
-      background: #f8f3ed; border: 1px solid rgba(90, 57, 12, 0.15);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; color: #6B4219;
-    }
+    .card-thumb { width: 96px; height: 96px; border-radius: 14px; object-fit: cover; background: #f8f3ed; border: 1px solid rgba(90, 57, 12, 0.15); flex-shrink: 0; }
+    .card-thumb-ph { width: 96px; height: 96px; border-radius: 14px; background: #f8f3ed; border: 1px solid rgba(90, 57, 12, 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #6B4219; }
     .card-body { flex: 1; min-width: 0; }
     .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
     .card-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 800; color: #2D1D05; }
-    .card-club {
-      background: rgba(90, 57, 12, 0.12); color: #5A390C;
-      border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 800;
-      text-transform: uppercase;
-    }
-    .card-tag {
-      background: rgba(255, 255, 255, 0.8); color: #6B4219; border: 1px solid rgba(90, 57, 12, 0.15);
-      border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600;
-    }
+    .card-club { background: rgba(90, 57, 12, 0.12); color: #5A390C; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; }
+    .card-tag { background: rgba(255, 255, 255, 0.8); color: #6B4219; border: 1px solid rgba(90, 57, 12, 0.15); border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; }
     .card-meta { font-size: 0.8rem; color: #6B4219; margin-bottom: 6px; }
     .card-desc { font-size: 0.85rem; color: #422A08; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; line-height: 1.4; }
 
     .card-actions { display: flex; gap: 10px; }
-    .approve-btn, .reject-btn {
-      padding: 8px 18px; border: none; border-radius: 10px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700;
-      cursor: pointer; transition: all 0.2s ease;
-    }
+    .approve-btn, .reject-btn { padding: 8px 18px; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
     .approve-btn { background: #166534; color: #fff; box-shadow: 0 2px 8px rgba(22, 101, 52, 0.25); }
     .approve-btn:hover { background: #15803d; transform: translateY(-1px); }
     .reject-btn  { background: #dc2626; color: #fff; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25); }
     .reject-btn:hover { background: #b91c1c; transform: translateY(-1px); }
     .approve-btn:disabled, .reject-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
-    }
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
     .status-pill.approved { background: rgba(220, 252, 231, 0.9); color: #166534; border: 1px solid #86efac; }
     .status-pill.rejected { background: rgba(254, 226, 226, 0.9); color: #991b1b; border: 1px solid #fca5a5; }
 
     .empty-state { text-align: center; padding: 60px 24px; color: #6B4219; font-weight: 500; }
     .empty-state svg { width: 48px; height: 48px; margin: 0 auto 12px; display: block; opacity: 0.4; color: #5A390C; }
     .empty-state p  { font-size: 0.95rem; }
-
     .loading { text-align: center; padding: 48px; color: #6B4219; font-size: 0.9rem; font-weight: 500; }
-
-    .count-badge {
-      background: #e02020; color: #fff;
-      border-radius: 20px; padding: 2px 8px; font-size: 0.72rem; font-weight: 800;
-      margin-left: 6px;
-    }
+    .count-badge { background: #e02020; color: #fff; border-radius: 20px; padding: 2px 8px; font-size: 0.72rem; font-weight: 800; margin-left: 6px; }
   </style>
-
-  <link rel="icon" href="../images/favicon.jpg" type="image/jpeg">
 </head>
-<body>
+<body class="login-mode">
 
   <!-- ── Login Screen ─────────────────────────────────── -->
-  <div id="loginScreen">
-    <div class="login-card-wrapper">
-      <div class="login-card">
-        <div class="logo-container">
-          <div class="brand-logo">
-            <img src="../images/favicon.jpg" alt="Logo">
-            <div class="brand-text">CAMBRIDGE<span>CLUBS</span></div>
+  <div id="loginScreen" style="display:contents">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+
+      <div class="logo-ring">
+        <img src="../images/favicon.jpg" alt="CCWS Logo" />
+      </div>
+
+      <p class="left-eyebrow">Cambridge School, Srinivaspuri</p>
+
+      <h2 class="left-title">
+        Admin
+        <span class="accent">Control Centre</span>
+      </h2>
+
+      <p class="left-subtitle">
+        Review, approve or reject club activity submissions before they go live on the school website.
+      </p>
+
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-text">
+            <strong>Review Submissions</strong>
+            <span>See all pending uploads from every club</span>
           </div>
-          <span class="admin-badge">Admin</span>
         </div>
+        <div class="feature">
+          <div class="feature-icon">✅</div>
+          <div class="feature-text">
+            <strong>Approve or Reject</strong>
+            <span>Full control over what appears publicly</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🗑️</div>
+          <div class="feature-text">
+            <strong>Manage Deletions</strong>
+            <span>Approve teacher removal requests safely</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-footer">CCWS Cambridge School · Admin Portal</div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <a href="../index.html" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to CambridgeClubs
+      </a>
+
+      <div class="form-wrap">
+        <p class="form-eyebrow">Admin Portal <span class="admin-badge-inline">Restricted</span></p>
         <h1>Admin Login</h1>
-        <p class="subtitle">Review and manage activity submissions across all school clubs.</p>
+        <p class="subtitle">Access the control panel to review and manage all club activity submissions.</p>
+
         <form id="loginForm">
           <div class="form-group">
-            <label for="adminPassword">Admin Password</label>
-            <input type="password" id="adminPassword" class="input-field" placeholder="Enter admin password" required autocomplete="current-password" />
+            <label for="adminPassword">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Admin Password
+            </label>
+            <div class="field-wrap">
+              <span class="field-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input type="password" id="adminPassword" placeholder="Enter admin password" required autocomplete="current-password" />
+            </div>
           </div>
-          <button type="submit" class="submit-btn" id="loginBtn">Sign in →</button>
-          <div class="error-msg" id="loginError"></div>
+
+          <button type="submit" class="submit-btn" id="loginBtn">
+            <span class="btn-inner">
+              Sign in
+              <span class="btn-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </span>
+          </button>
+
+          <div class="error-msg" id="loginError">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="loginErrorText"></span>
+          </div>
         </form>
+
+        <div class="trust-row">
+          <div class="trust-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Protected access
+          </div>
+          <div class="trust-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Admins only
+          </div>
+          <div class="trust-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Live dashboard
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -268,9 +399,9 @@
   <div id="dashboard">
     <header>
       <div class="header-left">
-        <div class="logo" style="margin:0">
+        <div class="logo-dash">
           <img src="../images/favicon.jpg" alt="Logo" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
-          CAMBRIDGE<span>CLUBS</span> <span class="admin-badge">Admin</span>
+          CAMBRIDGE<span>CLUBS</span><span class="admin-badge">Admin</span>
         </div>
       </div>
       <button class="logout-btn" id="logoutBtn">Sign out</button>
@@ -308,6 +439,8 @@
     function showDashboard() {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
+      document.body.classList.remove('login-mode');
+      document.body.classList.add('dash-mode');
       loadAll();
     }
 
@@ -315,9 +448,13 @@
     document.getElementById('loginForm').addEventListener('submit', async e => {
       e.preventDefault();
       const btn = document.getElementById('loginBtn');
-      const err = document.getElementById('loginError');
-      btn.disabled = true; btn.textContent = 'Signing in…';
-      err.classList.remove('show');
+      const errBox  = document.getElementById('loginError');
+      const errText = document.getElementById('loginErrorText');
+      btn.disabled = true;
+      btn.querySelector('.btn-inner').innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 0.7s linear infinite"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.05-4.76"/></svg>
+        Signing in…`;
+      errBox.classList.remove('show');
 
       try {
         const res  = await fetch(`${API}/api/admin/login`, {
@@ -331,9 +468,10 @@
         localStorage.setItem('cc_admin_token', token);
         showDashboard();
       } catch (ex) {
-        err.textContent = ex.message;
-        err.classList.add('show');
-        btn.disabled = false; btn.textContent = 'Sign in →';
+        errText.textContent = ex.message;
+        errBox.classList.add('show');
+        btn.disabled = false;
+        btn.querySelector('.btn-inner').innerHTML = `Sign in <span class="btn-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>`;
       }
     });
 
@@ -342,7 +480,9 @@
       localStorage.removeItem('cc_admin_token');
       token = null;
       document.getElementById('dashboard').style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('loginScreen').style.display = 'contents';
+      document.body.classList.remove('dash-mode');
+      document.body.classList.add('login-mode');
     });
 
     // ── Tabs ──────────────────────────────────────────────
@@ -556,6 +696,12 @@
     }
 
     init();
+  </script>
+  <script>
+    // Spin keyframe for login loader
+    const _s = document.createElement('style');
+    _s.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+    document.head.appendChild(_s);
   </script>
   <script src="../nav-previews.js"></script>
 </body>
