@@ -312,7 +312,7 @@
         const pending = await pendingRes.json();
 
         // Also fetch approved for each club to build full list
-        const clubs = ['teded','cybersonic','robotics','cookery','quizzarders','finance','Theatre','eco','Technocrates'];
+        const clubs = ['teded','cybersonic','robotics','cookery','quizzarders','finance','Theatre','eco','Technocrates','debate','literary'];
         const approvedAll = (await Promise.all(
           clubs.map(c => fetch(`${API}/api/activities/${c}`).then(r => r.json()))
         )).flat();
@@ -368,9 +368,12 @@
             ${a._status === 'pending' ? `
               <div class="card-actions">
                 <button class="approve-btn" id="approve-${a.id}" onclick="doApprove('${a.id}')">✓ Approve</button>
-                <button class="reject-btn"  id="reject-${a.id}"  onclick="doReject('${a.id}')">✕ Reject</button>
+                <button class="reject-btn"  id="reject-${a.id}"  onclick="doReject('${a.id}', false)">✕ Reject</button>
               </div>` : `
-              <div><span class="status-pill approved">✓ Approved${a.approvedAt ? '  ' + new Date(a.approvedAt).toLocaleDateString() : ''}</span></div>`
+              <div class="card-actions" style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <span class="status-pill approved">✓ Approved${a.approvedAt ? '  ' + new Date(a.approvedAt).toLocaleDateString() : ''}</span>
+                <button class="reject-btn" id="reject-${a.id}" onclick="doReject('${a.id}', true)" style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:6px 12px; font-size:12px; font-weight:600;">🗑 Remove Activity</button>
+              </div>`
             }
           </div>
         </div>`).join('');
@@ -380,8 +383,9 @@
     async function doApprove(id) {
       const appBtn = document.getElementById(`approve-${id}`);
       const rejBtn = document.getElementById(`reject-${id}`);
-      appBtn.disabled = rejBtn.disabled = true;
-      appBtn.textContent = 'Approving…';
+      if (appBtn) appBtn.disabled = true;
+      if (rejBtn) rejBtn.disabled = true;
+      if (appBtn) appBtn.textContent = 'Approving…';
       try {
         const act = allActivities.find(a => a.id === id);
         const res = await fetch(`${API}/api/admin/approve/${id}`, {
@@ -403,18 +407,22 @@
         renderList();
       } catch (ex) {
         alert('Approve failed: ' + ex.message);
-        appBtn.disabled = rejBtn.disabled = false;
-        appBtn.textContent = '✓ Approve';
+        if (appBtn) appBtn.disabled = false;
+        if (rejBtn) rejBtn.disabled = false;
+        if (appBtn) appBtn.textContent = '✓ Approve';
       }
     }
 
-    // ── Reject ────────────────────────────────────────────
-    async function doReject(id) {
-      if (!confirm('Reject and permanently delete this upload?')) return;
+    // ── Reject / Remove ────────────────────────────────────
+    async function doReject(id, isApproved = false) {
+      const msg = isApproved 
+        ? 'Remove this approved activity from the website?' 
+        : 'Reject and permanently delete this upload?';
+      if (!confirm(msg)) return;
       const appBtn = document.getElementById(`approve-${id}`);
       const rejBtn = document.getElementById(`reject-${id}`);
-      appBtn.disabled = rejBtn.disabled = true;
-      rejBtn.textContent = 'Rejecting…';
+      if (appBtn) appBtn.disabled = true;
+      if (rejBtn) { rejBtn.disabled = true; rejBtn.textContent = 'Removing…'; }
       try {
         const res = await fetch(`${API}/api/admin/reject/${id}`, {
           method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
@@ -427,9 +435,9 @@
         else               { badge.style.display = 'none'; }
         renderList();
       } catch (ex) {
-        alert('Reject failed: ' + ex.message);
-        appBtn.disabled = rejBtn.disabled = false;
-        rejBtn.textContent = '✕ Reject';
+        alert('Action failed: ' + ex.message);
+        if (appBtn) appBtn.disabled = false;
+        if (rejBtn) { rejBtn.disabled = false; rejBtn.textContent = isApproved ? '🗑 Remove Activity' : '✕ Reject'; }
       }
     }
 

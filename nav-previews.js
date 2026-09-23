@@ -49,6 +49,11 @@
       tag: 'Speaking',
       img: 'images/debate.png',
       desc: 'Mindset for debating, structuring arguments, and presenting facts.'
+    },
+    'Literary': {
+      tag: 'Arts',
+      img: 'images/literary.jpg',
+      desc: 'Book circles, chapter reviews, and thoughtful group discussions on classic and world literature.'
     }
   };
 
@@ -73,9 +78,10 @@
   let hideTimeout;
 
   // Detect if we are in a subfolder (club page)
-  // All club pages are in a sub-directory, index is at root
-  const pathPrefix = (window.location.pathname.split('/').filter(p => p).length > 1 || 
+  const pathDepth = window.location.pathname.split('/').filter(Boolean).length;
+  const pathPrefix = (pathDepth > 1 || 
                      window.location.pathname.includes('/debate/') || 
+                     window.location.pathname.includes('/literary/') || 
                      window.location.pathname.includes('/robotics/') ||
                      window.location.pathname.includes('/cookery/')) ? '../' : '';
   
