@@ -617,9 +617,13 @@
 
       list.innerHTML = items.map(a => {
         const isApproved = a.approved || a._status === 'approved';
-        const statusBadge = isApproved
+        let statusBadge = isApproved
           ? '<span style="background:rgba(74,222,128,0.15);color:var(--success);border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:600;">✓ Approved</span>'
           : '<span style="background:rgba(251,191,36,0.15);color:var(--warning,#fbbf24);border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:600;">⏳ Pending Approval</span>';
+
+        if (a.deleteRequested) {
+          statusBadge = '<span style="background:rgba(239,68,68,0.15);color:#ef4444;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:600;">⏳ Removal Requested (Pending Admin)</span>';
+        }
 
         return `
           <div class="activity-item" id="item-${a.id}">
@@ -637,7 +641,7 @@
               </div>
               <div class="activity-desc">${a.desc || ''}</div>
             </div>
-            <button class="delete-btn" onclick="deleteActivity('${a.id}')" title="Delete activity">
+            <button class="delete-btn" onclick="deleteActivity('${a.id}')" title="${a.deleteRequested ? 'Removal Request Pending Admin Approval' : 'Request Activity Removal'}" ${a.deleteRequested ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
             </button>
           </div>
@@ -689,19 +693,19 @@
       }
     });
 
-    // ── Delete ────────────────────────────────────────────────────────
+    // ── Delete (Submit Deletion Request for Admin Approval) ──────────────
     async function deleteActivity(id) {
-      if (!confirm('Delete this activity? This cannot be undone.')) return;
+      if (!confirm('Submit a removal request for this activity? The admin must approve before it is removed from the website.')) return;
       try {
         const res = await fetch(`${API}/api/activities/${clubId}/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) { const d = await res.json(); throw new Error(d.error); }
-        document.getElementById(`item-${id}`)?.remove();
+        alert('Removal request submitted! The admin will review and approve your request.');
         loadActivities();
       } catch (ex) {
-        alert('Delete failed: ' + ex.message);
+        alert('Request failed: ' + ex.message);
       }
     }
 

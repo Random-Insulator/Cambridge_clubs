@@ -154,9 +154,11 @@ const Activity = mongoose.models.Activity || mongoose.model("Activity", new mong
   tag: String,
   desc: String,
   approved: Boolean,
+  deleteRequested: Boolean,
+  deleteRequestedAt: String,
   uploadedAt: String,
   approvedAt: String
-}));
+}, { strict: false }));
 
 // ─── Auth Middleware ──────────────────────────────────────────────────────────
 function requireAuth(req, res, next) {
@@ -251,14 +253,14 @@ app.get("/api/admin/pending", requireAdmin, async (_req, res) => {
   try {
     await connectDB();
     if (mongoose.connection.readyState === 1) {
-      dbPending = await Activity.find({ approved: false }).sort({ _id: -1 });
+      dbPending = await Activity.find({ $or: [{ approved: false }, { deleteRequested: true }] }).sort({ _id: -1 });
     }
   } catch (err) {
     console.warn("Failed to fetch pending from DB:", err.message);
   }
 
   const dbIds = new Set(dbPending.map(p => p.id));
-  const memPending = STORE.filter(a => !a.approved && !dbIds.has(a.id));
+  const memPending = STORE.filter(a => (!a.approved || a.deleteRequested) && !dbIds.has(a.id));
   const allPending = [
     ...dbPending.map(p => p.toObject ? p.toObject() : p),
     ...memPending
@@ -346,6 +348,31 @@ app.delete("/api/admin/reject/:id", requireAdmin, async (req, res) => {
   }
 
   res.json({ message: "Rejected and deleted", id });
+});
+
+// POST /api/admin/cancel-delete/:id
+app.post("/api/admin/cancel-delete/:id", requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  STORE = getPersistedActivities();
+
+  let memItem = STORE.find(a => a.id === id);
+  if (memItem) {
+    memItem.deleteRequested = false;
+    delete memItem.deleteRequestedAt;
+    savePersistedActivities(STORE);
+    invalidateCache(memItem.clubId);
+  }
+
+  try {
+    await connectDB();
+    if (mongoose.connection.readyState === 1) {
+      await Activity.findOneAndUpdate({ id }, { $set: { deleteRequested: false }, $unset: { deleteRequestedAt: 1 } });
+    }
+  } catch (err) {
+    console.warn("DB cancel delete error:", err.message);
+  }
+
+  res.json({ message: "Deletion request rejected, activity preserved", id });
 });
 
 // POST /api/auth/login
@@ -614,34 +641,40 @@ app.post("/api/upload/:clubId", requireAuth, (req, res, next) => {
   });
 });
 
-// DELETE /api/activities/:clubId/:id — protected
+// DELETE /api/activities/:clubId/:id — protected (Submits deletion request for admin approval)
 app.delete("/api/activities/:clubId/:id", requireAuth, async (req, res) => {
   const { clubId, id } = req.params;
   if (req.mentor.clubId.toLowerCase() !== clubId.toLowerCase()) {
     return res.status(403).json({ error: "You can only delete activities from your own club" });
   }
 
-  const idx = STORE.findIndex(a => a.id === id);
-  let removedMem = null;
-  if (idx !== -1) {
-    removedMem = STORE.splice(idx, 1)[0];
+  STORE = getPersistedActivities();
+  const memItem = STORE.find(a => a.id === id);
+  if (memItem) {
+    memItem.deleteRequested = true;
+    memItem.deleteRequestedAt = new Date().toISOString();
+    savePersistedActivities(STORE);
     invalidateCache(clubId.toLowerCase());
   }
 
-  let removedDb = null;
   try {
     await connectDB();
     if (mongoose.connection.readyState === 1) {
-      removedDb = await Activity.findOneAndDelete({ id, clubId });
-      if (removedDb) invalidateCache(clubId.toLowerCase());
+      await Activity.findOneAndUpdate({ id }, { 
+        $set: { 
+          deleteRequested: true, 
+          deleteRequestedAt: new Date().toISOString() 
+        } 
+      });
+      invalidateCache(clubId.toLowerCase());
     }
   } catch (dbErr) {
-    console.warn("DB delete warning:", dbErr.message);
+    console.warn("DB delete request warning:", dbErr.message);
   }
 
-  if (!removedMem && !removedDb) return res.status(404).json({ error: "Activity not found" });
+  if (!memItem) return res.status(404).json({ error: "Activity not found" });
 
-  res.json({ message: "Activity deleted", id });
+  res.json({ message: "Deletion request submitted. Pending admin approval.", deleteRequested: true, id });
 });
 
 // ─── 404 Fallback ──────────────────────────────────────────────────────────────
