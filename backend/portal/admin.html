@@ -109,7 +109,7 @@
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-    .feature-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(224, 32, 32, 0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem; }
+    .feature-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(224, 32, 32, 0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .feature-text strong { display: block; font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.88); margin-bottom: 2px; }
     .feature-text span { font-size: 0.76rem; color: rgba(255,255,255,0.4); line-height: 1.4; }
     .left-footer { position: absolute; bottom: 24px; left: 0; right: 0; text-align: center; font-size: 0.68rem; color: rgba(255,255,255,0.18); letter-spacing: 0.06em; }
@@ -207,8 +207,26 @@
 
     @media (max-width: 860px) {
       body.login-mode { flex-direction: column; overflow: auto; }
-      .left-panel { min-height: auto; padding: 40px 28px; flex: none; }
-      .right-panel { width: 100%; min-height: auto; padding: 36px 28px 48px; }
+      .left-panel { min-height: auto; padding: 36px 24px 32px; flex: none; }
+      .logo-ring { width: 100px; height: 100px; margin-bottom: 20px; }
+      .logo-ring img { width: 66px; height: 66px; }
+      .left-title { font-size: 1.7rem; }
+      .left-subtitle { display: none; }
+      .right-panel { width: 100%; min-height: auto; padding: 32px 24px 44px; }
+      .back-link { margin-bottom: 28px; }
+      h1 { font-size: 1.7rem; }
+      .features { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+      .feature { flex: 1 1 calc(50% - 5px); padding: 12px 14px; }
+      .left-footer { position: static; margin-top: 24px; }
+    }
+
+    @media (max-width: 480px) {
+      .left-panel { padding: 28px 20px 24px; }
+      .features { display: none; }
+      .right-panel { padding: 28px 20px 40px; }
+      .trust-row { gap: 12px; flex-wrap: wrap; }
+      h1 { font-size: 1.55rem; }
+      .submit-btn { padding: 14px; }
     }
 
     /* ── Dashboard ────────────────────── */
@@ -298,7 +316,7 @@
         <img src="../images/favicon.jpg" alt="CCWS Logo" />
       </div>
 
-      <p class="left-eyebrow">Cambridge School, Srinivaspuri</p>
+      <p class="left-eyebrow">Cambridge Court World School</p>
 
       <h2 class="left-title">
         Admin
@@ -306,34 +324,40 @@
       </h2>
 
       <p class="left-subtitle">
-        Review, approve or reject club activity submissions before they go live on the school website.
+        Review and approve club submissions before they appear on the website.
       </p>
 
       <div class="features">
         <div class="feature">
-          <div class="feature-icon">🔍</div>
+          <div class="feature-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
           <div class="feature-text">
             <strong>Review Submissions</strong>
-            <span>See all pending uploads from every club</span>
+            <span>See all pending club uploads</span>
           </div>
         </div>
         <div class="feature">
-          <div class="feature-icon">✅</div>
+          <div class="feature-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
           <div class="feature-text">
             <strong>Approve or Reject</strong>
-            <span>Full control over what appears publicly</span>
+            <span>Control what appears publicly</span>
           </div>
         </div>
         <div class="feature">
-          <div class="feature-icon">🗑️</div>
+          <div class="feature-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          </div>
           <div class="feature-text">
             <strong>Manage Deletions</strong>
-            <span>Approve teacher removal requests safely</span>
+            <span>Approve teacher removal requests</span>
           </div>
         </div>
       </div>
 
-      <div class="left-footer">CCWS Cambridge School · Admin Portal</div>
+      <div class="left-footer">Cambridge Court World School · Admin Portal</div>
     </div>
 
     <!-- RIGHT PANEL -->
