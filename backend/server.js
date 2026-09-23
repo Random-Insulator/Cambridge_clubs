@@ -64,7 +64,7 @@ cloudinary.config({
 
 // ─── Config & Data Files ──────────────────────────────────────────────────────
 const PORT         = process.env.PORT || 3001;
-const JWT_SECRET   = "cambridge_clubs_secret_2026";
+const JWT_SECRET   = process.env.JWT_SECRET || "cambridge_clubs_secret_fallback_dev";
 const DATA_DIR     = path.join(__dirname, "data");
 const UPLOAD_DIR   = path.join(__dirname, "uploads");
 const MENTORS      = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "mentors.json"), "utf8"));
