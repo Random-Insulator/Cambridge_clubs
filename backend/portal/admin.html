@@ -3,40 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — CambridgeClubs</title>
+  <title>Admin Portal — CambridgeClubs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #0a0b10;
-      --surface: #13151f;
-      --surface2: #1c1f30;
-      --border: rgba(255,255,255,0.08);
-      --accent: #7c6ef7;
-      --accent2: #a78bfa;
-      --text: #e8e8f0;
-      --muted: #7a7a9a;
-      --error: #f87171;
-      --success: #4ade80;
-      --warning: #fbbf24;
-      --radius: 14px;
+    html {
+      background: #f6bb69;
     }
 
     body {
       min-height: 100vh;
-      background: var(--bg);
-      font-family: 'Inter', sans-serif;
-      color: var(--text);
+      background: #f6bb69;
+      font-family: 'DM Sans', sans-serif;
+      color: #1a1a1a;
+      position: relative;
+      overflow-x: hidden;
     }
+
+    /* Watermark logo background aligned with main website */
     body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 10% 20%, rgba(124,110,247,0.1) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 90% 80%, rgba(251,191,36,0.06) 0%, transparent 60%);
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 45vw;
+      height: 45vw;
+      max-width: 550px;
+      max-height: 550px;
+      background-image: url('../images/favicon.jpg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.12;
       pointer-events: none;
+      z-index: -1;
+      mix-blend-mode: multiply;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.45) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: -2;
     }
 
     /* ── Login Screen ─────────────────── */
@@ -45,47 +59,72 @@
       display: flex; align-items: center; justify-content: center; padding: 24px;
     }
     .login-card {
-      width: 100%; max-width: 380px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; padding: 40px 36px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-      animation: slideUp 0.4s ease;
+      width: 100%; max-width: 440px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 24px; padding: 44px 38px;
+      box-shadow: 0 16px 50px rgba(90, 57, 12, 0.18);
+      animation: slideUp 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     }
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .logo { font-size: 1.1rem; font-weight: 700; margin-bottom: 24px; }
-    .logo span { color: var(--accent2); }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem; font-weight: 800;
+      letter-spacing: -0.4px; margin-bottom: 24px; color: #1a1a1a;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo span { color: #e02020; }
+    .logo .cool-clubs {
+      font-family: 'Caveat', cursive;
+      font-size: 1.4em;
+      background: linear-gradient(135deg, #e02020, #ff8a00);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      padding-left: 2px;
+    }
     .admin-badge {
-      display: inline-block; background: rgba(251,191,36,0.15);
-      color: var(--warning); border: 1px solid rgba(251,191,36,0.3);
+      display: inline-block; background: rgba(224, 32, 32, 0.12);
+      color: #dc2626; border: 1px solid rgba(224, 32, 32, 0.25);
       border-radius: 20px; padding: 3px 10px; font-size: 0.72rem;
-      font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-      margin-left: 8px; vertical-align: middle;
+      font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+      margin-left: 6px; vertical-align: middle;
     }
-    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
-    .subtitle { color: var(--muted); font-size: 0.88rem; margin-bottom: 28px; }
-    label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+    h1 { font-family: 'Syne', sans-serif; font-size: 1.75rem; font-weight: 800; color: #2D1D05; margin-bottom: 6px; }
+    .subtitle { color: #6B4219; font-size: 0.92rem; margin-bottom: 28px; line-height: 1.5; }
+    label { display: block; font-size: 0.78rem; font-weight: 700; color: #5A390C; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 7px; }
     input[type="password"] {
-      width: 100%; padding: 12px 14px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--radius); color: var(--text);
-      font-family: inherit; font-size: 0.95rem; outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 16px;
+      width: 100%; padding: 13px 16px;
+      background: rgba(248, 243, 237, 0.95); border: 1px solid rgba(90, 57, 12, 0.18);
+      border-radius: 12px; color: #2D1D05;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 20px;
     }
-    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,110,247,0.2); }
+    input:focus { border-color: #5A390C; box-shadow: 0 0 0 3px rgba(193, 125, 23, 0.25); }
     .submit-btn {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg, #f59e0b, #f97316);
-      border: none; border-radius: var(--radius);
-      color: #fff; font-family: inherit; font-size: 0.95rem; font-weight: 600;
-      cursor: pointer; transition: opacity 0.2s;
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #5A390C, #2D1D05);
+      border: none; border-radius: 12px;
+      color: #F8F3ED; font-family: 'DM Sans', sans-serif; font-size: 0.98rem; font-weight: 700;
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 18px rgba(45, 29, 5, 0.28); margin-top: 6px;
     }
-    .submit-btn:hover { opacity: 0.88; }
-    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .error-msg { display: none; color: var(--error); font-size: 0.84rem; margin-top: 12px;
-      padding: 10px 14px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); border-radius: 10px; }
+    .submit-btn::before {
+      content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      animation: shine 3s infinite;
+    }
+    @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+    .submit-btn:hover { background: linear-gradient(135deg, #6B4219, #422A08); transform: translateY(-2px) scale(1.01); box-shadow: 0 8px 25px rgba(90, 57, 12, 0.4); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .error-msg { display: none; color: #dc2626; font-size: 0.88rem; font-weight: 600; margin-top: 14px;
+      padding: 11px 14px; background: rgba(254, 226, 226, 0.85); border: 1px solid #fca5a5; border-radius: 10px; }
     .error-msg.show { display: block; }
 
     /* ── Dashboard ────────────────────── */
@@ -93,113 +132,120 @@
 
     header {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(10,11,16,0.85); backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      background: #c17d1771; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       padding: 0 32px; height: 60px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .header-left { display: flex; align-items: center; gap: 12px; }
     .logout-btn {
-      background: none; border: 1px solid var(--border); border-radius: 20px;
-      padding: 6px 14px; color: var(--muted); font-family: inherit; font-size: 0.82rem;
-      cursor: pointer; transition: color 0.2s, border-color 0.2s;
+      background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(90, 57, 12, 0.2); border-radius: 20px;
+      padding: 6px 16px; color: #5A390C; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s ease;
     }
-    .logout-btn:hover { color: var(--error); border-color: var(--error); }
+    .logout-btn:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
 
-    main { max-width: 900px; margin: 0 auto; padding: 36px 24px; }
+    main { max-width: 950px; margin: 0 auto; padding: 36px 24px; }
 
     .page-header { margin-bottom: 28px; }
-    .page-header h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
-    .page-header p { color: var(--muted); font-size: 0.88rem; }
+    .page-header h2 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: #2D1D05; margin-bottom: 4px; }
+    .page-header p { color: #6B4219; font-size: 0.92rem; font-weight: 500; }
 
     /* Tabs */
-    .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 4px; margin-bottom: 24px; width: fit-content; }
+    .tabs { display: flex; gap: 6px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(90, 57, 12, 0.15);
+      border-radius: 14px; padding: 5px; margin-bottom: 24px; width: fit-content; }
     .tab-btn {
-      padding: 8px 18px; border: none; border-radius: 9px; cursor: pointer;
-      font-family: inherit; font-size: 0.85rem; font-weight: 500; color: var(--muted);
-      background: none; transition: all 0.2s;
+      padding: 9px 20px; border: none; border-radius: 10px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700; color: #6B4219;
+      background: none; transition: all 0.2s ease;
     }
-    .tab-btn.active { background: var(--surface2); color: var(--text); }
+    .tab-btn.active { background: #5A390C; color: #FFFDFB; box-shadow: 0 4px 12px rgba(90, 57, 12, 0.25); }
 
     /* Cards */
     .pending-card {
       display: flex; gap: 16px; align-items: flex-start;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; padding: 18px; margin-bottom: 14px;
+      background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 18px; padding: 20px; margin-bottom: 16px;
+      box-shadow: 0 6px 20px rgba(90, 57, 12, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       animation: fadeIn 0.3s ease;
     }
+    .pending-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(90, 57, 12, 0.14); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .pending-card.approved { border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.04); }
-    .pending-card.rejected { opacity: 0.5; }
+    .pending-card.approved { border-color: #86efac; background: rgba(255, 255, 255, 0.92); }
+    .pending-card.rejected { opacity: 0.6; }
 
     .card-thumb {
-      width: 90px; height: 90px; border-radius: 12px; object-fit: cover;
-      background: var(--surface2); border: 1px solid var(--border); flex-shrink: 0;
+      width: 96px; height: 96px; border-radius: 14px; object-fit: cover;
+      background: #f8f3ed; border: 1px solid rgba(90, 57, 12, 0.15); flex-shrink: 0;
     }
     .card-thumb-ph {
-      width: 90px; height: 90px; border-radius: 12px;
-      background: var(--surface2); border: 1px solid var(--border);
+      width: 96px; height: 96px; border-radius: 14px;
+      background: #f8f3ed; border: 1px solid rgba(90, 57, 12, 0.15);
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; color: var(--muted);
+      flex-shrink: 0; color: #6B4219;
     }
     .card-body { flex: 1; min-width: 0; }
     .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
-    .card-title { font-size: 0.95rem; font-weight: 600; }
+    .card-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 800; color: #2D1D05; }
     .card-club {
-      background: rgba(124,110,247,0.15); color: var(--accent2);
-      border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700;
+      background: rgba(90, 57, 12, 0.12); color: #5A390C;
+      border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 800;
       text-transform: uppercase;
     }
     .card-tag {
-      background: var(--surface2); color: var(--muted);
-      border-radius: 6px; padding: 2px 8px; font-size: 0.72rem;
+      background: rgba(255, 255, 255, 0.8); color: #6B4219; border: 1px solid rgba(90, 57, 12, 0.15);
+      border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600;
     }
-    .card-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
-    .card-desc { font-size: 0.83rem; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
+    .card-meta { font-size: 0.8rem; color: #6B4219; margin-bottom: 6px; }
+    .card-desc { font-size: 0.85rem; color: #422A08; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; line-height: 1.4; }
 
-    .card-actions { display: flex; gap: 8px; }
+    .card-actions { display: flex; gap: 10px; }
     .approve-btn, .reject-btn {
-      padding: 7px 16px; border: none; border-radius: 8px;
-      font-family: inherit; font-size: 0.82rem; font-weight: 600;
-      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      padding: 8px 18px; border: none; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s ease;
     }
-    .approve-btn { background: rgba(74,222,128,0.15); color: var(--success); border: 1px solid rgba(74,222,128,0.3); }
-    .approve-btn:hover { background: rgba(74,222,128,0.25); }
-    .reject-btn  { background: rgba(248,113,113,0.12); color: var(--error); border: 1px solid rgba(248,113,113,0.25); }
-    .reject-btn:hover { background: rgba(248,113,113,0.22); }
-    .approve-btn:disabled, .reject-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .approve-btn { background: #166534; color: #fff; box-shadow: 0 2px 8px rgba(22, 101, 52, 0.25); }
+    .approve-btn:hover { background: #15803d; transform: translateY(-1px); }
+    .reject-btn  { background: #dc2626; color: #fff; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25); }
+    .reject-btn:hover { background: #b91c1c; transform: translateY(-1px); }
+    .approve-btn:disabled, .reject-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .status-pill {
       display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+      padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
     }
-    .status-pill.approved { background: rgba(74,222,128,0.15); color: var(--success); }
-    .status-pill.rejected { background: rgba(248,113,113,0.12); color: var(--error); }
+    .status-pill.approved { background: rgba(220, 252, 231, 0.9); color: #166534; border: 1px solid #86efac; }
+    .status-pill.rejected { background: rgba(254, 226, 226, 0.9); color: #991b1b; border: 1px solid #fca5a5; }
 
-    .empty-state { text-align: center; padding: 60px 24px; color: var(--muted); }
-    .empty-state svg { width: 48px; height: 48px; margin: 0 auto 12px; display: block; opacity: 0.3; }
-    .empty-state p  { font-size: 0.9rem; }
+    .empty-state { text-align: center; padding: 60px 24px; color: #6B4219; font-weight: 500; }
+    .empty-state svg { width: 48px; height: 48px; margin: 0 auto 12px; display: block; opacity: 0.4; color: #5A390C; }
+    .empty-state p  { font-size: 0.95rem; }
 
-    .loading { text-align: center; padding: 48px; color: var(--muted); font-size: 0.85rem; }
+    .loading { text-align: center; padding: 48px; color: #6B4219; font-size: 0.9rem; font-weight: 500; }
 
     .count-badge {
-      background: var(--warning); color: #000;
-      border-radius: 20px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700;
+      background: #e02020; color: #fff;
+      border-radius: 20px; padding: 2px 8px; font-size: 0.72rem; font-weight: 800;
       margin-left: 6px;
     }
   </style>
 
-  <link rel="icon" href="../../images/favicon.jpg" type="image/jpeg">
+  <link rel="icon" href="../images/favicon.jpg" type="image/jpeg">
 </head>
 <body>
 
   <!-- ── Login Screen ─────────────────────────────────── -->
   <div id="loginScreen">
     <div class="login-card">
-      <div class="logo">Cambridge<span>Clubs</span> <span class="admin-badge">Admin</span></div>
+      <div class="logo">
+        <img src="../images/favicon.jpg" alt="Logo" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+        CAMBRIDGE<span>CLUBS</span> <span class="admin-badge">Admin</span>
+      </div>
       <h1>Admin Login</h1>
-      <p class="subtitle">Review and approve mentor photo uploads.</p>
+      <p class="subtitle">Review and manage activity submissions across all school clubs.</p>
       <form id="loginForm">
         <label for="adminPassword">Admin Password</label>
         <input type="password" id="adminPassword" placeholder="Enter admin password" required autocomplete="current-password" />
@@ -213,7 +259,10 @@
   <div id="dashboard">
     <header>
       <div class="header-left">
-        <div class="logo" style="margin:0">Cambridge<span>Clubs</span> <span class="admin-badge">Admin</span></div>
+        <div class="logo" style="margin:0">
+          <img src="../images/favicon.jpg" alt="Logo" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+          CAMBRIDGE<span>CLUBS</span> <span class="admin-badge">Admin</span>
+        </div>
       </div>
       <button class="logout-btn" id="logoutBtn">Sign out</button>
     </header>
