@@ -26,7 +26,7 @@
       name: "Robotics",
       formattedName: "Robot<em>ics.</em>",
       category: "Technology",
-      desc: "Build, program, and compete with robots. No experience needed — just curiosity and a willingness to break things.",
+      desc: "Build, program, and compete with robots. No experience needed — just curiosity and a willingness to set new milestones.",
       color: "#3b9cf5",
       bg: "rgba(59,156,245,0.1)",
       border: "rgba(59,156,245,0.2)",
