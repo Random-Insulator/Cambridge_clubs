@@ -209,12 +209,99 @@ const upload = multer({
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
-// POST /api/admin/login
-app.post("/api/admin/login", (req, res) => {
-  const { password } = req.body;
-  if (!password || !bcrypt.compareSync(password, ADMIN_CREDS.passwordHash)) {
-    return res.status(401).json({ error: "Invalid admin password" });
+// ─── Login Rate Limiter & Lockout (Anti-Brute Force Protection) ─────────────
+const _loginAttempts = new Map(); // key: `ip:targetKey` -> { count, resetTime, lockUntil }
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes lockout
+const WINDOW_DURATION_MS  = 15 * 60 * 1000; // 15 minutes sliding window
+
+function checkLoginRateLimit(ip, targetKey) {
+  const now = Date.now();
+  const key = `${ip}:${targetKey}`;
+  const record = _loginAttempts.get(key);
+
+  if (record) {
+    if (record.lockUntil && now < record.lockUntil) {
+      const minutesLeft = Math.ceil((record.lockUntil - now) / 60000);
+      const secondsLeft = Math.ceil((record.lockUntil - now) / 1000);
+      return { isLocked: true, minutesLeft, secondsLeft };
+    }
+    if (now > record.resetTime && (!record.lockUntil || now >= record.lockUntil)) {
+      _loginAttempts.delete(key);
+    }
   }
+  return { isLocked: false };
+}
+
+async function recordFailedLogin(ip, targetKey) {
+  const now = Date.now();
+  const key = `${ip}:${targetKey}`;
+  let record = _loginAttempts.get(key);
+
+  if (!record || (record.resetTime && now > record.resetTime && (!record.lockUntil || now >= record.lockUntil))) {
+    record = { count: 1, resetTime: now + WINDOW_DURATION_MS, lockUntil: 0 };
+  } else {
+    record.count += 1;
+  }
+
+  if (record.count >= MAX_FAILED_ATTEMPTS) {
+    record.lockUntil = now + LOCKOUT_DURATION_MS;
+    console.warn(`🔒 SECURITY LOCKOUT: ${key} locked out until ${new Date(record.lockUntil).toISOString()}`);
+  }
+
+  _loginAttempts.set(key, record);
+
+  // Progressive tarpitting delay to slow down automated brute force (600ms per attempt up to 3s)
+  const delayMs = Math.min(record.count * 600, 3000);
+  await new Promise(resolve => setTimeout(resolve, delayMs));
+
+  return record;
+}
+
+function clearFailedLogins(ip, targetKey) {
+  const key = `${ip}:${targetKey}`;
+  _loginAttempts.delete(key);
+}
+
+// POST /api/admin/login
+app.post("/api/admin/login", async (req, res) => {
+  const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+  const targetKey = 'admin';
+
+  const lockout = checkLoginRateLimit(ip, targetKey);
+  if (lockout.isLocked) {
+    res.setHeader('Retry-After', lockout.secondsLeft);
+    return res.status(429).json({
+      error: `Too many failed login attempts. Admin access temporarily locked. Try again in ${lockout.minutesLeft} minute${lockout.minutesLeft > 1 ? 's' : ''}.`
+    });
+  }
+
+  const { password } = req.body;
+  const dummyHash = "$2a$10$e8wJ6QeP.1k8.ZqQ4oJ3.eXmU8hZ4V5C5E5e5e5e5e5e5e5e5e5e";
+
+  let isValid = false;
+  if (password && typeof password === "string") {
+    isValid = bcrypt.compareSync(password, ADMIN_CREDS.passwordHash);
+  } else {
+    bcrypt.compareSync("dummy", dummyHash);
+  }
+
+  if (!isValid) {
+    const failedRecord = await recordFailedLogin(ip, targetKey);
+    const attemptsLeft = Math.max(0, MAX_FAILED_ATTEMPTS - failedRecord.count);
+    if (failedRecord.count >= MAX_FAILED_ATTEMPTS) {
+      const minutesLeft = Math.ceil(LOCKOUT_DURATION_MS / 60000);
+      res.setHeader('Retry-After', 900);
+      return res.status(429).json({
+        error: `Too many failed login attempts. Account locked out for ${minutesLeft} minutes.`
+      });
+    }
+    return res.status(401).json({
+      error: `Invalid admin password. (${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining before temporary lockout)`
+    });
+  }
+
+  clearFailedLogins(ip, targetKey);
   const token = jwt.sign({ role: "admin", username: ADMIN_CREDS.username }, JWT_SECRET, { expiresIn: "8h" });
   res.json({ token });
 });
@@ -376,15 +463,50 @@ app.post("/api/admin/cancel-delete/:id", requireAdmin, async (req, res) => {
 });
 
 // POST /api/auth/login
-app.post("/api/auth/login", (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
+  const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
   const { clubId, password } = req.body;
   if (!clubId || !password) {
     return res.status(400).json({ error: "clubId and password are required" });
   }
-  const mentor = MENTORS.find(m => m.clubId.toLowerCase() === clubId.toLowerCase());
-  if (!mentor || !bcrypt.compareSync(password, mentor.passwordHash)) {
-    return res.status(401).json({ error: "Invalid club or password" });
+
+  const normalizedClubId = clubId.toLowerCase();
+  const targetKey = `mentor:${normalizedClubId}`;
+
+  const lockout = checkLoginRateLimit(ip, targetKey);
+  if (lockout.isLocked) {
+    res.setHeader('Retry-After', lockout.secondsLeft);
+    return res.status(429).json({
+      error: `Too many failed login attempts. Account temporarily locked. Try again in ${lockout.minutesLeft} minute${lockout.minutesLeft > 1 ? 's' : ''}.`
+    });
   }
+
+  const mentor = MENTORS.find(m => m.clubId.toLowerCase() === normalizedClubId);
+  const dummyHash = "$2a$10$e8wJ6QeP.1k8.ZqQ4oJ3.eXmU8hZ4V5C5E5e5e5e5e5e5e5e5e5e";
+
+  let isValid = false;
+  if (mentor && password && typeof password === "string") {
+    isValid = bcrypt.compareSync(password, mentor.passwordHash);
+  } else {
+    bcrypt.compareSync("dummy", dummyHash);
+  }
+
+  if (!isValid) {
+    const failedRecord = await recordFailedLogin(ip, targetKey);
+    const attemptsLeft = Math.max(0, MAX_FAILED_ATTEMPTS - failedRecord.count);
+    if (failedRecord.count >= MAX_FAILED_ATTEMPTS) {
+      const minutesLeft = Math.ceil(LOCKOUT_DURATION_MS / 60000);
+      res.setHeader('Retry-After', 900);
+      return res.status(429).json({
+        error: `Too many failed login attempts. Account locked out for ${minutesLeft} minutes.`
+      });
+    }
+    return res.status(401).json({
+      error: `Invalid club or password. (${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining before temporary lockout)`
+    });
+  }
+
+  clearFailedLogins(ip, targetKey);
   const token = jwt.sign(
     { clubId: mentor.clubId, mentorName: mentor.mentorName, clubName: mentor.name },
     JWT_SECRET,
