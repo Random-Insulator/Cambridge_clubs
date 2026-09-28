@@ -403,14 +403,15 @@
           <label for="descInput">Description</label>
           <textarea id="descInput" placeholder="Brief description of what happened…"></textarea>
 
-          <label>Photo *</label>
+          <label>Photo or Short Video (Max 25MB) *</label>
           <div class="file-zone" id="fileZone">
-            <input type="file" id="imageInput" name="image" accept="image/*" required />
-            <div class="file-zone-icon">📷</div>
-            <div class="file-zone-text">Click or drag & drop a photo here</div>
+            <input type="file" id="imageInput" name="image" accept="image/*,video/mp4,video/webm,video/quicktime,.mov" required />
+            <div class="file-zone-icon">📷 / 🎥</div>
+            <div class="file-zone-text">Click or drag & drop a photo or short video clip</div>
             <div class="file-zone-name" id="fileName"></div>
           </div>
           <img id="imgPreview" alt="Preview" />
+          <video id="videoPreview" controls playsinline muted style="display:none; width:100%; height:160px; object-fit:cover; border-radius:12px; margin-top:12px; border:1px solid rgba(90,57,12,0.15);"></video>
           <div id="cropBadge" style="display:none;margin-top:8px;font-size:0.78rem;color:var(--accent2);font-weight:600;">✓ Image cropped &amp; ready</div>
 
           <button type="submit" class="submit-btn" id="uploadBtn">Upload Activity</button>
@@ -636,13 +637,31 @@
       }
     });
 
-    /* ── file input change -> open cropper ── */
+    const videoPreview = document.getElementById('videoPreview');
+
+    function isVideoFile(fileOrUrl) {
+      if (!fileOrUrl) return false;
+      if (typeof fileOrUrl === 'string') {
+        return /\.(mp4|webm|mov)(\?.*)?$/i.test(fileOrUrl) || fileOrUrl.includes('/video/upload/');
+      }
+      return fileOrUrl.type && fileOrUrl.type.startsWith('video/');
+    }
+
+    /* ── file input change -> open cropper or video preview ── */
     function handleFile(file) {
       if (!file) return;
       croppedBlob = null;
       cropBadge.style.display = 'none';
       fileName.textContent = file.name;
-      openCropper(file);
+
+      if (isVideoFile(file)) {
+        imgPreview.style.display = 'none';
+        videoPreview.src = URL.createObjectURL(file);
+        videoPreview.style.display = 'block';
+      } else {
+        videoPreview.style.display = 'none';
+        openCropper(file);
+      }
     }
 
     fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
@@ -670,13 +689,13 @@
 
     function renderActivities(items) {
       const list = document.getElementById('actList');
-      document.getElementById('actCount').textContent = items.length + ' photo' + (items.length !== 1 ? 's' : '');
+      document.getElementById('actCount').textContent = items.length + ' post' + (items.length !== 1 ? 's' : '');
 
       if (!items.length) {
         list.innerHTML = `
           <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            No activities yet. Upload your first photo!
+            No activities yet. Upload your first photo or video!
           </div>`;
         return;
       }
@@ -691,10 +710,13 @@
           statusBadge = '<span style="background:rgba(239,68,68,0.15);color:#ef4444;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:600;">⏳ Removal Requested (Pending Admin)</span>';
         }
 
+        const mediaTag = isVideoFile(a.img)
+          ? `<video class="activity-thumb" src="${API}${a.img}" muted loop autoplay playsinline></video>`
+          : `<img class="activity-thumb" src="${API}${a.img}" alt="${a.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`;
+
         return `
           <div class="activity-item" id="item-${a.id}">
-            <img class="activity-thumb" src="${API}${a.img}" alt="${a.title}"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            ${mediaTag}
             <div class="activity-thumb-ph" style="display:none">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             </div>
@@ -728,8 +750,9 @@
       formData.append('tag',   document.getElementById('tagInput').value);
       formData.append('desc',  document.getElementById('descInput').value);
       const imageData = croppedBlob || fileInput.files[0];
-      if (!imageData) { msg.textContent = 'Please select and crop a photo first.'; msg.className = 'status-msg error'; return; }
-      formData.append('image', imageData, 'photo.jpg');
+      if (!imageData) { msg.textContent = 'Please select a photo or short video first.'; msg.className = 'status-msg error'; return; }
+      const uploadFilename = (fileInput.files[0] && fileInput.files[0].name) ? fileInput.files[0].name : 'media_upload.jpg';
+      formData.append('image', imageData, uploadFilename);
 
       btn.disabled = true; btn.textContent = 'Uploading…';
 
@@ -748,6 +771,8 @@
         e.target.reset();
         fileName.textContent = '';
         imgPreview.style.display = 'none';
+        videoPreview.style.display = 'none';
+        videoPreview.src = '';
         cropBadge.style.display = 'none';
         document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
         loadActivities();

@@ -189,21 +189,25 @@ function requireAdmin(req, res, next) {
   }
 }
 
-// ─── Multer Storage ───────────────────────────────────────────────────────────
+// ─── Multer Storage (Images & Short Videos) ──────────────────────────────────
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: (req, file) => `cambridge_clubs/${req.params.clubId}`,
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'mp4', 'webm', 'mov'],
+    resource_type: 'auto'
   }
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB size limit for images and short video clips
   fileFilter(_req, file, cb) {
-    if (file.mimetype.startsWith("image/")) cb(null, true);
-    else cb(new Error("Only image files are allowed"));
+    if (file.mimetype.startsWith("image/") || file.mimetype.startsWith("video/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files and short videos (MP4, WebM, MOV) are allowed"));
+    }
   }
 });
 
@@ -224,13 +228,13 @@ function checkLoginRateLimit(ip, targetKey) {
     if (record.lockUntil && now < record.lockUntil) {
       const minutesLeft = Math.ceil((record.lockUntil - now) / 60000);
       const secondsLeft = Math.ceil((record.lockUntil - now) / 1000);
-      return { isLocked: true, minutesLeft, secondsLeft };
+      return { isLocked: true, minutesLeft, secondsLeft, count: record.count };
     }
     if (now > record.resetTime && (!record.lockUntil || now >= record.lockUntil)) {
       _loginAttempts.delete(key);
     }
   }
-  return { isLocked: false };
+  return { isLocked: false, count: record ? record.count : 0 };
 }
 
 async function recordFailedLogin(ip, targetKey) {
@@ -261,21 +265,16 @@ async function recordFailedLogin(ip, targetKey) {
 function clearFailedLogins(ip, targetKey) {
   const key = `${ip}:${targetKey}`;
   _loginAttempts.delete(key);
+  // Also clear general targetKey lock if present
+  for (const [k] of _loginAttempts.entries()) {
+    if (k.endsWith(`:${targetKey}`)) _loginAttempts.delete(k);
+  }
 }
 
 // POST /api/admin/login
 app.post("/api/admin/login", async (req, res) => {
   const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
   const targetKey = 'admin';
-
-  const lockout = checkLoginRateLimit(ip, targetKey);
-  if (lockout.isLocked) {
-    res.setHeader('Retry-After', lockout.secondsLeft);
-    return res.status(429).json({
-      error: `Too many failed login attempts. Admin access temporarily locked. Try again in ${lockout.minutesLeft} minute${lockout.minutesLeft > 1 ? 's' : ''}.`
-    });
-  }
-
   const { password } = req.body;
   const dummyHash = "$2a$10$e8wJ6QeP.1k8.ZqQ4oJ3.eXmU8hZ4V5C5E5e5e5e5e5e5e5e5e5e";
 
@@ -286,24 +285,35 @@ app.post("/api/admin/login", async (req, res) => {
     bcrypt.compareSync("dummy", dummyHash);
   }
 
-  if (!isValid) {
-    const failedRecord = await recordFailedLogin(ip, targetKey);
-    const attemptsLeft = Math.max(0, MAX_FAILED_ATTEMPTS - failedRecord.count);
-    if (failedRecord.count >= MAX_FAILED_ATTEMPTS) {
-      const minutesLeft = Math.ceil(LOCKOUT_DURATION_MS / 60000);
-      res.setHeader('Retry-After', 900);
-      return res.status(429).json({
-        error: `Too many failed login attempts. Account locked out for ${minutesLeft} minutes.`
-      });
-    }
-    return res.status(401).json({
-      error: `Invalid admin password. (${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining before temporary lockout)`
+  if (isValid) {
+    clearFailedLogins(ip, targetKey);
+    const token = jwt.sign({ role: "admin", username: ADMIN_CREDS.username }, JWT_SECRET, { expiresIn: "8h" });
+    return res.json({ token });
+  }
+
+  // Password was incorrect: record failed attempt & enforce rate limit / lockout response
+  const failedRecord = await recordFailedLogin(ip, targetKey);
+  const lockout = checkLoginRateLimit(ip, targetKey);
+
+  if (lockout.isLocked || failedRecord.count >= MAX_FAILED_ATTEMPTS) {
+    const secondsLeft = lockout.secondsLeft || 900;
+    const minutesLeft = lockout.minutesLeft || 15;
+    res.setHeader('Retry-After', secondsLeft);
+    return res.status(429).json({
+      error: `Too many failed login attempts. Account locked out for ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}.`
     });
   }
 
-  clearFailedLogins(ip, targetKey);
-  const token = jwt.sign({ role: "admin", username: ADMIN_CREDS.username }, JWT_SECRET, { expiresIn: "8h" });
-  res.json({ token });
+  const attemptsLeft = Math.max(0, MAX_FAILED_ATTEMPTS - failedRecord.count);
+  return res.status(401).json({
+    error: `Invalid admin password. (${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining before temporary lockout)`
+  });
+});
+
+// POST /api/admin/unlock-accounts
+app.post("/api/admin/unlock-accounts", requireAdmin, (req, res) => {
+  _loginAttempts.clear();
+  res.json({ message: "All account lockouts have been reset successfully." });
 });
 
 // ─── File-backed /tmp persistence for Serverless & DB Fallback ───────────────
@@ -473,14 +483,6 @@ app.post("/api/auth/login", async (req, res) => {
   const normalizedClubId = clubId.toLowerCase();
   const targetKey = `mentor:${normalizedClubId}`;
 
-  const lockout = checkLoginRateLimit(ip, targetKey);
-  if (lockout.isLocked) {
-    res.setHeader('Retry-After', lockout.secondsLeft);
-    return res.status(429).json({
-      error: `Too many failed login attempts. Account temporarily locked. Try again in ${lockout.minutesLeft} minute${lockout.minutesLeft > 1 ? 's' : ''}.`
-    });
-  }
-
   const mentor = MENTORS.find(m => m.clubId.toLowerCase() === normalizedClubId);
   const dummyHash = "$2a$10$e8wJ6QeP.1k8.ZqQ4oJ3.eXmU8hZ4V5C5E5e5e5e5e5e5e5e5e5e";
 
@@ -491,28 +493,33 @@ app.post("/api/auth/login", async (req, res) => {
     bcrypt.compareSync("dummy", dummyHash);
   }
 
-  if (!isValid) {
-    const failedRecord = await recordFailedLogin(ip, targetKey);
-    const attemptsLeft = Math.max(0, MAX_FAILED_ATTEMPTS - failedRecord.count);
-    if (failedRecord.count >= MAX_FAILED_ATTEMPTS) {
-      const minutesLeft = Math.ceil(LOCKOUT_DURATION_MS / 60000);
-      res.setHeader('Retry-After', 900);
-      return res.status(429).json({
-        error: `Too many failed login attempts. Account locked out for ${minutesLeft} minutes.`
-      });
-    }
-    return res.status(401).json({
-      error: `Invalid club or password. (${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining before temporary lockout)`
+  if (isValid) {
+    clearFailedLogins(ip, targetKey);
+    const token = jwt.sign(
+      { clubId: mentor.clubId, mentorName: mentor.mentorName, clubName: mentor.name },
+      JWT_SECRET,
+      { expiresIn: "8h" }
+    );
+    return res.json({ token, clubId: mentor.clubId, clubName: mentor.name, mentorName: mentor.mentorName });
+  }
+
+  // Password was incorrect: record failed attempt & enforce rate limit / lockout response
+  const failedRecord = await recordFailedLogin(ip, targetKey);
+  const lockout = checkLoginRateLimit(ip, targetKey);
+
+  if (lockout.isLocked || failedRecord.count >= MAX_FAILED_ATTEMPTS) {
+    const secondsLeft = lockout.secondsLeft || 900;
+    const minutesLeft = lockout.minutesLeft || 15;
+    res.setHeader('Retry-After', secondsLeft);
+    return res.status(429).json({
+      error: `Too many failed login attempts. Account locked out for ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}.`
     });
   }
 
-  clearFailedLogins(ip, targetKey);
-  const token = jwt.sign(
-    { clubId: mentor.clubId, mentorName: mentor.mentorName, clubName: mentor.name },
-    JWT_SECRET,
-    { expiresIn: "8h" }
-  );
-  res.json({ token, clubId: mentor.clubId, clubName: mentor.name, mentorName: mentor.mentorName });
+  const attemptsLeft = Math.max(0, MAX_FAILED_ATTEMPTS - failedRecord.count);
+  return res.status(401).json({
+    error: `Invalid club or password. (${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining before temporary lockout)`
+  });
 });
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";

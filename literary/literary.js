@@ -65,6 +65,16 @@ if (carouselContainer) {
 setInterval(() => { if (totalSlides > 1 && !isPaused) goTo(current + 1); }, 2500);
 
 
+// ─── SCROLL ANIMATIONS ────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 100);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
 // ─── RECENT ACTIVITIES — fetched from API ─────────────
 const actList = document.getElementById('activitiesList');
 
@@ -105,13 +115,3 @@ async function loadActivities() {
   }
 }
 loadActivities();
-
-// ─── SCROLL ANIMATIONS ────────────────────────────────
-const observer = new IntersectionObserver(entries => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 100);
-      observer.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.1 });
