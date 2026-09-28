@@ -1,1 +1,1 @@
-A repo to use to host this site through railway
+A repo to use to host this site through vercel
