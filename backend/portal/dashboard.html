@@ -460,8 +460,72 @@
     </div>
   </div>
 
+  <!-- ── Portal Lightbox Modal ───────────────────────── -->
+  <div id="portalLightbox" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.92); backdrop-filter:blur(6px); align-items:center; justify-content:center; flex-direction:column;">
+    <button id="plbClose" title="Close (Esc)" style="position:absolute; top:20px; right:24px; width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s;">✕</button>
+    <button id="plbPrev" title="Previous" style="position:absolute; top:50%; left:20px; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.3); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <img id="plbImg" src="" alt="" style="max-width:90vw; max-height:80vh; border-radius:12px; object-fit:contain; box-shadow:0 20px 60px rgba(0,0,0,0.7); transition:transform 0.25s ease;">
+    <button id="plbNext" title="Next" style="position:absolute; top:50%; right:20px; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.3); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div id="plbCounter" style="position:absolute; top:24px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.7); font-size:0.85rem; font-weight:600; letter-spacing:0.05em;"></div>
+    <div id="plbCaption" style="margin-top:16px; background:rgba(255,255,255,0.15); backdrop-filter:blur(8px); color:#fff; font-size:0.9rem; font-weight:600; padding:8px 20px; border-radius:20px; border:1px solid rgba(255,255,255,0.2); max-width:80vw; text-align:center;"></div>
+  </div>
+
   <script>
     const API = '';
+
+    // ── Portal Lightbox Helper ─────────────────────────────────────────
+    window.openPortalLightbox = function(images, initialIdx = 0) {
+      if (!images || !images.length) return;
+      const list = images.map(item => typeof item === 'string' ? { img: item, title: '' } : item);
+      
+      const modal   = document.getElementById('portalLightbox');
+      const imgEl   = document.getElementById('plbImg');
+      const capEl   = document.getElementById('plbCaption');
+      const countEl = document.getElementById('plbCounter');
+      const prevBtn = document.getElementById('plbPrev');
+      const nextBtn = document.getElementById('plbNext');
+      const closeBtn= document.getElementById('plbClose');
+
+      let curIdx = initialIdx;
+
+      function renderSlide(idx) {
+        curIdx = (idx + list.length) % list.length;
+        const item = list[curIdx];
+        imgEl.src = item.img;
+        imgEl.alt = item.title || '';
+        const displayTitle = item.title ? (list.length > 1 ? `${item.title} (${curIdx + 1}/${list.length})` : item.title) : '';
+        if (displayTitle) {
+          capEl.textContent = displayTitle;
+          capEl.style.display = 'inline-block';
+        } else {
+          capEl.style.display = 'none';
+        }
+        countEl.textContent = list.length > 1 ? `${curIdx + 1} / ${list.length}` : '';
+        prevBtn.style.display = list.length > 1 ? 'flex' : 'none';
+        nextBtn.style.display = list.length > 1 ? 'flex' : 'none';
+      }
+
+      renderSlide(curIdx);
+      modal.style.display = 'flex';
+
+      closeBtn.onclick = () => { modal.style.display = 'none'; };
+      prevBtn.onclick  = () => renderSlide(curIdx - 1);
+      nextBtn.onclick  = () => renderSlide(curIdx + 1);
+      modal.onclick    = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+      document.removeEventListener('keydown', window._portalLbKey);
+      window._portalLbKey = (e) => {
+        if (modal.style.display !== 'flex') return;
+        if (e.key === 'Escape') modal.style.display = 'none';
+        if (e.key === 'ArrowLeft' && list.length > 1) renderSlide(curIdx - 1);
+        if (e.key === 'ArrowRight' && list.length > 1) renderSlide(curIdx + 1);
+      };
+      document.addEventListener('keydown', window._portalLbKey);
+    };
 
     // ── Auth guard ──────────────────────────────────────────────────
     const token      = localStorage.getItem('cc_token');
@@ -758,7 +822,7 @@
         return;
       }
 
-      list.innerHTML = items.map(a => {
+      list.innerHTML = items.map((a, aIdx) => {
         const isApproved = a.approved || a._status === 'approved';
         let statusBadge = isApproved
           ? '<span style="background:rgba(74,222,128,0.15);color:var(--success);border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:600;">✓ Approved</span>'
@@ -772,8 +836,8 @@
         const photoCount = imagesArr.length > 1 ? `<span class="activity-tag" style="background:rgba(90,57,12,0.18);">🖼️ ${imagesArr.length} Photos</span>` : '';
 
         const thumbHtml = imagesArr.length > 1
-          ? `<div style="display:flex; gap:4px; flex-shrink:0;">${imagesArr.map(url => `<img class="activity-thumb" src="${API}${url}" style="width:32px; height:60px; object-fit:cover; border-radius:6px;">`).join('')}</div>`
-          : `<img class="activity-thumb" src="${API}${a.img}" alt="${a.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`;
+          ? `<div style="display:flex; gap:4px; flex-shrink:0;">${imagesArr.map((url, i) => `<img class="activity-thumb act-img-${aIdx}" data-act-idx="${aIdx}" data-img-idx="${i}" src="${API}${url}" style="width:32px; height:60px; object-fit:cover; border-radius:6px; cursor:zoom-in;" title="Click to enlarge">`).join('')}</div>`
+          : `<img class="activity-thumb act-img-${aIdx}" data-act-idx="${aIdx}" data-img-idx="0" src="${API}${a.img}" alt="${a.title}" style="cursor:zoom-in;" title="Click to enlarge" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`;
 
         return `
           <div class="activity-item" id="item-${a.id}">
@@ -797,6 +861,22 @@
           </div>
         `;
       }).join('');
+
+      // Wire up thumbnail click listeners for enlarge
+      items.forEach((a, aIdx) => {
+        const imagesArr = (a.images && a.images.length) ? a.images : [a.img];
+        const imgs = list.querySelectorAll(`.act-img-${aIdx}`);
+        imgs.forEach(imgEl => {
+          imgEl.onclick = () => {
+            const startIdx = parseInt(imgEl.getAttribute('data-img-idx') || '0', 10);
+            const fullList = imagesArr.map((url) => ({
+              img: `${API}${url}`,
+              title: `${a.title}`
+            }));
+            if (typeof openPortalLightbox === 'function') openPortalLightbox(fullList, startIdx);
+          };
+        });
+      });
     }
 
     // ── Upload ────────────────────────────────────────────────────────

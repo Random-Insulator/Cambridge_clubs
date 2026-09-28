@@ -421,6 +421,12 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  cursor: zoom-in;
+  transition: transform 0.25s ease;
+}
+
+.activity-img img:hover {
+  transform: scale(1.05);
 }
 
 .activity-img .act-ph {

@@ -340,13 +340,11 @@
   });
 })();
 
-// ─── CAROUSEL LIGHTBOX ────────────────────────────────
-// Called by each club's buildCarousel() after slides are ready.
-// slides: array of { img, title } as used by buildCarousel.
-window.initCarouselLightbox = function(slides) {
+// ─── CAROUSEL & ACTIVITY LIGHTBOX ─────────────────────
+window.openImageLightbox = function(slides, initialIdx = 0) {
   if (!slides || !slides.length) return;
+  const list = slides.map(s => typeof s === 'string' ? { img: s, title: '' } : s);
 
-  // Build overlay once
   if (!document.getElementById('lightbox-overlay')) {
     document.body.insertAdjacentHTML('beforeend', `
       <div id="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Image viewer">
@@ -371,54 +369,63 @@ window.initCarouselLightbox = function(slides) {
   const lbClose  = document.getElementById('lb-close');
   const lbPrev   = document.getElementById('lb-prev');
   const lbNext   = document.getElementById('lb-next');
-  let lbIndex    = 0;
+  let lbIndex    = initialIdx;
 
   function showSlide(idx) {
-    lbIndex = (idx + slides.length) % slides.length;
-    const s = slides[lbIndex];
+    lbIndex = (idx + list.length) % list.length;
+    const s = list[lbIndex];
     lbImg.src = s.img;
     lbImg.alt = s.title || '';
-    lbCap.textContent = s.title || '';
-    lbCount.textContent = `${lbIndex + 1} / ${slides.length}`;
+    if (s.title) {
+      lbCap.textContent = s.title;
+      lbCap.style.display = 'block';
+    } else {
+      lbCap.style.display = 'none';
+    }
+    lbCount.textContent = list.length > 1 ? `${lbIndex + 1} / ${list.length}` : '';
+    lbPrev.style.display = list.length > 1 ? 'flex' : 'none';
+    lbNext.style.display = list.length > 1 ? 'flex' : 'none';
   }
 
-  function openLightbox(idx) {
-    showSlide(idx);
-    overlay.classList.add('lb-open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeLightbox() {
+  function closeLb() {
     overlay.classList.remove('lb-open');
     document.body.style.overflow = '';
   }
 
-  // Wire up controls (replace old listeners by cloning nodes)
-  [lbClose, lbPrev, lbNext].forEach(el => {
-    const clone = el.cloneNode(true);
-    el.parentNode.replaceChild(clone, el);
-  });
-  document.getElementById('lb-close').addEventListener('click', closeLightbox);
-  document.getElementById('lb-prev').addEventListener('click', () => showSlide(lbIndex - 1));
-  document.getElementById('lb-next').addEventListener('click', () => showSlide(lbIndex + 1));
+  const newClose = lbClose.cloneNode(true);
+  const newPrev  = lbPrev.cloneNode(true);
+  const newNext  = lbNext.cloneNode(true);
+  lbClose.parentNode.replaceChild(newClose, lbClose);
+  lbPrev.parentNode.replaceChild(newPrev, lbPrev);
+  lbNext.parentNode.replaceChild(newNext, lbNext);
 
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeLightbox(); });
+  newClose.addEventListener('click', closeLb);
+  newPrev.addEventListener('click', () => showSlide(lbIndex - 1));
+  newNext.addEventListener('click', () => showSlide(lbIndex + 1));
 
-  // Keyboard nav
+  overlay.onclick = (e) => { if (e.target === overlay) closeLb(); };
+
   document.removeEventListener('keydown', window._lbKeyHandler);
   window._lbKeyHandler = (e) => {
     if (!overlay.classList.contains('lb-open')) return;
-    if (e.key === 'Escape')      closeLightbox();
-    if (e.key === 'ArrowLeft')   showSlide(lbIndex - 1);
-    if (e.key === 'ArrowRight')  showSlide(lbIndex + 1);
+    if (e.key === 'Escape')      closeLb();
+    if (e.key === 'ArrowLeft' && list.length > 1)  showSlide(lbIndex - 1);
+    if (e.key === 'ArrowRight' && list.length > 1) showSlide(lbIndex + 1);
   };
   document.addEventListener('keydown', window._lbKeyHandler);
 
-  // Attach click handlers to carousel slide images
+  showSlide(lbIndex);
+  overlay.classList.add('lb-open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.initCarouselLightbox = function(slides) {
+  if (!slides || !slides.length) return;
   const track = document.getElementById('carouselTrack');
   if (!track) return;
   track.querySelectorAll('.carousel-slide img').forEach((img, i) => {
-    img.addEventListener('click', () => openLightbox(i));
+    img.style.cursor = 'zoom-in';
+    img.onclick = () => window.openImageLightbox(slides, i);
   });
 };
 

@@ -127,6 +127,22 @@ async function loadActivities() {
           <div class="activity-desc">${a.desc}</div>
         </div>`;
       actList.appendChild(card);
+      
+      const cardImgs = card.querySelectorAll('.activity-img img');
+      cardImgs.forEach((imgEl, idx) => {
+        imgEl.style.cursor = 'zoom-in';
+        imgEl.onclick = (e) => {
+          e.stopPropagation();
+          const slides = imagesArr.map((url, i) => ({
+            img: `${API_BASE}${url}`,
+            title: imagesArr.length > 1 ? `${a.title} (${i + 1}/${imagesArr.length})` : a.title
+          }));
+          if (typeof window.openImageLightbox === 'function') {
+            window.openImageLightbox(slides, idx);
+          }
+        };
+      });
+
       observer.observe(card);
     });
   } catch {
