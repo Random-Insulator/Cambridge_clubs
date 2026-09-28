@@ -403,15 +403,16 @@
           <label for="descInput">Description</label>
           <textarea id="descInput" placeholder="Brief description of what happened…"></textarea>
 
-          <label>Photo or Short Video (Max 25MB) *</label>
+          <label>Photos (Select 1 or more photos) *</label>
           <div class="file-zone" id="fileZone">
-            <input type="file" id="imageInput" name="image" accept="image/*,video/mp4,video/webm,video/quicktime,.mov" required />
-            <div class="file-zone-icon">📷 / 🎥</div>
-            <div class="file-zone-text">Click or drag & drop a photo or short video clip</div>
+            <input type="file" id="imageInput" name="images" accept="image/*" multiple required />
+            <div class="file-zone-icon">📷</div>
+            <div class="file-zone-text">Click or drag & drop 1 or multiple photos</div>
             <div class="file-zone-name" id="fileName"></div>
           </div>
-          <img id="imgPreview" alt="Preview" />
-          <video id="videoPreview" controls playsinline muted style="display:none; width:100%; height:160px; object-fit:cover; border-radius:12px; margin-top:12px; border:1px solid rgba(90,57,12,0.15);"></video>
+          <div id="fileCountBadge" style="display:none;margin-top:10px;font-size:0.85rem;color:#5A390C;font-weight:700;"></div>
+          <div id="multiPreviewGrid" style="display:none; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap:10px; margin-top:12px;"></div>
+          <img id="imgPreview" alt="Preview" style="display:none;" />
           <div id="cropBadge" style="display:none;margin-top:8px;font-size:0.78rem;color:var(--accent2);font-weight:600;">✓ Image cropped &amp; ready</div>
 
           <button type="submit" class="submit-btn" id="uploadBtn">Upload Activity</button>
@@ -637,41 +638,45 @@
       }
     });
 
-    const videoPreview = document.getElementById('videoPreview');
+    const multiGrid = document.getElementById('multiPreviewGrid');
+    const fileBadge = document.getElementById('fileCountBadge');
+    let selectedFiles = [];
 
-    function isVideoFile(fileOrUrl) {
-      if (!fileOrUrl) return false;
-      if (typeof fileOrUrl === 'string') {
-        return /\.(mp4|webm|mov)(\?.*)?$/i.test(fileOrUrl) || fileOrUrl.includes('/video/upload/');
-      }
-      return fileOrUrl.type && fileOrUrl.type.startsWith('video/');
-    }
-
-    /* ── file input change -> open cropper or video preview ── */
-    function handleFile(file) {
-      if (!file) return;
+    /* ── file input change -> handle 1 or multiple images ── */
+    function handleFiles(files) {
+      if (!files || !files.length) return;
+      selectedFiles = Array.from(files);
       croppedBlob = null;
       cropBadge.style.display = 'none';
-      fileName.textContent = file.name;
 
-      if (isVideoFile(file)) {
-        imgPreview.style.display = 'none';
-        videoPreview.src = URL.createObjectURL(file);
-        videoPreview.style.display = 'block';
+      fileName.textContent = selectedFiles.length === 1 ? selectedFiles[0].name : `${selectedFiles.length} photos selected`;
+      fileBadge.textContent = `✓ ${selectedFiles.length} Photo${selectedFiles.length > 1 ? 's' : ''} Ready to Upload`;
+      fileBadge.style.display = 'block';
+
+      if (selectedFiles.length === 1) {
+        multiGrid.style.display = 'none';
+        openCropper(selectedFiles[0]);
       } else {
-        videoPreview.style.display = 'none';
-        openCropper(file);
+        imgPreview.style.display = 'none';
+        multiGrid.innerHTML = '';
+        selectedFiles.forEach(file => {
+          const thumb = document.createElement('img');
+          thumb.style.cssText = 'width:100%; height:76px; object-fit:cover; border-radius:10px; border:1px solid rgba(90,57,12,0.2);';
+          thumb.src = URL.createObjectURL(file);
+          multiGrid.appendChild(thumb);
+        });
+        multiGrid.style.display = 'grid';
       }
     }
 
-    fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+    fileInput.addEventListener('change', () => handleFiles(fileInput.files));
     fileZone.addEventListener('dragover', e => { e.preventDefault(); fileZone.classList.add('drag-over'); });
     fileZone.addEventListener('dragleave', () => fileZone.classList.remove('drag-over'));
     fileZone.addEventListener('drop', e => {
       e.preventDefault(); fileZone.classList.remove('drag-over');
       if (e.dataTransfer.files.length) {
         fileInput.files = e.dataTransfer.files;
-        handleFile(e.dataTransfer.files[0]);
+        handleFiles(e.dataTransfer.files);
       }
     });
 
@@ -695,7 +700,7 @@
         list.innerHTML = `
           <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            No activities yet. Upload your first photo or video!
+            No activities yet. Upload your first photo!
           </div>`;
         return;
       }
@@ -710,13 +715,11 @@
           statusBadge = '<span style="background:rgba(239,68,68,0.15);color:#ef4444;border-radius:6px;padding:2px 8px;font-size:0.72rem;font-weight:600;">⏳ Removal Requested (Pending Admin)</span>';
         }
 
-        const mediaTag = isVideoFile(a.img)
-          ? `<video class="activity-thumb" src="${API}${a.img}" muted loop autoplay playsinline></video>`
-          : `<img class="activity-thumb" src="${API}${a.img}" alt="${a.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`;
+        const photoCount = (a.images && a.images.length > 1) ? `<span class="activity-tag" style="background:rgba(90,57,12,0.18);">🖼️ ${a.images.length} Photos</span>` : '';
 
         return `
           <div class="activity-item" id="item-${a.id}">
-            ${mediaTag}
+            <img class="activity-thumb" src="${API}${a.img}" alt="${a.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <div class="activity-thumb-ph" style="display:none">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             </div>
@@ -725,6 +728,7 @@
               <div class="activity-meta">
                 <span>${a.date || ''}</span>
                 <span class="activity-tag">${a.tag}</span>
+                ${photoCount}
                 ${statusBadge}
               </div>
               <div class="activity-desc">${a.desc || ''}</div>
@@ -749,10 +753,22 @@
       formData.append('date',  document.getElementById('dateInput').value);
       formData.append('tag',   document.getElementById('tagInput').value);
       formData.append('desc',  document.getElementById('descInput').value);
-      const imageData = croppedBlob || fileInput.files[0];
-      if (!imageData) { msg.textContent = 'Please select a photo or short video first.'; msg.className = 'status-msg error'; return; }
-      const uploadFilename = (fileInput.files[0] && fileInput.files[0].name) ? fileInput.files[0].name : 'media_upload.jpg';
-      formData.append('image', imageData, uploadFilename);
+
+      if (croppedBlob) {
+        formData.append('images', croppedBlob, 'photo.jpg');
+      } else if (selectedFiles && selectedFiles.length > 0) {
+        selectedFiles.forEach((file, idx) => {
+          formData.append('images', file, file.name || `photo_${idx}.jpg`);
+        });
+      } else if (fileInput.files && fileInput.files.length > 0) {
+        Array.from(fileInput.files).forEach((file, idx) => {
+          formData.append('images', file, file.name || `photo_${idx}.jpg`);
+        });
+      } else {
+        msg.textContent = 'Please select at least one photo.';
+        msg.className = 'status-msg error';
+        return;
+      }
 
       btn.disabled = true; btn.textContent = 'Uploading…';
 
@@ -768,11 +784,13 @@
         msg.textContent = '✓ Activity uploaded successfully!';
         msg.className = 'status-msg success';
         croppedBlob = null;
+        selectedFiles = [];
         e.target.reset();
         fileName.textContent = '';
+        fileBadge.style.display = 'none';
+        multiGrid.style.display = 'none';
+        multiGrid.innerHTML = '';
         imgPreview.style.display = 'none';
-        videoPreview.style.display = 'none';
-        videoPreview.src = '';
         cropBadge.style.display = 'none';
         document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
         loadActivities();

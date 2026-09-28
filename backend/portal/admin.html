@@ -609,14 +609,11 @@
             </div>`;
         }
 
-        const isVideo = typeof a.img === 'string' && (/\.(mp4|webm|mov)(\?.*)?$/i.test(a.img) || a.img.includes('/video/upload/'));
-        const mediaTag = isVideo
-          ? `<video class="card-thumb" src="${API}${a.img}" controls playsinline muted style="object-fit:cover; width:90px; height:90px; border-radius:12px;"></video>`
-          : `<img class="card-thumb" src="${API}${a.img}" alt="${a.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`;
+        const photoCountBadge = (a.images && a.images.length > 1) ? `<span class="card-tag" style="background:#e0e7ff; color:#3730a3; font-weight:700;">🖼️ ${a.images.length} Photos</span>` : '';
 
         return `
           <div class="pending-card ${a._status}" id="card-${a.id}">
-            ${mediaTag}
+            <img class="card-thumb" src="${API}${a.img}" alt="${a.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <div class="card-thumb-ph" style="display:none">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             </div>
@@ -625,6 +622,7 @@
                 <div class="card-title">${a.title}</div>
                 <span class="card-club">${a.clubId}</span>
                 <span class="card-tag" ${isDeleteRequested ? 'style="background:#fee2e2; color:#dc2626; font-weight:700;"' : ''}>${isDeleteRequested ? '⚠️ Removal Requested' : a.tag}</span>
+                ${photoCountBadge}
               </div>
               <div class="card-meta">${a.date || ''}  ·  Uploaded ${new Date(a.uploadedAt || Date.now()).toLocaleString()}</div>
               <div class="card-desc">${a.desc || '<em style="opacity:.5">No description</em>'}</div>

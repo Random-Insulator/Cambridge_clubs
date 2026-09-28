@@ -189,24 +189,23 @@ function requireAdmin(req, res, next) {
   }
 }
 
-// ─── Multer Storage (Images & Short Videos) ──────────────────────────────────
+// ─── Multer Storage (Images Only - Multiple Support) ──────────────────────────
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: (req, file) => `cambridge_clubs/${req.params.clubId}`,
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'mp4', 'webm', 'mov'],
-    resource_type: 'auto'
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
   }
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB size limit for images and short video clips
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per image
   fileFilter(_req, file, cb) {
-    if (file.mimetype.startsWith("image/") || file.mimetype.startsWith("video/")) {
+    if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error("Only image files and short videos (MP4, WebM, MOV) are allowed"));
+      cb(new Error("Only image files (JPG, PNG, JPEG, WEBP) are allowed"));
     }
   }
 });
@@ -725,22 +724,26 @@ app.get("/api/activities/:clubId", async (req, res) => {
   res.json(finalActivities);
 });
 
-// POST /api/upload/:clubId — protected
+// POST /api/upload/:clubId — protected (supports single or multiple image uploads)
 app.post("/api/upload/:clubId", requireAuth, (req, res, next) => {
   const { clubId } = req.params;
   const reqClub = (req.mentor.clubId || "").toLowerCase();
   if (reqClub !== clubId.toLowerCase()) return res.status(403).json({ error: "You can only upload photos to your own club" });
   
-  upload.single("image")(req, res, async err => {
+  upload.any()(req, res, async err => {
     if (err) return next(err);
-    if (!req.file) return res.status(400).json({ error: "No image file provided" });
+    const files = req.files || [];
+    if (!files || files.length === 0) return res.status(400).json({ error: "No image files provided" });
     const { title, date, tag, desc } = req.body;
     if (!title) return res.status(400).json({ error: "title is required" });
+
+    const imgUrls = files.map(f => f.path);
 
     const activityObj = {
       id:       uuidv4(),
       clubId:   clubId.toLowerCase(),
-      img:      req.file.path,
+      img:      imgUrls[0], // primary thumbnail for single-image backwards compatibility
+      images:   imgUrls,    // array of all uploaded images for this activity
       title:    title.trim(),
       date:     (date || new Date().toISOString().split("T")[0]).trim(),
       tag:      (tag  || "Activity").trim(),
