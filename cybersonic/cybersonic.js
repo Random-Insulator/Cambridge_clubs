@@ -15,44 +15,47 @@ const dotsEl = document.getElementById('carouselDots');
 let current  = 0;
 let totalSlides = 0;
 
-function buildCarousel(slides) {
-  const flatSlides = [];
-  slides.forEach(s => {
-    const imgList = (s.images && s.images.length) ? s.images : [s.img];
-    imgList.forEach((imgUrl, idx) => {
-      flatSlides.push({
-        img: imgUrl,
-        title: s.images && s.images.length > 1 ? `${s.title} (${idx + 1}/${s.images.length})` : s.title
-      });
-    });
-  });
-
-  totalSlides = flatSlides.length;
+function buildCarousel(activities) {
+  totalSlides = activities.length;
   track.innerHTML  = '';
   dotsEl.innerHTML = '';
-  if (!flatSlides.length) {
+  if (!activities.length) {
     const ph = document.createElement('div');
     ph.className = 'carousel-slide';
     ph.innerHTML = `<div class="slide-ph">${phIcon}<span>No photos yet</span></div>`;
     track.appendChild(ph);
     return;
   }
-  flatSlides.forEach((s, i) => {
+  activities.forEach((a, i) => {
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
+    const imagesArr = (a.images && a.images.length) ? a.images : [a.img];
+    const photoBadge = imagesArr.length > 1 ? ` <span style="font-size:11px; opacity:0.85; margin-left:6px; background:rgba(0,0,0,0.4); padding:2px 8px; border-radius:10px;">🖼️ ${imagesArr.length} Photos</span>` : '';
+
     slide.innerHTML = `
-      <img src="${API_BASE}${s.img}" alt="${s.title}"
+      <img src="${API_BASE}${a.img || imagesArr[0]}" alt="${a.title}" style="cursor:zoom-in;"
            onload="this.nextElementSibling.style.display='none'"
            onerror="this.style.display='none'">
       <div class="slide-ph">${phIcon}<span>Photo ${i + 1}</span></div>
-      <div class="slide-label">${s.title}</div>`;
+      <div class="slide-label">${a.title}${photoBadge}</div>`;
+
+    const imgEl = slide.querySelector('img');
+    imgEl.onclick = () => {
+      const lbSlides = imagesArr.map((url, idx) => ({
+        img: `${API_BASE}${url}`,
+        title: imagesArr.length > 1 ? `${a.title} (${idx + 1}/${imagesArr.length})` : a.title
+      }));
+      if (typeof window.openImageLightbox === 'function') {
+        window.openImageLightbox(lbSlides, 0);
+      }
+    };
+
     track.appendChild(slide);
     const dot = document.createElement('span');
     if (i === 0) dot.classList.add('active');
     dot.addEventListener('click', () => goTo(i));
     dotsEl.appendChild(dot);
   });
-  if (typeof window.initCarouselLightbox === 'function') window.initCarouselLightbox(flatSlides);
 }
 
 function goTo(idx) {
