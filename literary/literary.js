@@ -15,17 +15,28 @@ let current     = 0;
 let totalSlides = 0;
 
 function buildCarousel(slides) {
-  totalSlides = slides.length;
+  const flatSlides = [];
+  slides.forEach(s => {
+    const imgList = (s.images && s.images.length) ? s.images : [s.img];
+    imgList.forEach((imgUrl, idx) => {
+      flatSlides.push({
+        img: imgUrl,
+        title: s.images && s.images.length > 1 ? `${s.title} (${idx + 1}/${s.images.length})` : s.title
+      });
+    });
+  });
+
+  totalSlides = flatSlides.length;
   track.innerHTML  = '';
   dotsEl.innerHTML = '';
-  if (!slides.length) {
+  if (!flatSlides.length) {
     const ph = document.createElement('div');
     ph.className = 'carousel-slide';
     ph.innerHTML = `<div class="slide-ph">${phIcon}<span>No photos yet</span></div>`;
     track.appendChild(ph);
     return;
   }
-  slides.forEach((s, i) => {
+  flatSlides.forEach((s, i) => {
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
     slide.innerHTML = `
@@ -40,7 +51,7 @@ function buildCarousel(slides) {
     dot.addEventListener('click', () => goTo(i));
     dotsEl.appendChild(dot);
   });
-  if (typeof window.initCarouselLightbox === 'function') window.initCarouselLightbox(slides);
+  if (typeof window.initCarouselLightbox === 'function') window.initCarouselLightbox(flatSlides);
 }
 
 function goTo(idx) {
@@ -91,17 +102,26 @@ async function loadActivities() {
     data.forEach(a => {
       const card = document.createElement('div');
       card.className = 'activity-card';
+      const imagesArr = (a.images && a.images.length) ? a.images : [a.img];
+
+      const imgHtml = imagesArr.length > 1
+        ? `<div class="activity-img" style="display:grid; grid-template-columns: repeat(${Math.min(imagesArr.length, 3)}, 1fr); gap:3px;">
+            ${imagesArr.map(url => `<img src="${API_BASE}${url}" alt="${a.title}" style="width:100%; height:100%; object-fit:cover; border-radius:6px;">`).join('')}
+           </div>`
+        : `<div class="activity-img">
+            <img src="${API_BASE}${a.img}" alt="${a.title}"
+                 onload="this.nextElementSibling.style.display='none'"
+                 onerror="this.style.display='none'">
+            <div class="act-ph">${phIcon}</div>
+           </div>`;
+
       card.innerHTML = `
-        <div class="activity-img">
-          <img src="${API_BASE}${a.img}" alt="${a.title}"
-               onload="this.nextElementSibling.style.display='none'"
-               onerror="this.style.display='none'">
-          <div class="act-ph">${phIcon}</div>
-        </div>
+        ${imgHtml}
         <div>
           <div class="activity-meta">
             <span class="activity-date">${a.date}</span>
             <span class="activity-tag">${a.tag}</span>
+            ${imagesArr.length > 1 ? `<span class="activity-tag" style="background:var(--club-bg); color:var(--club-color);">🖼️ ${imagesArr.length} Photos</span>` : ''}
           </div>
           <div class="activity-title">${a.title}</div>
           <div class="activity-desc">${a.desc}</div>
