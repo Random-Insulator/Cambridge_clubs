@@ -731,7 +731,10 @@ app.post("/api/upload/:clubId", requireAuth, (req, res, next) => {
   if (reqClub !== clubId.toLowerCase()) return res.status(403).json({ error: "You can only upload photos to your own club" });
   
   upload.any()(req, res, async err => {
-    if (err) return next(err);
+    if (err) {
+      console.error("Upload processing error:", err.message);
+      return res.status(400).json({ error: err.message || "Failed to process image uploads" });
+    }
     const files = req.files || [];
     if (!files || files.length === 0) return res.status(400).json({ error: "No image files provided" });
     const { title, date, tag, desc } = req.body;

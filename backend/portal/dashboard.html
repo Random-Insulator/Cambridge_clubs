@@ -754,12 +754,14 @@
       formData.append('tag',   document.getElementById('tagInput').value);
       formData.append('desc',  document.getElementById('descInput').value);
 
-      if (croppedBlob) {
-        formData.append('images', croppedBlob, 'photo.jpg');
-      } else if (selectedFiles && selectedFiles.length > 0) {
+      if (selectedFiles && selectedFiles.length > 1) {
         selectedFiles.forEach((file, idx) => {
           formData.append('images', file, file.name || `photo_${idx}.jpg`);
         });
+      } else if (croppedBlob) {
+        formData.append('images', croppedBlob, 'photo.jpg');
+      } else if (selectedFiles && selectedFiles.length === 1) {
+        formData.append('images', selectedFiles[0], selectedFiles[0].name || 'photo.jpg');
       } else if (fileInput.files && fileInput.files.length > 0) {
         Array.from(fileInput.files).forEach((file, idx) => {
           formData.append('images', file, file.name || `photo_${idx}.jpg`);
@@ -778,7 +780,16 @@
           headers: { 'Authorization': `Bearer ${token}` },
           body: formData
         });
-        const data = await res.json();
+
+        const resText = await res.text();
+        let data = {};
+        try {
+          data = JSON.parse(resText);
+        } catch {
+          const cleanErr = resText.replace(/<[^>]*>?/gm, '').trim();
+          throw new Error(cleanErr ? cleanErr.slice(0, 150) : `Server response error (${res.status})`);
+        }
+
         if (!res.ok) throw new Error(data.error || 'Upload failed');
 
         msg.textContent = '✓ Activity uploaded successfully!';
