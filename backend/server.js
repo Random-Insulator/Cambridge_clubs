@@ -620,14 +620,16 @@ Phase Control:
 - Turn 3: Ask ONE more narrowing question.
 - Turn 4: RECOMMEND EXACTLY ONE CLUB. Never ask another question after recommending.
 
-STRICT END RULE:
-- Once you recommend a club, give a 2-sentence explanation of why it fits them best, and STOP. Do not ask any follow-up questions.
+RECOMMENDATION RULE & MANDATORY REASONING FORMAT:
+- When recommending a club, state the club clearly in bold (e.g. "**I recommend the Cybersonic Club!**").
+- You MUST ALWAYS provide a detailed, enthusiastic 2-3 sentence explanation of WHY this club is the ideal match for the student based on their specific interests, hobbies, and answers. NEVER output just the club name alone without explaining the reasons!
+- STOP after giving the recommendation and reason. Do NOT ask any follow-up questions.
 
 Rules:
 - Keep the conversation friendly, interactive, and human.
 - Never ask the user to 'propose' or 'create' a club.
 - Use explicit mapping: Computers -> Cybersonic; Hardware -> Robotics; Science -> Technocrates; Money -> Finance; Art -> Eco; Speaking -> TedEd; Drama -> Theatre; Facts -> Quizzaders; Cooking -> Cookery; Discussion -> Debate; Writing/Poetry -> Literary.
-- CURRENT TURN: ${turnCount}/4. ${isFinalRecommendation ? "MUST RECOMMEND EXACTLY ONE CLUB NOW AND STOP." : ""}`;
+- CURRENT TURN: ${turnCount}/4. ${isFinalRecommendation ? "MUST RECOMMEND EXACTLY ONE CLUB NOW WITH A DETAILED REASON AND STOP." : ""}`;
 
     const groqHistory = (history || []).map(h => ({
       role: h.role === "assistant" ? "assistant" : "user",
@@ -656,7 +658,7 @@ Rules:
             ],
             model,
             temperature: 0.7,
-            max_tokens: 150,
+            max_tokens: 300,
             top_p: 1,
           }),
           new Promise((_, reject) => setTimeout(() => reject(new Error("Model request timeout")), 5000))
