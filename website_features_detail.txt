@@ -1,0 +1,180 @@
+================================================================================
+CAMBRIDGE CLUBS PLATFORM — DETAILED WEBSITE FEATURES DOCUMENTATION
+School: Cambridge Court World School (CCWS)
+System: Multi-Club Portal, AI Finder, Mentor Dashboard & Admin Control Center
+================================================================================
+
+1. EXECUTIVE OVERVIEW & PLATFORM ARCHITECTURE
+--------------------------------------------------------------------------------
+The Cambridge Clubs Platform is a comprehensive, modern web application designed 
+to showcase all extracurricular school clubs at Cambridge Court World School. 
+It facilitates dynamic student discovery via artificial intelligence, enables 
+teachers (mentors) to manage and publish activity galleries, and provides 
+school administrators with complete moderation control over published content.
+
+Tech Stack & Infrastructure:
+  • Frontend: Semantic HTML5, Vanilla CSS3 (Custom Design System with 
+    Glassmorphism, CSS Variables, Google Fonts 'Syne', 'DM Sans', and 'Caveat', 
+    Responsive Grid/Flexbox Layouts), Vanilla JavaScript (Modular ES6+).
+  • Backend: Node.js with Express.js framework providing REST API services.
+  • Database & Persistence: 
+      - MongoDB Atlas with Mongoose ORM for cloud data storage.
+      - Embedded MongoMemoryServer and local JSON storage fallback.
+      - Serverless-compatible /tmp directory state persistence.
+  • Asset Management & Hosting:
+      - Cloudinary Cloud Storage API integrated via multer-storage-cloudinary.
+      - Local filesystem upload fallback directory.
+  • AI Integration:
+      - Groq SDK API integration featuring Llama 3.3 70B Versatile, 
+        Llama 3.1 8B, and Mixtral fallback models for conversational club matching.
+  • Security Framework:
+      - JSON Web Token (JWT) stateless authentication.
+      - Bcrypt password hashing.
+      - Anti-brute force sliding-window rate limiting & progressive tarpitting.
+      - Content safety keyword filtering for student interaction.
+
+
+2. MAIN LANDING PAGE (index.html & main.js)
+--------------------------------------------------------------------------------
+• Quad-Band Hero Header:
+    - Vertical layered visual hero band layout.
+    - Animated typography displaying "Cambridge Court World School presents CCWS Clubs".
+    - Catchy tagline: "Where Passion, Meets Purpose".
+    - Dual font pairing: Heavy geometry header font 'Syne' + handwriting font 'Caveat'.
+    - Watermark background logo featuring school emblem with multiply blend mode.
+• Interactive Navigation Header:
+    - Sticky glassmorphism header bar with real-time blur backdrop (backdrop-filter).
+    - Direct navigation links to all 11 official school clubs.
+    - Desktop Hover Previews (nav-previews.js): Hovering over navigation links displays 
+      an interactive floating preview card of the club before clicking.
+    - Integrated AI Finder shortcut icon button in header.
+• Dynamic Club Showcase List:
+    - Alternating row layout with image and text column flipping for visual variety.
+    - Scroll-triggered reveal animations via JavaScript IntersectionObserver.
+    - Color-coded branding tokens per club (custom background tints, border colors, 
+      and accent highlights).
+    - Image lazy-loading with automatic SVG placeholder fallback for broken links.
+    - Interactive rows: Clicking anywhere on a club card navigates directly to 
+      the corresponding club portal.
+• Global Footer:
+    - Clean footer attribution giving credit to Cybersonic Club.
+
+
+3. INDIVIDUAL CLUB PORTALS (11 Specialized Pages)
+--------------------------------------------------------------------------------
+The platform contains 11 dedicated, customized club pages:
+
+  1. Cybersonic Club (Technology, Python, AI & Cybersecurity)
+  2. TedEd Club (Public Speaking, Debates & Student Talks)
+  3. Robotics Club (Robotics, Microcontrollers & Automation)
+  4. Cookery Club (Fireless Cooking, Culinary Arts & Nutrition)
+  5. Quizzaders Club (Trivia, General Knowledge & Inter-School Quizzes)
+  6. Finance Club (Financial Literacy, Investing, Budgeting & Economics)
+  7. Theatre Club (Stage Performances, Improv & Dramatic Arts)
+  8. Eco Club (Environmental Sustainability & Campus Gardening)
+  9. Technocrates Club (Scientific Innovation & Hands-On Experiments)
+ 10. Debate Club (Argumentation, Public Speaking & Oratory)
+ 11. Literary Club (Reading Circles, Book Analysis & Creative Writing)
+
+Key Features on Every Club Page:
+  • Breadcrumb Navigation: Quick link to return to main portal view ("Back to all clubs").
+  • Multi-Photo Hero Carousel:
+      - Interactive touch/click sliding gallery of club activities.
+      - Navigation arrows and pagination indicator dots.
+      - Click-to-Enlarge Zoom opening the Global Lightbox viewer.
+  • Header Section: Category tag badge, meeting day tag, title, and detailed club description.
+  • Dynamic Activities Feed:
+      - Live fetch from backend API endpoint (/api/activities/:clubId).
+      - Renders approved club activities posted by mentors with photo, title, date, 
+        tag badge, and description.
+  • Club Information Sidebar:
+      - Direct registration button ("+ Join this club") linking to Google Forms.
+      - Assigned Club Mentor profile card (Mentor name and role).
+      - Meeting details card (Day, Period/Time, Target Grade eligibility).
+
+
+4. GLOBAL ACTIVITY LIGHTBOX & MULTI-IMAGE GALLERY MODAL
+--------------------------------------------------------------------------------
+• Universal Site-Wide Image Viewer:
+    - Accessible across the main site, individual club portals, and management dashboards.
+    - Fullscreen dark overlay with backdrop blur effect.
+    - Supports multi-photo activity posts with slide counter (e.g., "1 / 3").
+    - Prev / Next navigation buttons and dynamic caption bar.
+    - Full Keyboard Controls: Pressing Escape closes the lightbox; Arrow Left / Right 
+      switches slides.
+    - Touch & Mouse dismissal by clicking outside image content.
+
+
+5. ARTIFICIAL INTELLIGENCE "CLUB BUDDY" CHATBOT
+--------------------------------------------------------------------------------
+• Floating Action Button (FAB) & Widget:
+    - Floating mascot button ("Chat with Club Buddy ✨") with smooth idle bobbing 
+      animation and glowing pulse ring.
+    - Expandable/collapsible popup chat interface featuring Giti mascot avatar.
+• AI Recommendation Engine (/api/chat):
+    - Powered by Groq API (Llama 3.3 70B, Llama 3.1 8B, and Mixtral LLMs).
+    - Multi-turn conversation logic:
+        * Turn 1: Broad interest discovery.
+        * Turn 2: Specific preference follow-up.
+        * Turn 3: Final narrowing question.
+        * Turn 4: Precise single club recommendation.
+    - Maintains recent conversation context history (up to 10 messages).
+    - Post-recommendation session limiter to wrap up conversation gracefully.
+• Content Safety & Security:
+    - Built-in profanity and inappropriate language filter blocking non-school-appropriate content.
+    - IP Rate Limiter (maximum 30 chat requests per minute per IP) to prevent API quota exhaustion.
+
+
+6. MENTOR PORTAL & DASHBOARD (/portal/login.html & /portal/dashboard.html)
+--------------------------------------------------------------------------------
+• Split-Screen Mentor Authentication (login.html):
+    - Warm-toned split layout with animated floating background blobs.
+    - Dropdown club selector populated with assigned teacher mentors.
+    - Secure password verification issuing 8-hour JWT session tokens.
+• Activity Upload Form (dashboard.html):
+    - Multi-Image Support: Mentors can select and upload up to 3 photos per activity post.
+    - Automatic Client-Side Compression: Canvas-based image compressor scales high-resolution 
+      photos into web-optimized JPEGs before uploading.
+    - Interactive 16:10 Image Cropper Modal:
+        * Drag-to-pan repositioning.
+        * Mouse wheel and slider zoom controls (1x to 4x).
+        * Rule-of-thirds grid lines overlay.
+    - Content metadata fields: Activity Title, Date selector, Tag dropdown (Activity, 
+      Cook, Event, Workshop, Competition, Performance, Project, Talk, Field Trip), 
+      and Description text area.
+• Mentor Activity Manager:
+    - Live list of mentor's posted activities with status indicators (Approved vs Pending Review).
+    - One-click Removal Request: Mentors can submit activity deletion requests for admin review.
+    - Portal Lightbox integration for viewing high-res photo uploads directly in dashboard.
+
+
+7. ADMIN CONTROL CENTER (/portal/admin.html)
+--------------------------------------------------------------------------------
+• Secure Restricted Login:
+    - Dedicated administrator login portal with admin password validation.
+    - Admin session management with JWT bearer verification.
+• Moderation & Approval Queue:
+    - Tabbed view switching between "Pending Approvals" and "All Uploads".
+    - Pending notification badge counter.
+    - Detailed activity cards displaying photo gallery previews, club source, date, 
+      tag, description, and upload timestamp.
+• Action Controls:
+    - Approve Button: Instantly publishes activity to the public website and club pages 
+      and clears server cache.
+    - Reject Button: Permanently removes inappropriate or duplicate submissions.
+    - Deletion Request Management: Admin can approve mentor removal requests or 
+      reject removal to keep activity published.
+• Emergency Tools:
+    - Admin unlock route (/api/admin/unlock-accounts) to clear temporary security lockouts.
+
+
+8. SECURITY, PERFORMANCE & BACKEND INFRASTRUCTURE (backend/server.js)
+--------------------------------------------------------------------------------
+• Anti-Brute Force Protection:
+    - Tracks failed login attempts per IP address and account.
+    - Locks account after 5 consecutive failed login attempts (15-minute security lockout).
+    - Progressive tarpitting delay (adds 600ms to 3000ms delay per failed attempt to prevent automated bots).
+• Performance Caching:
+    - 60-second server memory cache (_cache) for public activity queries to ensure sub-millisecond response times.
+    - Automatic cache invalidation on new activity approvals or deletions.
+================================================================================

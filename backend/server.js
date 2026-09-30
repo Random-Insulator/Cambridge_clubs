@@ -525,6 +525,16 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const Groq = require("groq-sdk");
 const groq = new Groq({ apiKey: GROQ_API_KEY });
 
+// Helper for detecting club recommendation in response
+const CLUB_NAMES_LIST = ['robotics','cybersonic','technocrates','technogrades','finance','eco','teded','ted ed','theatre','theater','drama','quizzaders','quizzarders','cookery','debate','literary'];
+const RECOMMEND_PHRASES_LIST = ['recommend','join','perfect for you','check out','suggest','go for','i think you','you should','would suit','great fit','best fit','ideal fit','top choice','suited for','head over to','sign up for'];
+
+function isRecommendationText(text) {
+  if (!text) return false;
+  const t = text.toLowerCase();
+  return CLUB_NAMES_LIST.some(c => t.includes(c)) && RECOMMEND_PHRASES_LIST.some(w => t.includes(w));
+}
+
 // POST /api/chat — Chatbot endpoint
 app.post("/api/chat", chatRateLimit, async (req, res) => {
   const { message, history } = req.body;
@@ -534,6 +544,24 @@ app.post("/api/chat", chatRateLimit, async (req, res) => {
   }
 
   try {
+    // 1. Strict English Language Enforcement (Script + Non-English rejection)
+    const nonEnglishScriptRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0E00-\u0E7F\u1000-\u109F\u1100-\u11FF\u3040-\u309F\u30A0-\u30FF\u3130-\u318F\u4E00-\u9FFF\uAC00-\uD7AF\u0400-\u04FF]/;
+    if (nonEnglishScriptRegex.test(message)) {
+      return res.json({
+        response: "I can only understand and respond in English! Please write your message in English. 🌐",
+        isFinal: false
+      });
+    }
+
+    // 2. Strict limit: Check if a recommendation was already provided in history
+    const alreadyRecommended = (history || []).some(h => h.role === 'assistant' && isRecommendationText(h.content));
+    if (alreadyRecommended) {
+      return res.json({
+        response: "This chat session has ended because a club recommendation was already provided! Please explore the club pages above to join.",
+        isFinal: true
+      });
+    }
+
     const inappropriateKeywords = [
       "porn", "sex", "naked", "xxx", "fuck", "dick", "pussy", "nude", "hentai", "dih", "dihh",
       "shit", "bitch", "asshole", "bastard", "slut", "whore", "cunt", "faggot", "nigger", "nigga",
@@ -561,16 +589,25 @@ app.post("/api/chat", chatRateLimit, async (req, res) => {
 
     const systemInstruction = `You are the "Cambridge Clubs Bot". 
 Role: Help students find ONE official club from this list: Robotics, Cybersonic, Technocrates, Finance, Eco, TedEd, Theatre, Quizzaders, Cookery, Debate, Literary.
+
+STRICT LANGUAGE RULE:
+- You MUST ONLY communicate in English.
+- If the user types in any language other than English (including Hindi, Spanish, French, German, Hinglish, or any other language), do NOT answer their question or recommend a club. Instead, respond ONLY with: "I can only understand and respond in English. Please ask your question in English!"
+
 Phase Control:
 - Turn 1: Ask a broad question to understand their area of interest.
 - Turn 2: Ask a targeted follow-up.
 - Turn 3: Ask ONE more narrowing question.
-- Turn 4: RECOMMEND EXACTLY ONE CLUB. Never ask another question.
+- Turn 4: RECOMMEND EXACTLY ONE CLUB. Never ask another question after recommending.
+
+STRICT END RULE:
+- Once you recommend a club, give a 2-sentence explanation of why it fits them best, and STOP. Do not ask any follow-up questions.
+
 Rules:
-- try to yap with the students, just try to keep the conversation like a human fun conversation.
+- Keep the conversation friendly, interactive, and human.
 - Never ask the user to 'propose' or 'create' a club.
 - Use explicit mapping: Computers -> Cybersonic; Hardware -> Robotics; Science -> Technocrates; Money -> Finance; Art -> Eco; Speaking -> TedEd; Drama -> Theatre; Facts -> Quizzaders; Cooking -> Cookery; Discussion -> Debate; Writing/Poetry -> Literary.
-- CURRENT TURN: ${turnCount}/3. ${isFinalRecommendation ? "STOP QUESTIONS. MUST RECOMMEND CLUB NOW." : ""}`;
+- CURRENT TURN: ${turnCount}/4. ${isFinalRecommendation ? "MUST RECOMMEND EXACTLY ONE CLUB NOW AND STOP." : ""}`;
 
     const groqHistory = (history || []).map(h => ({
       role: h.role === "assistant" ? "assistant" : "user",
@@ -616,7 +653,8 @@ Rules:
     }
 
     if (content) {
-      return res.json({ response: content });
+      const isRec = isRecommendationText(content) || isFinalRecommendation;
+      return res.json({ response: content, isFinal: isRec });
     }
 
     throw lastError || new Error("All Groq models failed");

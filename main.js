@@ -205,139 +205,227 @@
 
 
   // ─── CHATBOT LOGIC ────────────────────────────────────
+  (function() {
+    if (!document.getElementById('chatPanel')) {
+      const chatHtml = `
+        <div class="chat-panel" id="chatPanel">
+          <div class="chat-header">
+            <div class="chat-header-info">
+              <div class="chat-header-title"><span style="font-size:18px; margin-right:4px;">✨</span> Club Buddy</div>
+              <div class="chat-header-status">Online</div>
+            </div>
+            <button class="chat-close" id="chatClose">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="msg bot">
+              Hello! I'm here to help you find the perfect club. What are your hobbies or interests?
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+            <button id="chatSend">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', chatHtml);
+    }
 
-  const chatFab = document.querySelector('.chat-fab');
-  const chatPanel = document.getElementById('chatPanel');
-  const chatClose = document.getElementById('chatClose');
-  const chatInput = document.getElementById('chatInput');
-  const chatSend = document.getElementById('chatSend');
-  const chatMessages = document.getElementById('chatMessages');
-  const heroCta = document.querySelector('.hero-cta');
-  const navChatBtn = document.querySelector('.nav-chat-btn');
+    const chatFab = document.querySelector('.chat-fab');
+    const chatPanel = document.getElementById('chatPanel');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
+    const heroCta = document.querySelector('.hero-cta');
+    const navChatBtns = document.querySelectorAll('.nav-chat-btn');
 
-  let chatHistory = [];
-  let _postRecoBonusCount = 0;
-  const MAX_BONUS_CHATS = 2;
-  let _chatLocked = false;
+    let chatHistory = [];
+    let _chatLocked = false;
 
-  // ── Open / Close / Toggle ─────────────────────────────
-  function openChat() {
-    if (!chatPanel || !chatFab) return;
-    chatPanel.classList.add('active');
-    if (chatInput) chatInput.focus();
-    chatFab.style.animation = 'none';
-    chatFab.style.webkitAnimation = 'none';
-    setTimeout(() => { chatFab.style.bottom = '70px'; }, 50);
-    chatFab.style.transform = 'none';
-    chatFab.style.boxShadow = 'none';
-    const chatPulse = document.querySelector('.chat-pulse');
-    if (chatPulse) chatPulse.style.display = 'none';
-  }
+    // ── Open / Close / Toggle ─────────────────────────────
+    function openChat() {
+      if (!chatPanel) return;
+      chatPanel.classList.add('active');
+      if (chatInput && !_chatLocked) chatInput.focus();
+      if (chatFab) {
+        chatFab.style.animation = 'none';
+        chatFab.style.webkitAnimation = 'none';
+        setTimeout(() => { chatFab.style.bottom = '70px'; }, 50);
+        chatFab.style.transform = 'none';
+        chatFab.style.boxShadow = 'none';
+      }
+      const chatPulse = document.querySelector('.chat-pulse');
+      if (chatPulse) chatPulse.style.display = 'none';
+    }
 
-  function closeChat() {
-    if (!chatPanel || !chatFab) return;
-    chatPanel.classList.remove('active');
-    chatFab.style.bottom = '24px';
-    setTimeout(() => {
-      chatFab.style.animation = 'mascotBob 3s ease-in-out infinite';
-      chatFab.style.webkitAnimation = 'mascotBob 3s ease-in-out infinite';
-    }, 50);
-    chatFab.style.transform = 'none';
-    chatFab.style.boxShadow = '';
-    const chatPulse = document.querySelector('.chat-pulse');
-    if (chatPulse) chatPulse.style.display = '';
-  }
+    function closeChat() {
+      if (!chatPanel) return;
+      chatPanel.classList.remove('active');
+      if (chatFab) {
+        chatFab.style.bottom = '24px';
+        setTimeout(() => {
+          chatFab.style.animation = 'mascotBob 3s ease-in-out infinite';
+          chatFab.style.webkitAnimation = 'mascotBob 3s ease-in-out infinite';
+        }, 50);
+        chatFab.style.transform = 'none';
+        chatFab.style.boxShadow = '';
+      }
+      const chatPulse = document.querySelector('.chat-pulse');
+      if (chatPulse) chatPulse.style.display = '';
+    }
 
-  function toggleChat() {
-    if (!chatPanel || !chatFab) return;
-    chatPanel.classList.contains('active') ? closeChat() : openChat();
-  }
+    function toggleChat() {
+      if (!chatPanel) return;
+      chatPanel.classList.contains('active') ? closeChat() : openChat();
+    }
 
-  if (chatFab)    chatFab.addEventListener('click', toggleChat);
-  if (chatClose)  chatClose.addEventListener('click', closeChat);
-  if (heroCta)    heroCta.addEventListener('click', openChat);
-  if (navChatBtn) navChatBtn.addEventListener('click', openChat);
+    if (chatFab)   chatFab.addEventListener('click', toggleChat);
+    if (chatClose) chatClose.addEventListener('click', closeChat);
+    if (heroCta)   heroCta.addEventListener('click', openChat);
+    navChatBtns.forEach(btn => btn.addEventListener('click', openChat));
 
-  // ── Recommendation detection ──────────────────────────
-  function _isRecommendation(text) {
-    const t = text.toLowerCase();
-    const clubNames = ['robotics','cybersonic','technocrates','finance','eco','teded','ted ed','theatre','theater','quizzaders','cookery','debate'];
-    const recommendWords = ['recommend','join','perfect for you','check out','suggest','go for','i think you','you should'];
-    return clubNames.some(c => t.includes(c)) && recommendWords.some(w => t.includes(w));
-  }
+    // ── Markdown Formatter ────────────────────────────────
+    function formatMarkdown(text) {
+      if (!text) return '';
+      let safe = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      
+      // **bold** or __bold__ -> <strong>bold</strong>
+      safe = safe.replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>');
+      // *italic* or _italic_ -> <em>italic</em>
+      safe = safe.replace(/(\*|_)(.*?)\1/g, '<em>$2</em>');
+      // line breaks -> <br>
+      safe = safe.replace(/\n/g, '<br>');
+      
+      return safe;
+    }
 
-  function _lockChat() {
-    _chatLocked = true;
-    if (chatInput) { chatInput.disabled = true; chatInput.placeholder = 'Chat ended for this session'; }
-    if (chatSend)  { chatSend.disabled = true; chatSend.style.opacity = '0.4'; }
-    if (chatFab)   { chatFab.style.opacity = '0.5'; chatFab.title = 'Chat session ended'; }
-  }
+    // ── Recommendation detection ──────────────────────────
+    function _isRecommendation(text) {
+      if (!text) return false;
+      const t = text.toLowerCase();
+      const clubNames = ['robotics','cybersonic','technocrates','technogrades','finance','eco','teded','ted ed','theatre','theater','drama','quizzaders','quizzarders','cookery','debate','literary'];
+      const recommendWords = ['recommend','join','perfect for you','check out','suggest','go for','i think you','you should','would suit','great fit','best fit','ideal fit','top choice','suited for','head over to','sign up for'];
+      return clubNames.some(c => t.includes(c)) && recommendWords.some(w => t.includes(w));
+    }
 
-  // ── Send message ──────────────────────────────────────
-  async function sendMessage() {
-    if (_chatLocked) return;
-    const text = chatInput.value.trim();
-    if (!text) return;
+    function _lockChat() {
+      _chatLocked = true;
+      const inputArea = document.querySelector('.chat-input-area');
+      if (inputArea) inputArea.classList.add('locked');
+      if (chatInput) { 
+        chatInput.value = '';
+        chatInput.disabled = true; 
+        chatInput.readOnly = true;
+        chatInput.placeholder = 'Chat ended — club recommended!'; 
+        chatInput.blur();
+      }
+      if (chatSend) { 
+        chatSend.disabled = true; 
+        chatSend.style.opacity = '0.3'; 
+        chatSend.style.cursor = 'not-allowed';
+        chatSend.style.pointerEvents = 'none';
+      }
+      if (chatFab) { 
+        chatFab.style.opacity = '0.7'; 
+        chatFab.title = 'Chat session ended'; 
+      }
+    }
 
-    chatInput.value = '';
-    addMessage(text, 'user');
-    const loadingMsg = addMessage('...', 'bot typing');
+    // ── Send message ──────────────────────────────────────
+    async function sendMessage() {
+      if (_chatLocked) return;
+      const text = chatInput.value.trim();
+      if (!text) return;
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, history: chatHistory })
-      });
-
-      const data = await response.json();
-      loadingMsg.remove();
-
-      if (!response.ok || data.error) {
-        throw new Error(data.error || `Server responded with ${response.status}`);
+      // ── English Language Pre-Check ──
+      const nonEnglishScriptRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0E00-\u0E7F\u1000-\u109F\u1100-\u11FF\u3040-\u309F\u30A0-\u30FF\u3130-\u318F\u4E00-\u9FFF\uAC00-\uD7AF\u0400-\u04FF]/;
+      if (nonEnglishScriptRegex.test(text)) {
+        chatInput.value = '';
+        addMessage(text, 'user');
+        addMessage("I can only understand and respond in English! Please write your message in English. 🌐", 'bot');
+        return;
       }
 
-      addMessage(data.response, 'bot');
-      chatHistory.push({ role: 'user', content: text });
-      chatHistory.push({ role: 'assistant', content: data.response });
-      if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+      chatInput.value = '';
+      addMessage(text, 'user');
+      const loadingMsg = addMessage('...', 'bot typing');
 
-      // ── Post-recommendation session limiter ───────────
-      if (_isRecommendation(data.response)) {
-        _postRecoBonusCount = 0;
-      } else if (chatHistory.length >= 8) {
-        _postRecoBonusCount++;
-        if (_postRecoBonusCount >= MAX_BONUS_CHATS) {
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history: chatHistory })
+        });
+
+        const data = await response.json();
+        loadingMsg.remove();
+
+        if (!response.ok || data.error) {
+          throw new Error(data.error || `Server responded with ${response.status}`);
+        }
+
+        const isRec = data.isFinal || _isRecommendation(data.response);
+
+        addMessage(data.response, 'bot');
+        chatHistory.push({ role: 'user', content: text });
+        chatHistory.push({ role: 'assistant', content: data.response });
+        if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+
+        // ── End conversation immediately after club recommendation is given ──
+        if (isRec) {
+          _lockChat();
           setTimeout(() => {
             addMessage(
-              "Alright, that's a wrap from me! 🎉 You've got everything you need — go check out the club and show them what you've got. See you around! 👋",
+              "🎉 That's my top recommendation! This chat session is now complete — feel free to explore the club page above and get involved! 👋",
               'bot'
             );
-            _lockChat();
-          }, 800);
+          }, 400);
         }
+
+      } catch (err) {
+        if (loadingMsg) loadingMsg.remove();
+        addMessage(`Sorry, I'm having trouble: ${err.message}`, 'bot');
+        console.error(err);
       }
-
-    } catch (err) {
-      if (loadingMsg) loadingMsg.remove();
-      addMessage(`Sorry, I'm having trouble: ${err.message}`, 'bot');
-      console.error(err);
     }
-  }
 
-  function addMessage(text, type) {
-    const msg = document.createElement('div');
-    msg.className = `msg ${type}`;
-    msg.textContent = text;
-    chatMessages.appendChild(msg);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    return msg;
-  }
+    function addMessage(text, type) {
+      const msg = document.createElement('div');
+      msg.className = `msg ${type}`;
+      if (type.includes('typing')) {
+        msg.textContent = text;
+      } else {
+        msg.innerHTML = formatMarkdown(text);
+      }
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return msg;
+    }
 
-  chatSend.addEventListener('click', sendMessage);
-  chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-  });
+    if (chatSend) chatSend.addEventListener('click', sendMessage);
+    if (chatInput) {
+      chatInput.addEventListener('keydown', (e) => {
+        if (_chatLocked) {
+          e.preventDefault();
+          return false;
+        }
+        if (e.key === 'Enter') sendMessage();
+      });
+    }
+  })();
 })();
 
 // ─── CAROUSEL & ACTIVITY LIGHTBOX ─────────────────────

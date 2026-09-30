@@ -957,11 +957,29 @@ nav::-webkit-scrollbar {
   border-bottom-right-radius: 2px;
 }
 
+.msg strong,
+.msg b {
+  font-weight: 700;
+  color: inherit;
+}
+
+.msg em,
+.msg i {
+  font-style: italic;
+  color: inherit;
+}
+
 .chat-input-area {
   padding: 16px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   gap: 10px;
+  transition: background 0.3s, opacity 0.3s;
+}
+
+.chat-input-area.locked {
+  background: #f4f0eb;
+  opacity: 0.8;
 }
 
 #chatInput {
@@ -973,7 +991,14 @@ nav::-webkit-scrollbar {
   font-family: inherit;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+#chatInput:disabled {
+  background: #eae5de;
+  color: #7a736a;
+  cursor: not-allowed;
+  border-color: #d6cfc4;
 }
 
 #chatInput:focus {
@@ -992,10 +1017,16 @@ nav::-webkit-scrollbar {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 
-#chatSend:hover {
+#chatSend:disabled {
+  background: #948777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#chatSend:hover:not(:disabled) {
   transform: scale(1.05);
   background: #422A08;
   box-shadow: 0 4px 10px rgba(66, 42, 8, 0.2);
