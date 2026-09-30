@@ -317,8 +317,25 @@
       if (!text) return false;
       const t = text.toLowerCase();
       const clubNames = ['robotics','cybersonic','technocrates','technogrades','finance','eco','teded','ted ed','theatre','theater','drama','quizzaders','quizzarders','cookery','debate','literary'];
-      const recommendWords = ['recommend','join','perfect for you','check out','suggest','go for','i think you','you should','would suit','great fit','best fit','ideal fit','top choice','suited for','head over to','sign up for'];
-      return clubNames.some(c => t.includes(c)) && recommendWords.some(w => t.includes(w));
+      const explicitPhrases = [
+        'i recommend',
+        'my recommendation',
+        'top recommendation',
+        'strongly recommend',
+        'would recommend',
+        'highly recommend',
+        'perfect club for you',
+        'ideal club for you',
+        'best club for you',
+        'club for you is',
+        'you should join the',
+        'i suggest you join',
+        'the right club for you is',
+        'greatest fit for you is'
+      ];
+      const hasClub = clubNames.some(c => t.includes(c));
+      const hasExplicitPhrase = explicitPhrases.some(p => t.includes(p));
+      return hasClub && hasExplicitPhrase;
     }
 
     function _lockChat() {

@@ -527,12 +527,29 @@ const groq = new Groq({ apiKey: GROQ_API_KEY });
 
 // Helper for detecting club recommendation in response
 const CLUB_NAMES_LIST = ['robotics','cybersonic','technocrates','technogrades','finance','eco','teded','ted ed','theatre','theater','drama','quizzaders','quizzarders','cookery','debate','literary'];
-const RECOMMEND_PHRASES_LIST = ['recommend','join','perfect for you','check out','suggest','go for','i think you','you should','would suit','great fit','best fit','ideal fit','top choice','suited for','head over to','sign up for'];
+const EXPLICIT_RECOMMEND_PHRASES = [
+  'i recommend',
+  'my recommendation',
+  'top recommendation',
+  'strongly recommend',
+  'would recommend',
+  'highly recommend',
+  'perfect club for you',
+  'ideal club for you',
+  'best club for you',
+  'club for you is',
+  'you should join the',
+  'i suggest you join',
+  'the right club for you is',
+  'greatest fit for you is'
+];
 
 function isRecommendationText(text) {
   if (!text) return false;
   const t = text.toLowerCase();
-  return CLUB_NAMES_LIST.some(c => t.includes(c)) && RECOMMEND_PHRASES_LIST.some(w => t.includes(w));
+  const hasClub = CLUB_NAMES_LIST.some(c => t.includes(c));
+  const hasExplicitPhrase = EXPLICIT_RECOMMEND_PHRASES.some(p => t.includes(p));
+  return hasClub && hasExplicitPhrase;
 }
 
 // POST /api/chat — Chatbot endpoint
@@ -553,13 +570,17 @@ app.post("/api/chat", chatRateLimit, async (req, res) => {
       });
     }
 
-    // 2. Strict limit: Check if a recommendation was already provided in history
-    const alreadyRecommended = (history || []).some(h => h.role === 'assistant' && isRecommendationText(h.content));
-    if (alreadyRecommended) {
-      return res.json({
-        response: "This chat session has ended because a club recommendation was already provided! Please explore the club pages above to join.",
-        isFinal: true
-      });
+    const turnCount = Math.floor((history || []).length / 2) + 1;
+
+    // 2. Check if recommendation was already provided in past turns (only after turn 1)
+    if (turnCount > 1) {
+      const alreadyRecommended = (history || []).some(h => h.role === 'assistant' && isRecommendationText(h.content));
+      if (alreadyRecommended) {
+        return res.json({
+          response: "This chat session has ended because a club recommendation was already provided! Please explore the club pages above to join.",
+          isFinal: true
+        });
+      }
     }
 
     const inappropriateKeywords = [
@@ -584,7 +605,6 @@ app.post("/api/chat", chatRateLimit, async (req, res) => {
       return res.json({ response: "I'm sorry, I cannot respond to that. Please keep our conversation school-appropriate and focused on finding a club!" });
     }
 
-    const turnCount = Math.floor((history || []).length / 2) + 1;
     const isFinalRecommendation = turnCount >= 4;
 
     const systemInstruction = `You are the "Cambridge Clubs Bot". 
@@ -614,14 +634,10 @@ Rules:
       content: h.content,
     }));
 
+    // Prioritize active & ultrafast Groq models
     const GROQ_MODELS = [
-      "llama-3.3-70b-versatile",
-      "llama-3.1-8b-instant",
-      "llama3-70b-8192",
-      "llama3-8b-8192",
-      "mixtral-8x7b-32768",
-      "openai/gpt-oss-120b",
       "qwen/qwen3.8-27b",
+      "openai/gpt-oss-120b",
       "openai/gpt-oss-20b",
       "canopylabs/orpheus-v1-english"
     ];
@@ -631,17 +647,21 @@ Rules:
 
     for (const model of GROQ_MODELS) {
       try {
-        const completion = await groq.chat.completions.create({
-          messages: [
-            { role: "system", content: systemInstruction },
-            ...groqHistory,
-            { role: "user", content: message }
-          ],
-          model,
-          temperature: 0.7,
-          max_tokens: 150,
-          top_p: 1,
-        });
+        const completion = await Promise.race([
+          groq.chat.completions.create({
+            messages: [
+              { role: "system", content: systemInstruction },
+              ...groqHistory,
+              { role: "user", content: message }
+            ],
+            model,
+            temperature: 0.7,
+            max_tokens: 150,
+            top_p: 1,
+          }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Model request timeout")), 5000))
+        ]);
+
         if (completion?.choices?.[0]?.message?.content) {
           content = completion.choices[0].message.content;
           break;
