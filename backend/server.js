@@ -80,7 +80,10 @@ try {
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json({ limit: "2mb" }));
 
 // DB Connection Middleware for serverless API routes
@@ -100,10 +103,12 @@ try {
   app.use(compression());
 } catch {}
 
-// Static assets
-app.use("/uploads", express.static(UPLOAD_DIR));
-app.use("/portal", express.static(path.join(__dirname, "portal")));
-app.use("/", express.static(path.join(__dirname, "..")));
+// Static assets (local dev only — Vercel serves static files via routes config)
+if (!process.env.VERCEL) {
+  app.use("/uploads", express.static(UPLOAD_DIR));
+  app.use("/portal", express.static(path.join(__dirname, "portal")));
+  app.use("/", express.static(path.join(__dirname, "..")));
+}
 
 // ─── MongoDB / Mongoose Setup ───────────────────────────────────────────────
 const mongoose = require("mongoose");
@@ -482,7 +487,8 @@ app.post("/api/auth/login", async (req, res) => {
   const normalizedClubId = clubId.toLowerCase();
   const targetKey = `mentor:${normalizedClubId}`;
 
-  const mentor = MENTORS.find(m => m.clubId.toLowerCase() === normalizedClubId);
+  const mentors = getMentorsList();
+  const mentor = mentors.find(m => m.clubId.toLowerCase() === normalizedClubId);
   const dummyHash = "$2a$10$e8wJ6QeP.1k8.ZqQ4oJ3.eXmU8hZ4V5C5E5e5e5e5e5e5e5e5e5e";
 
   let isValid = false;
@@ -870,6 +876,303 @@ app.delete("/api/activities/:clubId/:id", requireAuth, async (req, res) => {
   if (!memItem) return res.status(404).json({ error: "Activity not found" });
 
   res.json({ message: "Deletion request submitted. Pending admin approval.", deleteRequested: true, id });
+});
+
+// ─── Club & Mentor Data Helpers (with Serverless /tmp & DB fallback) ─────────
+const TMP_MENTORS_FILE = path.join("/tmp", "cambridge_clubs_mentors.json");
+const TMP_CLUBS_FILE = path.join("/tmp", "cambridge_clubs_config.json");
+
+function getMentorsList() {
+  try {
+    if (fs.existsSync(TMP_MENTORS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(TMP_MENTORS_FILE, "utf8"));
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (e) {}
+  try {
+    const raw = fs.readFileSync(path.join(DATA_DIR, "mentors.json"), "utf8");
+    return JSON.parse(raw);
+  } catch (e) {
+    return Array.isArray(MENTORS) ? JSON.parse(JSON.stringify(MENTORS)) : [];
+  }
+}
+
+function saveMentorsList(data) {
+  try {
+    fs.writeFileSync(path.join(DATA_DIR, "mentors.json"), JSON.stringify(data, null, 2), "utf8");
+  } catch (e) {
+    console.warn("Could not write mentors.json to DATA_DIR (read-only filesystem on Vercel):", e.message);
+  }
+  try {
+    fs.writeFileSync(TMP_MENTORS_FILE, JSON.stringify(data, null, 2), "utf8");
+  } catch (e) {}
+}
+
+function getClubsList() {
+  try {
+    if (fs.existsSync(TMP_CLUBS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(TMP_CLUBS_FILE, "utf8"));
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (e) {}
+  try {
+    const clubsConfigPath = path.join(DATA_DIR, "clubs.json");
+    if (fs.existsSync(clubsConfigPath)) {
+      const raw = fs.readFileSync(clubsConfigPath, "utf8");
+      return JSON.parse(raw);
+    }
+  } catch (e) {}
+  return [];
+}
+
+function saveClubsList(data) {
+  try {
+    fs.writeFileSync(path.join(DATA_DIR, "clubs.json"), JSON.stringify(data, null, 2), "utf8");
+  } catch (e) {
+    console.warn("Could not write clubs.json to DATA_DIR (read-only filesystem on Vercel):", e.message);
+  }
+  try {
+    fs.writeFileSync(TMP_CLUBS_FILE, JSON.stringify(data, null, 2), "utf8");
+  } catch (e) {}
+}
+
+// ─── Public Clubs API ──────────────────────────────────────────────────────────
+
+// GET /api/clubs — public list of all clubs for homepage and nav
+app.get("/api/clubs", (_req, res) => {
+  try {
+    const mentors = getMentorsList();
+    let clubs = getClubsList();
+
+    // Ensure all mentors exist in clubs list
+    const mentorsMap = new Map(mentors.map(m => [m.clubId.toLowerCase(), m]));
+    
+    // Merge mentorName and format
+    const result = clubs.map((c, i) => {
+      const m = mentorsMap.get((c.clubId || "").toLowerCase()) || {};
+      return {
+        ...c,
+        mentorName: c.mentorName || m.mentorName || "",
+        order: c.order !== undefined ? c.order : (i + 1)
+      };
+    }).sort((a, b) => (a.order || 99) - (b.order || 99));
+
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/clubs/:clubId — public single club info
+app.get("/api/clubs/:clubId", (req, res) => {
+  try {
+    const rawId = (req.params.clubId || "").toLowerCase();
+    let targetId = rawId;
+    if (rawId === "drama") targetId = "theatre";
+    if (rawId === "technogrades") targetId = "technocrates";
+
+    const clubs = getClubsList();
+    const mentors = getMentorsList();
+    const club = clubs.find(c => (c.clubId || "").toLowerCase() === targetId || (c.clubId || "").toLowerCase() === rawId);
+    
+    if (!club) {
+      return res.status(404).json({ error: "Club not found" });
+    }
+
+    const mentor = mentors.find(m => (m.clubId || "").toLowerCase() === targetId || (m.clubId || "").toLowerCase() === rawId);
+    res.json({
+      ...club,
+      mentorName: club.mentorName || (mentor ? mentor.mentorName : "")
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Admin: Clubs Management ───────────────────────────────────────────────────
+
+// GET /api/admin/clubs — list all clubs with mentor info for Admin Portal
+app.get("/api/admin/clubs", requireAdmin, (req, res) => {
+  try {
+    const mentors = getMentorsList();
+    let clubs = getClubsList();
+
+    // Map by clubId
+    const clubsMap = new Map(clubs.map(c => [(c.clubId || "").toLowerCase(), c]));
+    const mentorsMap = new Map(mentors.map(m => [(m.clubId || "").toLowerCase(), m]));
+
+    // Union of clubIds
+    const allIds = new Set([...clubsMap.keys(), ...mentorsMap.keys()]);
+    const merged = Array.from(allIds).map(id => {
+      const c = clubsMap.get(id) || {};
+      const m = mentorsMap.get(id) || {};
+      return {
+        clubId: c.clubId || m.clubId || id,
+        name: c.name || m.name || id,
+        formattedName: c.formattedName || c.name || m.name || id,
+        category: c.category || "General",
+        desc: c.desc || "",
+        color: c.color || "#5A390C",
+        bg: c.bg || "rgba(90,57,12,0.1)",
+        border: c.border || "rgba(90,57,12,0.2)",
+        img: c.img || "images/favicon.jpg",
+        link: c.link || "",
+        joinLink: c.joinLink || "",
+        mentorName: c.mentorName || m.mentorName || "",
+        day: c.day || "",
+        timings: c.timings || "",
+        grades: c.grades || "",
+        order: c.order || 99
+      };
+    }).sort((a, b) => (a.order || 99) - (b.order || 99));
+
+    res.json(merged);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/admin/clubs — add a new club
+app.post("/api/admin/clubs", requireAdmin, (req, res) => {
+  try {
+    const { clubId, name, formattedName, mentorName, password, category, desc, color, link, joinLink, timings, grades, day, img } = req.body;
+    if (!clubId || !name) return res.status(400).json({ error: "clubId and name are required" });
+
+    const cleanId = clubId.toLowerCase().trim().replace(/[^a-z0-9_-]/g, "");
+    const mentors = getMentorsList();
+    let clubs = getClubsList();
+
+    if (clubs.find(c => (c.clubId || "").toLowerCase() === cleanId) || mentors.find(m => (m.clubId || "").toLowerCase() === cleanId)) {
+      return res.status(409).json({ error: "A club with this ID already exists" });
+    }
+
+    const passwordHash = password ? bcrypt.hashSync(password, 10) : bcrypt.hashSync("changeme123", 10);
+    const newMentor = {
+      clubId: cleanId,
+      name: name.trim(),
+      mentorName: (mentorName || "").trim(),
+      passwordHash
+    };
+    mentors.push(newMentor);
+    saveMentorsList(mentors);
+
+    const clubColor = color || "#5A390C";
+    const newClub = {
+      clubId: cleanId,
+      name: name.trim(),
+      formattedName: formattedName || name.trim(),
+      category: category || "General",
+      desc: (desc || "").trim(),
+      color: clubColor,
+      bg: `${clubColor}1a`,
+      border: `${clubColor}33`,
+      img: img || "images/favicon.jpg",
+      link: link || `${cleanId}/${cleanId}.html`,
+      joinLink: (joinLink || "").trim(),
+      mentorName: (mentorName || "").trim(),
+      timings: (timings || "").trim(),
+      grades: (grades || "").trim(),
+      day: (day || "").trim(),
+      order: clubs.length + 1
+    };
+
+    clubs.push(newClub);
+    saveClubsList(clubs);
+
+    res.status(201).json({ message: "Club created successfully", club: newClub });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /api/admin/clubs/:clubId — update any details about a club
+app.put("/api/admin/clubs/:clubId", requireAdmin, (req, res) => {
+  try {
+    const { clubId } = req.params;
+    const cleanId = clubId.toLowerCase().trim();
+    const { name, formattedName, mentorName, password, category, desc, color, link, joinLink, timings, grades, day, img, order } = req.body;
+
+    const mentors = getMentorsList();
+    const mentorIdx = mentors.findIndex(m => (m.clubId || "").toLowerCase() === cleanId);
+
+    if (mentorIdx !== -1) {
+      if (name) mentors[mentorIdx].name = name.trim();
+      if (mentorName !== undefined) mentors[mentorIdx].mentorName = mentorName.trim();
+      if (password && password.trim()) {
+        mentors[mentorIdx].passwordHash = bcrypt.hashSync(password.trim(), 10);
+      }
+      saveMentorsList(mentors);
+    } else if (password && password.trim()) {
+      mentors.push({
+        clubId: cleanId,
+        name: name || cleanId,
+        mentorName: mentorName || "",
+        passwordHash: bcrypt.hashSync(password.trim(), 10)
+      });
+      saveMentorsList(mentors);
+    }
+
+    let clubs = getClubsList();
+    let clubIdx = clubs.findIndex(c => (c.clubId || "").toLowerCase() === cleanId);
+
+    const clubColor = color || (clubIdx !== -1 ? clubs[clubIdx].color : "#5A390C");
+    const updatedClub = {
+      ...(clubIdx !== -1 ? clubs[clubIdx] : {}),
+      clubId: cleanId,
+      name: name !== undefined ? name.trim() : (clubs[clubIdx] ? clubs[clubIdx].name : cleanId),
+      formattedName: formattedName !== undefined ? formattedName : (name || (clubs[clubIdx] ? clubs[clubIdx].name : cleanId)),
+      category: category !== undefined ? category : (clubs[clubIdx] ? clubs[clubIdx].category : "General"),
+      desc: desc !== undefined ? desc.trim() : (clubs[clubIdx] ? clubs[clubIdx].desc : ""),
+      color: clubColor,
+      bg: `${clubColor}1a`,
+      border: `${clubColor}33`,
+      img: img !== undefined ? img : (clubs[clubIdx] ? clubs[clubIdx].img : "images/favicon.jpg"),
+      link: link !== undefined ? link.trim() : (clubs[clubIdx] ? clubs[clubIdx].link : ""),
+      joinLink: joinLink !== undefined ? joinLink.trim() : (clubs[clubIdx] ? clubs[clubIdx].joinLink : ""),
+      mentorName: mentorName !== undefined ? mentorName.trim() : (clubs[clubIdx] ? clubs[clubIdx].mentorName : ""),
+      timings: timings !== undefined ? timings.trim() : (clubs[clubIdx] ? clubs[clubIdx].timings : ""),
+      grades: grades !== undefined ? grades.trim() : (clubs[clubIdx] ? clubs[clubIdx].grades : ""),
+      day: day !== undefined ? day.trim() : (clubs[clubIdx] ? clubs[clubIdx].day : ""),
+      order: order !== undefined ? Number(order) : (clubs[clubIdx] ? clubs[clubIdx].order : 99)
+    };
+
+    if (clubIdx !== -1) {
+      clubs[clubIdx] = updatedClub;
+    } else {
+      clubs.push(updatedClub);
+    }
+    saveClubsList(clubs);
+
+    res.json({ message: "Club updated successfully", club: updatedClub });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/clubs/:clubId — remove a club from website
+app.delete("/api/admin/clubs/:clubId", requireAdmin, (req, res) => {
+  try {
+    const { clubId } = req.params;
+    const cleanId = clubId.toLowerCase().trim();
+
+    let mentors = getMentorsList();
+    const mentorIdx = mentors.findIndex(m => (m.clubId || "").toLowerCase() === cleanId);
+    if (mentorIdx !== -1) {
+      mentors.splice(mentorIdx, 1);
+      saveMentorsList(mentors);
+    }
+
+    let clubs = getClubsList();
+    const clubIdx = clubs.findIndex(c => (c.clubId || "").toLowerCase() === cleanId);
+    if (clubIdx !== -1) {
+      clubs.splice(clubIdx, 1);
+      saveClubsList(clubs);
+    }
+
+    res.json({ message: "Club removed from website successfully", clubId: cleanId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ─── 404 Fallback ──────────────────────────────────────────────────────────────

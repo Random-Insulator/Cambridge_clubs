@@ -131,40 +131,10 @@
     <polyline points="21 15 16 10 5 21"/>
   </svg>`;
 
-  const list = document.getElementById('clubsList');
-
-  if (list) {
-    clubs.forEach((c, i) => {
-      const row = document.createElement('div');
-      row.className = 'club-row' + (i % 2 !== 0 ? ' flip' : '');
-      row.style.cssText = `--cc:${c.color}; --cb:${c.bg}; --cbr:${c.border}`;
-
-      // whole row is clickable
-      row.style.cursor = 'pointer';
-      row.addEventListener('click', () => window.location.href = c.link);
-
-      row.innerHTML = `
-      <div class="club-img-wrap">
-        <img src="${c.img}" alt="${c.name} club photo"
-             onload="this.nextElementSibling.style.display='none'"
-             onerror="this.style.display='none'">
-        <div class="img-placeholder">
-          ${imgIcon}
-          <span>${c.name}</span>
-        </div>
-      </div>
-      <div class="club-info">
-        <div class="club-category">${c.category}</div>
-        <div class="club-name">${c.formattedName}</div>
-        <div class="club-desc">${c.desc}</div>
-        <div class="club-footer">
-          <a href="${c.link}" class="learn-btn">Learn more →</a>
-        </div>
-      </div>
-    `;
-      list.appendChild(row);
-    });
-  }
+  // Detect if we are in a subdirectory (club page) vs root (index)
+  const _pathDepth = window.location.pathname.split('/').filter(Boolean).length;
+  const _isSubPage = _pathDepth > 1 || (window.location.protocol === 'file:' && window.location.href.includes('/cambridge_clubs/') && !window.location.href.endsWith('/cambridge_clubs/index.html') && !window.location.href.endsWith('/cambridge_clubs/'));
+  const _prefix = _isSubPage ? '../' : '';
 
   // ─── Scroll-triggered fade-in ──────────────────────────
   const observer = new IntersectionObserver((entries) => {
@@ -176,32 +146,174 @@
     });
   }, { threshold: 0.08 });
 
-  document.querySelectorAll('.club-row').forEach(row => observer.observe(row));
+  // ─── Render Clubs on Homepage & Nav ───────────────────
+  function renderClubsList(activeClubs) {
+    if (!activeClubs || !activeClubs.length) return;
+    window._activeClubs = activeClubs;
 
-  // ─── Nav links to club pages ───────────────────────────
-  const navMap = {
-    'TedEd': 'teded/teded.html',
-    'Cybersonic': 'cybersonic/cybersonic.html',
-    'Robotics': 'robotics/robotics.html',
-    'Cookery': 'cookery/cookery.html',
-    'Quizzaders': 'quizzarders/quizzarders.html',
-    'Finance': 'finance/finance.html',
-    'Theatre': 'drama/drama.html',
-    'Eco': 'eco/eco.html',
-    'Technocrates': 'technogrades/technogrades.html',
-    'Debate': 'debate/debate.html',
-    'Literary': 'literary/literary.html',
-  };
+    const list = document.getElementById('clubsList');
+    if (list) {
+      list.innerHTML = '';
+      activeClubs.forEach((c, i) => {
+        const row = document.createElement('div');
+        row.className = 'club-row' + (i % 2 !== 0 ? ' flip' : '');
+        const col = c.color || '#5A390C';
+        const bg = c.bg || `${col}1a`;
+        const border = c.border || `${col}33`;
+        row.style.cssText = `--cc:${col}; --cb:${bg}; --cbr:${border}`;
 
-  // Detect if we are in a subdirectory (club page) vs root (index)
-  const _pathDepth = window.location.pathname.split('/').filter(Boolean).length;
-  const _isSubPage = _pathDepth > 1 || (window.location.protocol === 'file:' && window.location.href.includes('/cambridge_clubs/') && !window.location.href.endsWith('/cambridge_clubs/index.html') && !window.location.href.endsWith('/cambridge_clubs/'));
-  const _prefix = _isSubPage ? '../' : '';
+        const clubLink = c.link ? (_prefix + c.link) : '#';
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', (e) => {
+          if (!e.target.closest('a')) {
+            window.location.href = clubLink;
+          }
+        });
 
-  document.querySelectorAll('.nav-links a').forEach(a => {
-    const name = a.textContent.trim();
-    if (navMap[name]) a.href = _prefix + navMap[name];
-  });
+        row.innerHTML = `
+          <div class="club-img-wrap">
+            <img src="${_prefix + (c.img || 'images/favicon.jpg')}" alt="${c.name} club photo"
+                 onload="this.nextElementSibling.style.display='none'"
+                 onerror="this.style.display='none'">
+            <div class="img-placeholder">
+              ${imgIcon}
+              <span>${c.name}</span>
+            </div>
+          </div>
+          <div class="club-info">
+            <div class="club-category">${c.category || 'General'}</div>
+            <div class="club-name">${c.formattedName || c.name}</div>
+            <div class="club-desc">${c.desc || ''}</div>
+            <div class="club-footer">
+              <a href="${clubLink}" class="learn-btn">Learn more →</a>
+            </div>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+
+      document.querySelectorAll('.club-row').forEach(row => observer.observe(row));
+    }
+
+    // ── Update Nav Links ──
+    const navLinksContainer = document.querySelector('.nav-links');
+    if (navLinksContainer) {
+      let navHtml = `<a class="${!_isSubPage ? 'active' : ''}" href="${_prefix}index.html">Home</a><div class="nav-divider"></div>`;
+      activeClubs.forEach(c => {
+        const clubLink = c.link ? (_prefix + c.link) : '#';
+        const isCurrent = _isSubPage && (
+          window.location.pathname.toLowerCase().includes((c.clubId || '').toLowerCase()) ||
+          window.location.pathname.toLowerCase().includes((c.name || '').toLowerCase())
+        );
+        navHtml += `<a class="${isCurrent ? 'active' : ''}" href="${clubLink}">${c.name}</a>`;
+      });
+      navLinksContainer.innerHTML = navHtml;
+      if (typeof window.setupNavPreviews === 'function') {
+        window.setupNavPreviews();
+      }
+    }
+  }
+
+  // ── Sync Current Club Page (Join button, mentor, timings, grades, desc) ──
+  function syncSubpageClub(activeClubs) {
+    if (!activeClubs || !activeClubs.length) return;
+    const currentPath = window.location.pathname.toLowerCase();
+    
+    // Find matching club for this page
+    const club = activeClubs.find(c => {
+      const id = (c.clubId || '').toLowerCase();
+      const link = (c.link || '').toLowerCase();
+      const name = (c.name || '').toLowerCase();
+      return (id && currentPath.includes(id)) || 
+             (link && currentPath.includes(link.split('/')[0])) ||
+             (name && currentPath.includes(name)) ||
+             (id === 'theatre' && currentPath.includes('drama')) ||
+             (id === 'technocrates' && currentPath.includes('technogrades'));
+    });
+
+    if (!club) return;
+
+    // 1. Join button destination URL
+    if (club.joinLink) {
+      document.querySelectorAll('.join-btn').forEach(btn => {
+        btn.onclick = () => window.open(club.joinLink, '_blank');
+      });
+    }
+
+    // 2. Mentor name
+    if (club.mentorName) {
+      document.querySelectorAll('.mentor-name').forEach(el => {
+        el.textContent = club.mentorName;
+      });
+    }
+
+    // 3. Timings / Schedule
+    const timingsText = club.timings || club.day;
+    if (timingsText) {
+      document.querySelectorAll('.meeting-tag').forEach(el => {
+        const svg = el.querySelector('svg');
+        el.innerHTML = (svg ? svg.outerHTML : '') + ' ' + timingsText;
+      });
+      document.querySelectorAll('.info-row').forEach(row => {
+        const lbl = row.querySelector('.info-label');
+        const val = row.querySelector('.info-value');
+        if (lbl && val) {
+          const lt = lbl.textContent.trim().toLowerCase();
+          if ((lt === 'time' || lt === 'day') && timingsText) {
+            val.textContent = timingsText;
+          }
+        }
+      });
+    }
+
+    // 4. Grades / Open to
+    if (club.grades) {
+      document.querySelectorAll('.mentor-role').forEach(el => {
+        el.textContent = club.grades;
+      });
+      document.querySelectorAll('.info-row').forEach(row => {
+        const lbl = row.querySelector('.info-label');
+        const val = row.querySelector('.info-value');
+        if (lbl && val && lbl.textContent.trim().toLowerCase() === 'open to') {
+          val.textContent = club.grades;
+        }
+      });
+    }
+
+    // 5. Description
+    if (club.desc) {
+      document.querySelectorAll('.club-full-desc').forEach(el => {
+        el.textContent = club.desc;
+      });
+    }
+
+    // 6. Title & Category badge
+    if (club.name) {
+      document.querySelectorAll('.club-title').forEach(el => {
+        el.innerHTML = club.formattedName || club.name;
+      });
+    }
+    if (club.category) {
+      document.querySelectorAll('.club-badge').forEach(el => {
+        el.textContent = club.category;
+      });
+    }
+  }
+
+  // Initial render with fallback static array for instant speed
+  renderClubsList(clubs);
+  syncSubpageClub(clubs);
+
+  // Background fetch live clubs data from API
+  fetch('/api/clubs')
+    .then(r => r.ok ? r.json() : null)
+    .then(liveClubs => {
+      if (Array.isArray(liveClubs) && liveClubs.length > 0) {
+        renderClubsList(liveClubs);
+        syncSubpageClub(liveClubs);
+      }
+    })
+    .catch(() => {});
 
 
   // ─── CHATBOT LOGIC ────────────────────────────────────
