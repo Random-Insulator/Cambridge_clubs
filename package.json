@@ -8,10 +8,9 @@
     "load:test:prod": "npx artillery run --target https://your-app.onrender.com load_test.yml"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "22.x"
   },
   "devDependencies": {
-    "artillery": "^2.0.21",
     "mongodb-memory-server": "^11.0.1"
   },
   "dependencies": {
