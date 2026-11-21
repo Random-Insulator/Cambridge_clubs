@@ -1,43 +1,16 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "**",
-      "use": "@vercel/static"
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "backend/data/**"
     }
-  ],
+  },
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/backend/server.js"
-    },
-    {
-      "source": "/portal",
-      "destination": "/backend/portal/login.html"
-    },
-    {
-      "source": "/portal/",
-      "destination": "/backend/portal/login.html"
-    },
-    {
-      "source": "/portal/(.*)",
-      "destination": "/backend/portal/$1"
-    },
-    {
-      "source": "/admin",
-      "destination": "/backend/portal/admin.html"
-    },
-    {
-      "source": "/login",
-      "destination": "/backend/portal/login.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/404.html"
-    }
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/portal", "destination": "/backend/portal/login.html" },
+    { "source": "/portal/", "destination": "/backend/portal/login.html" },
+    { "source": "/portal/(.*)", "destination": "/backend/portal/$1" },
+    { "source": "/admin", "destination": "/backend/portal/admin.html" },
+    { "source": "/login", "destination": "/backend/portal/login.html" }
   ]
 }
