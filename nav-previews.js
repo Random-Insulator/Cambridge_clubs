@@ -69,35 +69,52 @@
   const isLocalFileSub = window.location.href.split('/').slice(-2)[0] !== 'cambridge_clubs';
   const finalPrefix = (window.location.protocol === 'file:' ? (isLocalFileSub ? '../' : '') : pathPrefix);
 
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    const clubName = link.textContent.trim();
-    const data = clubsData[clubName];
+  function bindNavLinks() {
+    // Merge dynamic clubs from window._activeClubs if available
+    if (window._activeClubs && Array.isArray(window._activeClubs)) {
+      window._activeClubs.forEach(c => {
+        clubsData[c.name] = {
+          tag: c.category || 'General',
+          img: c.img || 'images/favicon.jpg',
+          desc: c.desc || ''
+        };
+      });
+    }
 
-    if (!data) return;
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      const clubName = link.textContent.trim();
+      const data = clubsData[clubName];
 
-    link.addEventListener('mouseenter', () => {
-      clearTimeout(hideTimeout);
-      
-      // Update content
-      img.src = finalPrefix + data.img;
-      tag.textContent = data.tag;
-      title.textContent = clubName;
-      desc.textContent = data.desc;
+      if (!data || link._previewBound) return;
+      link._previewBound = true;
 
-      // Position card
-      const rect = link.getBoundingClientRect();
-      const cardX = Math.max(20, rect.left + (rect.width / 2) - 110);
-      card.style.left = `${cardX}px`;
-      
-      card.classList.add('visible');
+      link.addEventListener('mouseenter', () => {
+        clearTimeout(hideTimeout);
+        
+        // Update content
+        img.src = finalPrefix + data.img;
+        tag.textContent = data.tag;
+        title.textContent = clubName;
+        desc.textContent = data.desc;
+
+        // Position card
+        const rect = link.getBoundingClientRect();
+        const cardX = Math.max(20, rect.left + (rect.width / 2) - 110);
+        card.style.left = `${cardX}px`;
+        
+        card.classList.add('visible');
+      });
+
+      link.addEventListener('mouseleave', () => {
+        hideTimeout = setTimeout(() => {
+          card.classList.remove('visible');
+        }, 100);
+      });
     });
+  }
 
-    link.addEventListener('mouseleave', () => {
-      hideTimeout = setTimeout(() => {
-        card.classList.remove('visible');
-      }, 100);
-    });
-  });
+  window.setupNavPreviews = bindNavLinks;
+  bindNavLinks();
 
   // Keep visible when hovering card itself
   card.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
