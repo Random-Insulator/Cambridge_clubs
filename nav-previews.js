@@ -5,50 +5,30 @@
       img: 'images/teded.jpg',
       desc: 'Ideas worth spreading. Student-led talks on topics that matter to you.'
     },
-    'Cybersonic': {
-      tag: 'Technology',
-      img: 'images/cybersonic.jpg',
-      desc: 'Master the computing stack, from Python and AI to robust cybersecurity.'
-    },
     'Robotics': {
       tag: 'Technology',
       img: 'images/robotics.jpg',
-      desc: 'Build, program, and compete with robots. No experience needed — just curiosity.'
+      desc: 'Build, program, and compete with robots. Hands-on microcontrollers and autonomous machines.'
     },
     'Cookery': {
       tag: 'Life Skills',
       img: 'images/cookery.jpg',
-      desc: 'Engaging platform to explore fireless cooking and sustainable practices.'
-    },
-    'Quizzaders': {
-      tag: 'Academic',
-      img: 'images/quizzarders.jpg',
-      desc: 'Quiz champions in the making. Trivia, general knowledge, and competitions.'
-    },
-    'Finance': {
-      tag: 'Finance',
-      img: 'images/finance.jpg',
-      desc: 'Stocks, budgeting, investing. Learn to manage money early.'
+      desc: 'Master essential culinary techniques, explore global flavors, and learn fireless gourmet cooking.'
     },
     'Theatre': {
       tag: 'Arts',
       img: 'images/Theatre.jpg',
-      desc: 'Stage performances, improv nights, and storytelling workshops.'
+      desc: 'Stage performances, improv nights, voice projection, and dramatic storytelling workshops.'
     },
     'Eco': {
       tag: 'Environment',
       img: 'images/eco.jpg',
-      desc: 'Campus sustainability projects and climate action campaigns.'
+      desc: 'Campus sustainability projects, circular upcycling, and climate action campaigns.'
     },
-    'Technocrates': {
-      tag: 'Academic',
+    'Science': {
+      tag: 'Science',
       img: 'images/Technocrates.jpg',
-      desc: 'Active innovators exploring scientific experimentation and discovery.'
-    },
-    'Debate': {
-      tag: 'Speaking',
-      img: 'images/debate.png',
-      desc: 'Mindset for debating, structuring arguments, and presenting facts.'
+      desc: 'Hands-on empirical experimentation, physics apparatus testing, and natural law discovery.'
     },
     'Literary': {
       tag: 'Arts',

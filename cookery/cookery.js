@@ -1,158 +1,203 @@
-// ─── CLUB THEME COLOR ─────────────────────────────────
-document.documentElement.style.setProperty('--club-color',  '#df4615');
-document.documentElement.style.setProperty('--club-bg',     'rgba(223,70,21,0.1)');
-document.documentElement.style.setProperty('--club-border', 'rgba(223,70,21,0.2)');
-
-// ─── CAROUSEL & ACTIVITIES — loaded from API ──────────
-const API_BASE = '';
-const CLUB_ID  = 'cookery';
-
-const phIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="#df4615" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
-
-const track  = document.getElementById('carouselTrack');
-const dotsEl = document.getElementById('carouselDots');
-let current     = 0;
-let totalSlides = 0;
-
-function buildCarousel(activities) {
-  totalSlides = activities.length;
-  track.innerHTML  = '';
-  dotsEl.innerHTML = '';
-  if (!activities.length) {
-    const ph = document.createElement('div');
-    ph.className = 'carousel-slide';
-    ph.innerHTML = `<div class="slide-ph">${phIcon}<span>No photos yet</span></div>`;
-    track.appendChild(ph);
-    return;
+// ─── CLUB ACTIVITIES DATA ────────────────────────────────────
+const CLUB_ACTIVITIES = [
+  {
+    "title": "Nutrition Month Culinary Showcase",
+    "tag": "EXHIBITION",
+    "date": "2025-07-12",
+    "desc": "Students crafted wholesome macro-balanced meals emphasizing organic local ingredients, mindful seasoning, and modern culinary design.",
+    "img": "../images/cookery_act1.jpg",
+    "imgPos": "center 25%"
+  },
+  {
+    "title": "The Art of Professional Plating",
+    "tag": "MASTERCLASS",
+    "date": "2025-11-04",
+    "desc": "An intensive workshop dissecting color harmony, negative space, sauce piping, and micro-green garnishing techniques on ceramic plates.",
+    "img": "../images/cookery_act2.jpg",
+    "imgPos": "center 20%"
+  },
+  {
+    "title": "Fireless Gourmet Dishes Competition",
+    "tag": "WORKSHOP",
+    "date": "2026-02-14",
+    "desc": "Teams engineered intricate cold delicacies, tartines, and infused parfaits without heat sources, judged on texture, presentation, and flavor profile.",
+    "img": "../images/cookery_act3.jpg",
+    "imgPos": "center center"
   }
-  activities.forEach((a, i) => {
-    const slide = document.createElement('div');
-    slide.className = 'carousel-slide';
-    const imagesArr = (a.images && a.images.length) ? a.images : [a.img];
-    const photoBadge = imagesArr.length > 1 ? ` <span style="font-size:11px; opacity:0.85; margin-left:6px; background:rgba(0,0,0,0.4); padding:2px 8px; border-radius:10px;">🖼️ ${imagesArr.length} Photos</span>` : '';
+];
 
-    slide.innerHTML = `
-      <img src="${API_BASE}${a.img || imagesArr[0]}" alt="${a.title}" style="cursor:zoom-in;"
-           onload="this.nextElementSibling.style.display='none'"
-           onerror="this.style.display='none'">
-      <div class="slide-ph">${phIcon}<span>Photo ${i + 1}</span></div>
-      <div class="slide-label">${a.title}${photoBadge}</div>`;
+// ─── MATHEMATICAL SVG PARABOLIC WAVE MORPHING (60 FPS) ──────
+(function initFluidWaves() {
+  const wave1 = document.getElementById('heroWave1');
+  const wave2 = document.getElementById('heroWave2');
+  const wave3 = document.getElementById('heroWave3');
+  if (!wave1 || !wave2 || !wave3) return;
 
-    const imgEl = slide.querySelector('img');
-    imgEl.onclick = () => {
-      const lbSlides = imagesArr.map((url, idx) => ({
-        img: `${API_BASE}${url}`,
-        title: imagesArr.length > 1 ? `${a.title} (${idx + 1}/${imagesArr.length})` : a.title
+  let time = 0;
+  let isRunning = true;
+
+  function renderWave() {
+    if (!isRunning) return;
+    time += 0.016;
+
+    // Layer 1: Deep slow undulation
+    const y1_0 = 500 + Math.sin(time * 0.7) * 35;
+    const c1_x1 = 300 + Math.cos(time * 0.5) * 40;
+    const c1_y1 = 430 + Math.sin(time * 0.8) * 45;
+    const c1_x2 = 680 + Math.sin(time * 0.6) * 50;
+    const c1_y2 = 570 + Math.cos(time * 0.7) * 35;
+    const mid1_x = 960 + Math.cos(time * 0.45) * 40;
+    const mid1_y = 470 + Math.sin(time * 0.75) * 40;
+    const end1_y = 490 + Math.sin(time * 0.6) * 30;
+
+    wave1.setAttribute(
+      'd',
+      `M0,${y1_0} C${c1_x1},${c1_y1} ${c1_x2},${c1_y2} ${mid1_x},${mid1_y} C1200,${mid1_y - 60} 1350,${end1_y + 30} 1440,${end1_y} L1440,900 L0,900 Z`
+    );
+
+    // Layer 2: Mid-tone dynamic parabolic curve
+    const y2_0 = 600 + Math.cos(time * 0.85) * 30;
+    const c2_x1 = 340 + Math.sin(time * 0.7) * 45;
+    const c2_y1 = 530 + Math.cos(time * 0.95) * 35;
+    const c2_x2 = 740 + Math.cos(time * 0.65) * 40;
+    const c2_y2 = 660 + Math.sin(time * 0.85) * 40;
+    const mid2_x = 1060 + Math.sin(time * 0.55) * 50;
+    const mid2_y = 560 + Math.cos(time * 0.65) * 35;
+    const end2_y = 610 + Math.cos(time * 0.75) * 25;
+
+    wave2.setAttribute(
+      'd',
+      `M0,${y2_0} C${c2_x1},${c2_y1} ${c2_x2},${c2_y2} ${mid2_x},${mid2_y} C1240,${mid2_y - 40} 1360,${end2_y + 30} 1440,${end2_y} L1440,900 L0,900 Z`
+    );
+
+    // Layer 3: Foreground rhythmic wave
+    const y3_0 = 700 + Math.sin(time * 1.05) * 25;
+    const c3_x1 = 380 + Math.cos(time * 0.9) * 35;
+    const c3_y1 = 640 + Math.sin(time * 1.1) * 30;
+    const c3_x2 = 820 + Math.sin(time * 0.8) * 40;
+    const c3_y2 = 750 + Math.cos(time * 0.95) * 30;
+    const mid3_x = 1160 + Math.cos(time * 0.65) * 40;
+    const mid3_y = 670 + Math.sin(time * 0.85) * 30;
+    const end3_y = 720 + Math.sin(time * 1.0) * 20;
+
+    wave3.setAttribute(
+      'd',
+      `M0,${y3_0} C${c3_x1},${c3_y1} ${c3_x2},${c3_y2} ${mid3_x},${mid3_y} C1300,${mid3_y - 20} 1390,${end3_y + 20} 1440,${end3_y} L1440,900 L0,900 Z`
+    );
+
+    requestAnimationFrame(renderWave);
+  }
+
+  requestAnimationFrame(renderWave);
+
+  document.addEventListener('visibilitychange', () => {
+    isRunning = !document.hidden;
+    if (isRunning) requestAnimationFrame(renderWave);
+  });
+})();
+
+// ─── 3D PERSPECTIVE INTERACTIVE MOUSE PARALLAX ───────────────
+(function init3dParallax() {
+  const visualWrap = document.getElementById('heroVisualWrap');
+  const card3d     = document.getElementById('hero3dCard');
+  if (!visualWrap || !card3d) return;
+
+  visualWrap.addEventListener('mousemove', (e) => {
+    const rect = visualWrap.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    const rotY = (x / (rect.width / 2)) * 14;
+    const rotX = -(y / (rect.height / 2)) * 12;
+    card3d.style.transform = `perspective(1200px) rotateY(${rotY}deg) rotateX(${rotX}deg) translateZ(15px)`;
+  });
+
+  visualWrap.addEventListener('mouseleave', () => {
+    card3d.style.transform = '';
+  });
+})();
+
+// ─── ACTIVITIES RENDERER (Clean Editorial Cards) ─────────────
+const scrollEl = document.getElementById('activitiesScroll');
+
+function renderActivities() {
+  if (!scrollEl) return;
+  scrollEl.innerHTML = '';
+
+  CLUB_ACTIVITIES.forEach((a, index) => {
+    const card = document.createElement('div');
+    card.className = 'v2-act-card';
+
+    card.innerHTML = `
+      <div class="v2-act-card-img">
+        <img src="${a.img}" alt="${a.title}" style="object-position: ${a.imgPos || 'center center'};" loading="lazy" onerror="this.src='../images/cookery.jpg';">
+      </div>
+      <div class="v2-act-card-body">
+        <div class="v2-act-card-glyph">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/>
+          </svg>
+        </div>
+        <div class="v2-act-card-meta">
+          <span class="v2-act-date-pill">${a.date}</span>
+          <span class="v2-act-tag">${a.tag}</span>
+        </div>
+        <h3 class="v2-act-card-title">${a.title}</h3>
+        <p class="v2-act-card-desc">${a.desc}</p>
+      </div>
+    `;
+
+    card.addEventListener('click', () => {
+      const slides = CLUB_ACTIVITIES.map(item => ({
+        img: item.img,
+        title: item.title + ' (' + item.tag + ')'
       }));
       if (typeof window.openImageLightbox === 'function') {
-        window.openImageLightbox(lbSlides, 0);
+        window.openImageLightbox(slides, index);
       }
-    };
-
-    track.appendChild(slide);
-    const dot = document.createElement('span');
-    if (i === 0) dot.classList.add('active');
-    dot.addEventListener('click', () => goTo(i));
-    dotsEl.appendChild(dot);
-  });
-}
-
-function goTo(idx) {
-  current = (idx + totalSlides) % totalSlides;
-  const slide = track.querySelector('.carousel-slide');
-  if (slide) {
-    track.style.transform = `translateX(-${current * (slide.offsetWidth + 16)}px)`;
-  }
-  document.querySelectorAll('.carousel-dots span')
-    .forEach((d, i) => d.classList.toggle('active', i === current));
-}
-
-document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
-document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
-
-let isPaused = false;
-const carouselContainer = document.querySelector('.carousel-wrap');
-if (carouselContainer) {
-  carouselContainer.addEventListener('mouseenter', () => isPaused = true);
-  carouselContainer.addEventListener('mouseleave', () => isPaused = false);
-}
-setInterval(() => { if (totalSlides > 1 && !isPaused) goTo(current + 1); }, 2500); // 2.5s for smoother scrolling
-
-
-// ─── RECENT ACTIVITIES — fetched from API ─────────────
-const actList = document.getElementById('activitiesList');
-
-async function loadActivities() {
-  try {
-    const res  = await fetch(`${API_BASE}/api/activities/${CLUB_ID}`);
-    const data = await res.json();
-    buildCarousel(data.slice(0, 5));
-    actList.innerHTML = '';
-    if (!data.length) {
-      actList.innerHTML = '<p style="color:#7a7a9a;font-size:.9rem;padding:16px 0">No activities posted yet.</p>';
-      return;
-    }
-    data.forEach(a => {
-      const card = document.createElement('div');
-      card.className = 'activity-card';
-      const imagesArr = (a.images && a.images.length) ? a.images : [a.img];
-
-      const imgHtml = imagesArr.length > 1
-        ? `<div class="activity-img" style="display:grid; grid-template-columns: repeat(${Math.min(imagesArr.length, 3)}, 1fr); gap:3px;">
-            ${imagesArr.map(url => `<img src="${API_BASE}${url}" alt="${a.title}" style="width:100%; height:100%; object-fit:cover; border-radius:6px;">`).join('')}
-           </div>`
-        : `<div class="activity-img">
-            <img src="${API_BASE}${a.img}" alt="${a.title}"
-                 onload="this.nextElementSibling.style.display='none'"
-                 onerror="this.style.display='none'">
-            <div class="act-ph">${phIcon}</div>
-           </div>`;
-
-      card.innerHTML = `
-        ${imgHtml}
-        <div>
-          <div class="activity-meta">
-            <span class="activity-date">${a.date}</span>
-            <span class="activity-tag">${a.tag}</span>
-            ${imagesArr.length > 1 ? `<span class="activity-tag" style="background:var(--club-bg); color:var(--club-color);">🖼️ ${imagesArr.length} Photos</span>` : ''}
-          </div>
-          <div class="activity-title">${a.title}</div>
-          <div class="activity-desc">${a.desc}</div>
-        </div>`;
-      actList.appendChild(card);
-      
-      const cardImgs = card.querySelectorAll('.activity-img img');
-      cardImgs.forEach((imgEl, idx) => {
-        imgEl.style.cursor = 'zoom-in';
-        imgEl.onclick = (e) => {
-          e.stopPropagation();
-          const slides = imagesArr.map((url, i) => ({
-            img: `${API_BASE}${url}`,
-            title: imagesArr.length > 1 ? `${a.title} (${i + 1}/${imagesArr.length})` : a.title
-          }));
-          if (typeof window.openImageLightbox === 'function') {
-            window.openImageLightbox(slides, idx);
-          }
-        };
-      });
-
-      observer.observe(card);
     });
-  } catch {
-    buildCarousel([]);
-    actList.innerHTML = '<p style="color:#7a7a9a;font-size:.9rem;padding:16px 0">Could not load activities (is the server running?).</p>';
-  }
-}
-loadActivities();
 
-// ─── SCROLL ANIMATIONS ────────────────────────────────
-const observer = new IntersectionObserver(entries => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 100);
-      observer.unobserve(e.target);
-    }
+    scrollEl.appendChild(card);
   });
-}, { threshold: 0.1 });
+}
 
-document.querySelectorAll('.activity-card').forEach(c => observer.observe(c));
+renderActivities();
+
+// ─── HORIZONTAL SCROLL NAVIGATION ────────────────────────────
+const actPrevBtn = document.getElementById('actPrevBtn');
+const actNextBtn = document.getElementById('actNextBtn');
+
+if (actPrevBtn && scrollEl) {
+  actPrevBtn.addEventListener('click', () => {
+    scrollEl.scrollBy({ left: -400, behavior: 'smooth' });
+  });
+}
+if (actNextBtn && scrollEl) {
+  actNextBtn.addEventListener('click', () => {
+    scrollEl.scrollBy({ left: 400, behavior: 'smooth' });
+  });
+}
+
+// ─── PARALLAX ON SCROLL FOR WAVE SECTION ──────────────────────
+(function initScrollParallax() {
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const heroSection = document.getElementById('heroSection');
+        if (heroSection) {
+          const heroH = heroSection.offsetHeight;
+          if (scrollY <= heroH) {
+            const ratio = scrollY / heroH;
+            const heroWaves = document.getElementById('heroWaves');
+            if (heroWaves) {
+              heroWaves.style.transform = `translateY(${ratio * 30}px)`;
+            }
+          }
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+})();

@@ -12,24 +12,13 @@
       link: "teded/teded.html"
     },
     {
-      name: "Cybersonic",
-      formattedName: "Cyber<em>sonic.</em>",
-      category: "Technology",
-      desc: "Cybersonic Club transforms students from digital consumers into sophisticated tech architects by mastering the full computing stack, from Python and AI to robust cybersecurity.",
-      color: "#7c6ef7",
-      bg: "rgba(124,110,247,0.1)",
-      border: "rgba(124,110,247,0.2)",
-      img: "images/cybersonic.jpg",
-      link: "cybersonic/cybersonic.html"
-    },
-    {
       name: "Robotics",
       formattedName: "Robot<em>ics.</em>",
       category: "Technology",
-      desc: "Build, program, and compete with robots. No experience needed — just curiosity and a willingness to set new milestones.",
-      color: "#3b9cf5",
-      bg: "rgba(59,156,245,0.1)",
-      border: "rgba(59,156,245,0.2)",
+      desc: "Build, program, and compete with robots. Hands-on microcontrollers, sensor integration, and autonomous machines.",
+      color: "#2563eb",
+      bg: "rgba(37,99,235,0.1)",
+      border: "rgba(37,99,235,0.2)",
       img: "images/robotics.jpg",
       link: "robotics/robotics.html"
     },
@@ -37,7 +26,7 @@
       name: "Cookery",
       formattedName: "Cook<em>ery.</em>",
       category: "Life Skills",
-      desc: "Provides an engaging platform for students to explore fireless cooking, sustainable practices, and healthy dishes in a fun and creative environment.",
+      desc: "Master essential culinary techniques, explore global flavors, and learn fireless gourmet cooking and nutritional balance.",
       color: "#df4615",
       bg: "rgba(223,70,21,0.1)",
       border: "rgba(223,70,21,0.2)",
@@ -45,32 +34,10 @@
       link: "cookery/cookery.html"
     },
     {
-      name: "Quizzaders",
-      formattedName: "Quiz<em>zaders.</em>",
-      category: "Academic",
-      desc: "Quiz champions in the making. Trivia, general knowledge, and inter-school competitions.",
-      color: "#22c97a",
-      bg: "rgba(34,201,122,0.1)",
-      border: "rgba(34,201,122,0.2)",
-      img: "images/quizzarders.jpg",
-      link: "quizzarders/quizzarders.html"
-    },
-    {
-      name: "Finance",
-      formattedName: "Fin<em>ance.</em>",
-      category: "Finance",
-      desc: "Stocks, budgeting, investing. Learn to understand money before you actually need to manage it.",
-      color: "#06b6d4",
-      bg: "rgba(6,182,212,0.1)",
-      border: "rgba(6,182,212,0.2)",
-      img: "images/finance.jpg",
-      link: "finance/finance.html"
-    },
-    {
       name: "Theatre",
       formattedName: "Thea<em>tre.</em>",
       category: "Arts",
-      desc: "Stage performances, improv nights, and storytelling workshop.",
+      desc: "Dramatic storytelling, stage direction, character embodiment, and live theatrical productions on the school stage.",
       color: "#d946b0",
       bg: "rgba(217,70,176,0.1)",
       border: "rgba(217,70,176,0.2)",
@@ -81,43 +48,32 @@
       name: "Eco",
       formattedName: "Eco<em>.</em>",
       category: "Environment",
-      desc: "Campus sustainability projects, school gardening, and climate action campaigns that actually make a difference.",
-      color: "#65c948",
-      bg: "rgba(101,201,72,0.1)",
-      border: "rgba(101,201,72,0.2)",
+      desc: "Campus sustainability projects, circular upcycling, vertical gardening, and direct climate action campaigns.",
+      color: "#16a34a",
+      bg: "rgba(22,163,74,0.1)",
+      border: "rgba(22,163,74,0.2)",
       img: "images/eco.jpg",
       link: "eco/eco.html"
     },
     {
-      name: "Technocrates",
-      formattedName: "Techno<em>crates.</em>",
-      category: "Academic",
-      desc: "Technocrates Club transforms students into active innovators through hands-on scientific experimentation and real-world discovery.",
-      color: "#f97316",
-      bg: "rgba(249,115,22,0.1)",
-      border: "rgba(249,115,22,0.2)",
+      name: "Science",
+      formattedName: "Sci<em>ence.</em>",
+      category: "Science",
+      desc: "Hands-on empirical experimentation, physics apparatus testing, plant cell microscopy, and natural law discovery.",
+      color: "#0284c7",
+      bg: "rgba(2,132,199,0.1)",
+      border: "rgba(2,132,199,0.2)",
       img: "images/Technocrates.jpg",
       link: "technogrades/technogrades.html"
-    },
-    {
-      name: "Debate",
-      formattedName: "De<em>bate.</em>",
-      category: "Speaking",
-      desc: "Acclimatize students and develop their mindset for debating, structuring arguments, presenting facts, and anticipating counter-points.",
-      color: "#4f46e5",
-      bg: "rgba(79,70,229,0.1)",
-      border: "rgba(79,70,229,0.2)",
-      img: "images/debate.png",
-      link: "debate/debate.html"
     },
     {
       name: "Literary",
       formattedName: "Liter<em>ary.</em>",
       category: "Arts",
-      desc: "Sanctuary for passionate readers and book lovers. Engage in book circles, novel analysis, chapter reviews, and thoughtful group discussions.",
-      color: "#d97706",
-      bg: "rgba(217,119,6,0.1)",
-      border: "rgba(217,119,6,0.2)",
+      desc: "Sanctuary for passionate readers and creative writers. Classical book salons, chapter analyses, and literary critique.",
+      color: "#b45309",
+      bg: "rgba(180,83,9,0.1)",
+      border: "rgba(180,83,9,0.2)",
       img: "images/literary.jpg",
       link: "literary/literary.html"
     },
@@ -181,15 +137,11 @@
   // ─── Nav links to club pages ───────────────────────────
   const navMap = {
     'TedEd': 'teded/teded.html',
-    'Cybersonic': 'cybersonic/cybersonic.html',
     'Robotics': 'robotics/robotics.html',
     'Cookery': 'cookery/cookery.html',
-    'Quizzaders': 'quizzarders/quizzarders.html',
-    'Finance': 'finance/finance.html',
     'Theatre': 'drama/drama.html',
     'Eco': 'eco/eco.html',
-    'Technocrates': 'technogrades/technogrades.html',
-    'Debate': 'debate/debate.html',
+    'Science': 'technogrades/technogrades.html',
     'Literary': 'literary/literary.html',
   };
 
@@ -211,7 +163,7 @@
         <div class="chat-panel" id="chatPanel">
           <div class="chat-header">
             <div class="chat-header-info">
-              <div class="chat-header-title"><span style="font-size:18px; margin-right:4px;">✨</span> Club Buddy</div>
+              <div class="chat-header-title">Club Buddy</div>
               <div class="chat-header-status">Online</div>
             </div>
             <button class="chat-close" id="chatClose">
@@ -316,7 +268,7 @@
     function _isRecommendation(text) {
       if (!text) return false;
       const t = text.toLowerCase();
-      const clubNames = ['robotics','cybersonic','technocrates','technogrades','finance','eco','teded','ted ed','theatre','theater','drama','quizzaders','quizzarders','cookery','debate','literary'];
+      const clubNames = ['robotics','science','technogrades','eco','teded','ted ed','theatre','theater','drama','cookery','literary'];
       const explicitPhrases = [
         'i recommend',
         'my recommendation',
@@ -372,7 +324,7 @@
       if (nonEnglishScriptRegex.test(text)) {
         chatInput.value = '';
         addMessage(text, 'user');
-        addMessage("I can only understand and respond in English! Please write your message in English. 🌐", 'bot');
+        addMessage("I can only understand and respond in English! Please write your message in English.", 'bot');
         return;
       }
 
@@ -406,7 +358,7 @@
           _lockChat();
           setTimeout(() => {
             addMessage(
-              "🎉 That's my top recommendation! This chat session is now complete — feel free to explore the club page above and get involved! 👋",
+              "That's my top recommendation! This chat session is now complete — feel free to explore the club page above and get involved!",
               'bot'
             );
           }, 400);
@@ -454,7 +406,9 @@ window.openImageLightbox = function(slides, initialIdx = 0) {
     document.body.insertAdjacentHTML('beforeend', `
       <div id="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Image viewer">
         <div id="lb-counter"></div>
-        <button id="lb-close" title="Close (Esc)">✕</button>
+        <button id="lb-close" title="Close (Esc)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
         <button class="lb-nav" id="lb-prev" title="Previous">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>

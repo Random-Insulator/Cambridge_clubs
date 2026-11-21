@@ -526,7 +526,7 @@ const Groq = require("groq-sdk");
 const groq = new Groq({ apiKey: GROQ_API_KEY });
 
 // Helper for detecting club recommendation in response
-const CLUB_NAMES_LIST = ['robotics','cybersonic','technocrates','technogrades','finance','eco','teded','ted ed','theatre','theater','drama','quizzaders','quizzarders','cookery','debate','literary'];
+const CLUB_NAMES_LIST = ['robotics','science','technocrates','technogrades','eco','teded','ted ed','theatre','theater','drama','cookery','literary'];
 const EXPLICIT_RECOMMEND_PHRASES = [
   'i recommend',
   'my recommendation',
@@ -608,7 +608,7 @@ app.post("/api/chat", chatRateLimit, async (req, res) => {
     const isFinalRecommendation = turnCount >= 4;
 
     const systemInstruction = `You are the "Cambridge Clubs Bot". 
-Role: Help students find ONE official club from this list: Robotics, Cybersonic, Technocrates, Finance, Eco, TedEd, Theatre, Quizzaders, Cookery, Debate, Literary.
+Role: Help students find ONE official club from this list: Robotics, Science, Eco, TedEd, Theatre, Cookery, Literary.
 
 STRICT LANGUAGE RULE:
 - You MUST ONLY communicate in English.
@@ -621,14 +621,14 @@ Phase Control:
 - Turn 4: RECOMMEND EXACTLY ONE CLUB. Never ask another question after recommending.
 
 RECOMMENDATION RULE & MANDATORY REASONING FORMAT:
-- When recommending a club, state the club clearly in bold (e.g. "**I recommend the Cybersonic Club!**").
+- When recommending a club, state the club clearly in bold (e.g. "**I recommend Science!**").
 - You MUST ALWAYS provide a detailed, enthusiastic 2-3 sentence explanation of WHY this club is the ideal match for the student based on their specific interests, hobbies, and answers. NEVER output just the club name alone without explaining the reasons!
 - STOP after giving the recommendation and reason. Do NOT ask any follow-up questions.
 
 Rules:
 - Keep the conversation friendly, interactive, and human.
 - Never ask the user to 'propose' or 'create' a club.
-- Use explicit mapping: Computers -> Cybersonic; Hardware -> Robotics; Science -> Technocrates; Money -> Finance; Art -> Eco; Speaking -> TedEd; Drama -> Theatre; Facts -> Quizzaders; Cooking -> Cookery; Discussion -> Debate; Writing/Poetry -> Literary.
+- Use explicit mapping: Hardware/Robots -> Robotics; Science/Discovery -> Science; Environment/Gardening -> Eco; Public Speaking/Ideas -> TedEd; Acting/Drama -> Theatre; Cooking/Food -> Cookery; Writing/Reading -> Literary.
 - CURRENT TURN: ${turnCount}/4. ${isFinalRecommendation ? "MUST RECOMMEND EXACTLY ONE CLUB NOW WITH A DETAILED REASON AND STOP." : ""}`;
 
     const groqHistory = (history || []).map(h => ({
@@ -718,7 +718,7 @@ app.get("/api/activities/:clubId", async (req, res) => {
 
   let normalizedId = rawClubId;
   if (rawClubId === "drama") normalizedId = "theatre";
-  if (rawClubId === "technogrades") normalizedId = "technocrates";
+  if (rawClubId === "technogrades" || rawClubId === "science") normalizedId = "technocrates";
 
   if (!showAll) {
     const cached = getCached(normalizedId);

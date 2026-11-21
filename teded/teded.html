@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<!-- nothing to see here, move along -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TedEd Club — CambridgeClubs</title>
   <link rel="stylesheet" href="../style.css?v=5" />
-  <link rel="stylesheet" href="../club.css" />
-
+  <link rel="stylesheet" href="../club-v2.css" />
   <link rel="icon" href="../images/favicon.jpg" type="image/jpeg">
 </head>
-<body>
+<body class="v2-page">
+
+  <!-- ─── NAV (Fixed Global) ────────────────────────────────────── -->
   <nav>
     <a href="../index.html" class="nav-logo">
       CCWS <span class="cool-clubs">Clubs</span>
@@ -19,98 +19,396 @@
       <a href="../index.html">Home</a>
       <div class="nav-divider"></div>
       <a class="active" href="../teded/teded.html">TedEd</a>
-      <a href="../cybersonic/cybersonic.html">Cybersonic</a>
       <a href="../robotics/robotics.html">Robotics</a>
       <a href="../cookery/cookery.html">Cookery</a>
-      <a href="../quizzarders/quizzarders.html">Quizzaders</a>
-      <a href="../finance/finance.html">Finance</a>
       <a href="../drama/drama.html">Theatre</a>
       <a href="../eco/eco.html">Eco</a>
-      <a href="../technogrades/technogrades.html">Technocrates</a>
-      <a href="../debate/debate.html">Debate</a>
+      <a href="../technogrades/technogrades.html">Science</a>
       <a href="../literary/literary.html">Literary</a>
     </div>
     <button class="nav-chat-btn" title="Find my club">
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="11" width="18" height="10" rx="2" />
-      <circle cx="12" cy="5" r="2" />
-      <path d="M12 7v4" />
-      <line x1="8" y1="16" x2="8" y2="16" />
-      <line x1="16" y1="16" x2="16" y2="16" />
+        <circle cx="12" cy="5" r="2" />
+        <path d="M12 7v4" />
+        <line x1="8" y1="16" x2="8" y2="16" />
+        <line x1="16" y1="16" x2="16" y2="16" />
       </svg>
     </button>
   </nav>
 
-  <div class="breadcrumb">
-    <a href="../index.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  <!-- ─── BREADCRUMB ───────────────────────────────────────────── -->
+  <div style="position:absolute; top:74px; left:0; right:0; z-index:10; padding:12px clamp(28px, 5vw, 84px); max-width:1680px; margin:0 auto;">
+    <a href="../index.html" style="font-size:13px; color:#111; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:700; opacity:0.65; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.65'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="15 18 9 12 15 6"/></svg>
       Back to all clubs
     </a>
   </div>
 
-  <div class="carousel-wrap">
-    <div class="carousel">
-      <div class="carousel-track" id="carouselTrack"></div>
-    </div>
-    <button class="carousel-btn prev" id="prevBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <button class="carousel-btn next" id="nextBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <div class="carousel-dots" id="carouselDots"></div>
-  </div>
 
-  <div class="page-body">
-    <div class="left-col">
-      <div class="club-header">
-        <div class="club-header-top">
-          <span class="club-badge">Speaking</span>
-          <span class="meeting-tag">
+  <!-- ═══════════════════════════════════════════════════════════
+       SECTION 1 — HERO
+       ═══════════════════════════════════════════════════════════ -->
+  <section class="v2-hero" id="heroSection">
+
+    <!-- Ambient glowing color orbs -->
+    <div class="v2-ambient-orb orb-1"></div>
+    <div class="v2-ambient-orb orb-2"></div>
+
+    <!-- Live Animated Parabolic SVG Waves (updated in JS at 60fps) -->
+    <div class="v2-hero-waves" id="heroWaves">
+      <svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path id="heroWave1" fill="var(--club-color-dark, #c93630)" opacity="0.32"
+          d="M0,520 C320,440 640,580 920,480 C1180,390 1340,460 1440,490 L1440,900 L0,900 Z" />
+        <path id="heroWave2" fill="var(--club-color, #e8504a)" opacity="0.45"
+          d="M0,620 C360,540 720,680 1020,570 C1220,500 1360,580 1440,600 L1440,900 L0,900 Z" />
+        <path id="heroWave3" fill="var(--club-color-light, rgba(232,80,74,0.45))" opacity="0.5"
+          d="M0,720 C380,660 760,760 1100,680 C1280,640 1380,700 1440,710 L1440,900 L0,900 Z" />
+      </svg>
+    </div>
+
+    <div class="v2-hero-inner">
+
+      <!-- Left Column: Typography & Action -->
+      <div class="v2-hero-text">
+        <span class="v2-club-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+          </svg>
+          Speaking &amp; Ideas
+        </span>
+
+        <h1 class="v2-club-title">Ted<em>Ed.</em></h1>
+
+        <p class="v2-club-desc">
+          TED-Ed Clubs are dynamic incubators where students transform from passive observers into powerful advocates for their own ideas. Master narrative storytelling, conduct rigorous research, and develop the confidence to deliver talks that catalyze change.
+        </p>
+
+        <div class="v2-hero-actions">
+          <a class="v2-hero-cta" href="https://docs.google.com/forms/d/e/1FAIpQLSd3xvyh201gn3BJKcMsP9XizXj8MEzj4VJZh903YDPbuktZMw/viewform" target="_blank">
+            Join this club
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: 3D Perspective Hero Presentation Stage -->
+      <div class="v2-hero-visual" id="heroVisualWrap">
+
+        <!-- Satellite Badge: Top Right -->
+        <div class="v2-satellite-badge-1">
+          <div class="v2-satellite-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+            </svg>
+          </div>
+          <div class="v2-satellite-text">
+            <span class="v2-satellite-val">15+ Keynotes</span>
+            <span class="v2-satellite-sub">Delivered on stage</span>
+          </div>
+        </div>
+
+        <!-- 3D Keynote Stage Showcase Card -->
+        <div class="v2-3d-card" id="hero3dCard">
+          <div class="v2-3d-card-imgwrap">
+            <img src="../images/teded.jpg" alt="TED Talk Stage" id="heroMainStageImg">
+            <div class="v2-3d-card-gradient"></div>
+
+            <div class="v2-3d-card-topbar">
+              <div class="v2-3d-live-tag">
+                <span class="v2-live-pulse-dot"></span>
+                TED Stage Chapter
+              </div>
+              <div class="v2-soundwave-bars">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+
+            <div class="v2-3d-card-content">
+              <div class="v2-3d-card-cat">Spotlight Series 2026</div>
+              <h2 class="v2-3d-card-heading">"The Spark Within: Why Great Ideas Change Everything"</h2>
+              <div class="v2-3d-card-meta">
+                <span>Annual Youth Symposium</span>
+                <span style="color:var(--club-color-mid, #ed6b65); font-weight:700;">Live Presentation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Sticker -->
+        <div class="v2-hero-sticker">
+          <svg viewBox="0 0 24 24">
+            <path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3z"/>
+          </svg>
+          ideas worth spreading
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SECTION 2 — RECENT ACTIVITIES (Clean 2-Steps-Back Style)
+       ═══════════════════════════════════════════════════════════ -->
+  <section class="v2-activities">
+
+    <div class="v2-section-header">
+      <div class="v2-section-cursive-col">
+        <span class="v2-section-cursive-floating">What we've been up to</span>
+      </div>
+      <div class="v2-section-title-wrap">
+        <h2 class="v2-section-title">Recent Activities</h2>
+        <p class="v2-section-subtitle">Keynote showcases, parliamentary debates, and interactive storytelling circles led by student speakers.</p>
+      </div>
+
+      <div class="v2-scroll-arrows">
+        <button class="v2-arrow-btn" id="actPrevBtn" aria-label="Scroll left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+        <button class="v2-arrow-btn" id="actNextBtn" aria-label="Scroll right">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Horizontal scroll track with clean cards -->
+    <div class="v2-activities-scroll" id="activitiesScroll">
+      <!-- Injected via JS -->
+    </div>
+
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SECTION 3 — PERFECT CLUB FOR (Clustered Deck & Expand Hover)
+       ═══════════════════════════════════════════════════════════ -->
+  <section class="v2-perfect-for">
+
+    <div class="v2-perfect-for-waves">
+      <svg viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="top:0; height:120px; opacity:0.6;">
+        <path fill="var(--club-color, #e8504a)"
+          d="M0,0 C320,80 680,110 1020,60 C1220,30 1380,50 1440,70 L1440,0 Z" />
+      </svg>
+    </div>
+
+    <div class="v2-perfect-for-inner">
+
+      <div class="v2-perfect-for-header">
+        <div class="v2-section-title-wrap">
+          <h2 class="v2-section-title">Perfect Club For</h2>
+        </div>
+
+        <!-- Cursive quote in the middle of header -->
+        <div class="v2-perfect-for-cursive-note">
+          Consider us your personal<br>idea launchpad
+        </div>
+
+        <a class="v2-join-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSd3xvyh201gn3BJKcMsP9XizXj8MEzj4VJZh903YDPbuktZMw/viewform" target="_blank">
+          Join this club
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Clustered Fanned Deck (Overlapping cards that expand on hover) -->
+      <div class="v2-reason-cards-wrap">
+        <div class="v2-reason-cards">
+
+          <!-- Card 1: Cyan -->
+          <div class="v2-reason-card card-cyan">
+            <span class="v2-reason-step">Reason #1</span>
+            <div class="v2-reason-illustration">
+              <svg viewBox="0 0 64 64">
+                <rect x="24" y="10" width="16" height="26" rx="8" stroke-width="2.5"/>
+                <line x1="24" y1="20" x2="40" y2="20" stroke-width="2"/>
+                <line x1="24" y1="26" x2="40" y2="26" stroke-width="2"/>
+                <path d="M16 28 C16 38 48 38 48 28" stroke-width="2.5"/>
+                <line x1="32" y1="40" x2="32" y2="52" stroke-width="2.5"/>
+                <line x1="20" y1="52" x2="44" y2="52" stroke-width="3"/>
+                <path d="M10 20 C6 26 6 32 10 38" stroke-width="2" stroke-dasharray="2 3"/>
+                <path d="M54 20 C58 26 58 32 54 38" stroke-width="2" stroke-dasharray="2 3"/>
+              </svg>
+            </div>
+            <h3 class="v2-reason-title">Future Public Speakers</h3>
+            <p class="v2-reason-desc">If you get butterflies before speaking — this is your space. We teach members how to convert nervous energy into stage charisma, command pacing, and project with conviction.</p>
+          </div>
+
+          <!-- Card 2: Pink -->
+          <div class="v2-reason-card card-pink">
+            <span class="v2-reason-step">Reason #2</span>
+            <div class="v2-reason-illustration">
+              <svg viewBox="0 0 64 64">
+                <path d="M22 28 C22 18 42 18 42 28 C42 34 37 38 37 42 L27 42 C27 38 22 34 22 28 Z" stroke-width="2.5"/>
+                <line x1="28" y1="46" x2="36" y2="46" stroke-width="2.5"/>
+                <line x1="30" y1="50" x2="34" y2="50" stroke-width="2.5"/>
+                <path d="M30 36 L30 30 L34 30 L34 36" stroke-width="2"/>
+                <line x1="32" y1="8" x2="32" y2="13" stroke-width="2.5"/>
+                <line x1="16" y1="15" x2="20" y2="19" stroke-width="2.5"/>
+                <line x1="48" y1="15" x2="44" y2="19" stroke-width="2.5"/>
+                <line x1="12" y1="28" x2="16" y2="28" stroke-width="2.5"/>
+                <line x1="52" y1="28" x2="48" y2="28" stroke-width="2.5"/>
+              </svg>
+            </div>
+            <h3 class="v2-reason-title">Creative Thinkers</h3>
+            <p class="v2-reason-desc">Have a perspective that doesn't fit the ordinary mold? We help imaginative minds give structured narrative form to abstract thoughts and connect them to world issues.</p>
+          </div>
+
+          <!-- Card 3: Yellow -->
+          <div class="v2-reason-card card-yellow">
+            <span class="v2-reason-step">Reason #3</span>
+            <div class="v2-reason-illustration">
+              <svg viewBox="0 0 64 64">
+                <path d="M36 12 L44 26 L38 30 L30 16 Z" stroke-width="2.5"/>
+                <rect x="28" y="10" width="10" height="4" rx="1" stroke-width="2"/>
+                <path d="M42 26 C48 30 50 40 46 48 C42 54 32 54 28 50" stroke-width="2.5"/>
+                <line x1="18" y1="46" x2="34" y2="46" stroke-width="2.5"/>
+                <rect x="14" y="52" width="36" height="4" rx="2" stroke-width="2.5"/>
+                <circle cx="45" cy="38" r="3" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3 class="v2-reason-title">Research Enthusiasts</h3>
+            <p class="v2-reason-desc">Passion meets rigor. Learn how to dig past surface facts, verify scientific and historical data, and weave complex findings into relatable, memorable stories.</p>
+          </div>
+
+          <!-- Card 4: Purple -->
+          <div class="v2-reason-card card-purple">
+            <span class="v2-reason-step">Reason #4</span>
+            <div class="v2-reason-illustration">
+              <svg viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="16" stroke-width="2.5"/>
+                <ellipse cx="32" cy="32" rx="26" ry="9" transform="rotate(-25 32 32)" stroke-width="2.2" stroke-dasharray="4 3"/>
+                <path d="M20 22 C26 26 38 26 44 22" stroke-width="1.8"/>
+                <path d="M20 42 C26 38 38 38 44 42" stroke-width="1.8"/>
+                <circle cx="48" cy="18" r="2.5" fill="#111"/>
+              </svg>
+            </div>
+            <h3 class="v2-reason-title">Change-Makers</h3>
+            <p class="v2-reason-desc">Words have consequences. TedEd gives young leaders the platform to advocate for community progress, challenge dogma, and spark real tangible initiatives.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SECTION 4 — CLUB DETAILS (Glassmorphism & Crisp SVG Icons)
+       ═══════════════════════════════════════════════════════════ -->
+  <section class="v2-details">
+
+    <div class="v2-details-waves">
+      <svg viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="top:0; height:100px; opacity:0.18;">
+        <path fill="#fff"
+          d="M0,80 C360,160 720,40 1080,120 C1280,160 1380,80 1440,90 L1440,0 L0,0 Z" />
+      </svg>
+    </div>
+
+    <div class="v2-details-inner">
+      <span class="v2-details-eyebrow">The nitty-gritty</span>
+      <h2 class="v2-details-title">Club Details</h2>
+
+      <div class="v2-details-grid">
+
+        <!-- Card 1: Mentor -->
+        <div class="v2-detail-card">
+          <div class="v2-detail-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="v2-detail-card-label">Club Mentor</div>
+          <div class="v2-detail-card-value">Ms. Shipika</div>
+          <div class="v2-detail-card-sub">Department of English &amp; Oratory</div>
+        </div>
+
+        <!-- Card 2: Meeting Days -->
+        <div class="v2-detail-card">
+          <div class="v2-detail-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
               <line x1="16" y1="2" x2="16" y2="6"/>
               <line x1="8" y1="2" x2="8" y2="6"/>
               <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-            Every Monday/Tuesday </span>
-        </div>
-        <h1 class="club-title">Ted<em>Ed.</em></h1>
-        <p class="club-full-desc">TED-Ed Clubs serve as dynamic incubators where students transform from passive observers into powerful advocates for their own ideas. By following a structured curriculum designed to spark radical curiosity, members move through the journey of identifying a unique passion and refining it into a polished, TED-style presentation. The program goes beyond basic public speaking; it challenges students to master the art of narrative storytelling, conduct rigorous research, and develop the visual literacy required for modern presentations. This process builds essential leadership skills and self-confidence, ultimately providing youth with a global platform to share their perspectives and catalyze meaningful change in their communities.</p>
-      </div>
-      <hr class="section-divider">
-      <h2 class="section-heading">Recent activities</h2>
-      <div class="activities" id="activitiesList"></div>
-    </div>
-
-    <aside class="sidebar">
-      <div class="sidebar-card">
-        <button class="join-btn" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSd3xvyh201gn3BJKcMsP9XizXj8MEzj4VJZh903YDPbuktZMw/viewform', '_blank')">+ Join this club</button>
-      </div>
-      <div class="sidebar-card">
-        <div class="sidebar-card-title">Club mentor</div>
-        <div class="mentor-row">
-          <div class="mentor-avatar">Si</div>
-          <div>
-            <div class="mentor-name">Ms. Shipika</div>
-            <div class="mentor-role">Grades 8, 9, 10</div>
           </div>
+          <div class="v2-detail-card-label">Meeting Days</div>
+          <div class="v2-detail-card-value">Every Mon / Tue</div>
+          <div class="v2-detail-card-sub">Every Monday &amp; Tuesday</div>
         </div>
-      </div>
-      <div class="sidebar-card">
-        <div class="sidebar-card-title">Meeting details</div>
-        <div class="info-row"><span class="info-label">Day</span><span class="info-value">Every Monday/Tuesday</span></div>
-        <div class="info-row"><span class="info-label">Time</span><span class="info-value">2 – 2:50 PM</span></div>
-        
-        <div class="info-row"><span class="info-label">Open to</span><span class="info-value">VIII to X</span></div>
+
+        <!-- Card 3: Time -->
+        <div class="v2-detail-card">
+          <div class="v2-detail-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="v2-detail-card-label">Meeting Time</div>
+          <div class="v2-detail-card-value">2:00 – 2:50 PM</div>
+          <div class="v2-detail-card-sub">50-minute structured sessions</div>
+        </div>
+
+        <!-- Card 4: Open To -->
+        <div class="v2-detail-card">
+          <div class="v2-detail-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <div class="v2-detail-card-label">Open To &amp; Venue</div>
+          <div class="v2-detail-card-value">Grades VIII – X</div>
+          <div class="v2-detail-card-sub">Auditorium / Conference Hall</div>
+        </div>
+
       </div>
 
-    </aside>
-  </div>
+      <!-- Bottom Callout CTA -->
+      <div class="v2-details-cta">
+        <div class="v2-details-cta-text">
+          <span>Ready to share your idea?</span>
+          Join 20+ students already making an impact
+        </div>
+        <a class="v2-join-btn-dark" href="https://docs.google.com/forms/d/e/1FAIpQLSd3xvyh201gn3BJKcMsP9XizXj8MEzj4VJZh903YDPbuktZMw/viewform" target="_blank">
+          Join TedEd
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
 
+    </div>
+  </section>
+
+
+  <!-- ─── FOOTER (Clean, No Emojis) ─────────────────────────────── -->
+  <footer class="v2-footer">
+    Presented By CCWS Clubs
+  </footer>
+
+
+  <!-- ─── CHAT FAB (Sleek SVG Sparkles, No Emojis) ──────────────── -->
   <button class="chat-fab">
     <div class="chat-pulse"></div>
-    <div class="chat-fab-label">Chat with Club Buddy ✨</div>
+    <div class="chat-fab-label">Chat with Club Buddy</div>
     <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="11" width="18" height="10" rx="2" />
       <circle cx="12" cy="5" r="2" />
@@ -124,12 +422,11 @@
     <img src="../images/giti.png" class="giti-mascot-img" alt="Giti">
     <div class="chat-header">
       <div class="chat-header-info">
-        <div class="chat-header-title"><span style="font-size:18px; margin-right:4px;">✨</span> Club Buddy</div>
+        <div class="chat-header-title">Club Buddy</div>
         <div class="chat-header-status">Club Finder AI</div>
       </div>
       <button class="chat-close" id="chatClose">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
@@ -144,8 +441,7 @@
     <div class="chat-input-area">
       <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
       <button id="chatSend">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"></line>
           <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
         </svg>
@@ -153,9 +449,13 @@
     </div>
   </div>
 
+
+  <!-- ─── SCRIPTS ──────────────────────────────────────────────── -->
   <script src="../nav-previews.js"></script>
   <script src="../main.js"></script>
   <script src="teded.js"></script>
+
+  <!-- Chat FAB logic -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var fab = document.querySelector('.chat-fab');
@@ -163,22 +463,20 @@
       var chatPulse = document.querySelector('.chat-pulse');
       var navChatBtn = document.querySelector('.nav-chat-btn');
       var chatClose = document.getElementById('chatClose');
-      
+
       function openChat() {
         if (!panel) return;
         panel.classList.add('active');
         if (fab) {
           fab.style.animation = 'none';
           fab.style.webkitAnimation = 'none';
-          setTimeout(function() {
-            fab.style.bottom = '70px';
-          }, 50);
+          setTimeout(function() { fab.style.bottom = '70px'; }, 50);
           fab.style.transform = 'none';
           fab.style.boxShadow = 'none';
           if (chatPulse) chatPulse.style.display = 'none';
         }
       }
-      
+
       function closeChat() {
         if (!panel) return;
         panel.classList.remove('active');
@@ -193,23 +491,16 @@
           if (chatPulse) chatPulse.style.display = '';
         }
       }
-      
+
       if (fab) fab.addEventListener('click', function() {
-        if (panel.classList.contains('active')) {
-          closeChat();
-        } else {
-          openChat();
-        }
+        if (panel.classList.contains('active')) closeChat();
+        else openChat();
       });
       if (navChatBtn) navChatBtn.addEventListener('click', openChat);
       if (chatClose) chatClose.addEventListener('click', closeChat);
     });
   </script>
-  
-  <footer style="text-align:center;padding:2rem 1rem 1.5rem;color:#444;font-size:0.8rem;font-family:'DM Sans',sans-serif;letter-spacing:0.3px;">
-    Presented By Cybersonic Club ✌️
-  </footer>
-  <!-- perf monitoring -->
+
   <script src="../perf.js"></script>
 </body>
 </html>

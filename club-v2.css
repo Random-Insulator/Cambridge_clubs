@@ -1,0 +1,1194 @@
+/* ═══════════════════════════════════════════════════════════════
+   CLUB V2 — Aardvark-inspired club page styles (High-End Edition)
+   - Fullscreen desktop alignment & fluid wide-screen grids
+   - 3D perspective hero presentation stage with interactive tilt
+   - Mathematical SVG parabolic wave flow & continuous morphing
+   - Handcrafted SVG vector illustrations (Zero emojis)
+   - Overlapping playing-card fan deck with hover expansion physics
+   - Clean, elegant Recent Activities cards with coral micro-borders
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400;1,9..40,700;1,9..40,800&family=Caveat:wght@600;700&display=swap');
+
+/* ─── RESET / BASE for v2 ─────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body.v2-page {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111;
+  overflow-x: hidden;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 1 — HERO
+   ═══════════════════════════════════════════════════════════════ */
+
+.v2-hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: var(--club-color-pale, #fff5f5);
+  padding: 120px 0 80px;
+}
+
+/* Dynamic Animated SVG wave background */
+.v2-hero-waves {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.v2-hero-waves svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Ambient glowing orbs in hero */
+.v2-ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbDrift 20s ease-in-out infinite alternate;
+}
+
+.v2-ambient-orb.orb-1 {
+  width: 600px;
+  height: 600px;
+  top: -140px;
+  right: -100px;
+  background: radial-gradient(circle, var(--club-color, #e8504a) 0%, rgba(232,80,74,0) 70%);
+  opacity: 0.24;
+}
+
+.v2-ambient-orb.orb-2 {
+  width: 500px;
+  height: 500px;
+  bottom: 40px;
+  left: -140px;
+  background: radial-gradient(circle, var(--club-color-mid, #ed6b65) 0%, rgba(237,107,101,0) 70%);
+  opacity: 0.2;
+  animation-duration: 25s;
+}
+
+@keyframes orbDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(45px, -35px) scale(1.08); }
+  100% { transform: translate(-35px, 45px) scale(0.95); }
+}
+
+/* Hero inner grid — full desktop width with balanced edges */
+.v2-hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 0 clamp(28px, 5vw, 84px);
+  display: grid;
+  grid-template-columns: minmax(480px, 1.15fr) minmax(460px, 1fr);
+  gap: clamp(40px, 6vw, 100px);
+  align-items: center;
+}
+
+/* Left side text */
+.v2-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 660px;
+}
+
+.v2-club-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--club-color, #e8504a);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 100px;
+  width: fit-content;
+  box-shadow: 0 4px 16px rgba(232, 80, 74, 0.28);
+}
+
+.v2-club-badge svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.v2-club-title {
+  font-size: clamp(70px, 9vw, 135px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -4.5px;
+  color: #111;
+  margin: 0;
+}
+
+.v2-club-title em {
+  font-style: italic;
+  color: var(--club-color, #e8504a);
+  position: relative;
+  display: inline-block;
+}
+
+.v2-club-desc {
+  font-size: clamp(16px, 1.25vw, 18.5px);
+  line-height: 1.7;
+  color: #3e3e44;
+  margin: 6px 0 12px;
+  max-width: 580px;
+}
+
+.v2-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.v2-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #111;
+  color: #fff;
+  font-size: 15.5px;
+  font-weight: 700;
+  padding: 16px 36px;
+  border-radius: 100px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.16);
+}
+
+.v2-hero-cta:hover {
+  background: var(--club-color, #e8504a);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 38px rgba(232, 80, 74, 0.38);
+}
+
+.v2-hero-cta svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.25s ease;
+}
+
+.v2-hero-cta:hover svg {
+  transform: translateX(5px);
+}
+
+/* ─── RIGHT SIDE: 3D HERO SHOWCASE ──────────────────────────── */
+.v2-hero-visual {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  justify-self: end;
+  perspective: 1200px;
+  padding: 20px 0;
+}
+
+.v2-3d-card {
+  position: relative;
+  width: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #111;
+  box-shadow: 
+    0 30px 70px rgba(0, 0, 0, 0.25),
+    0 10px 25px rgba(201, 54, 48, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transform: rotateY(-8deg) rotateX(5deg) rotate(1.5deg);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  animation: heroCardFloat 7s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.v2-3d-card:hover {
+  transform: rotateY(-2deg) rotateX(2deg) rotate(0deg) scale(1.02);
+  box-shadow: 
+    0 40px 90px rgba(0, 0, 0, 0.3),
+    0 15px 35px rgba(232, 80, 74, 0.3);
+}
+
+@keyframes heroCardFloat {
+  0%   { transform: rotateY(-8deg) rotateX(5deg) rotate(1.5deg) translateY(0); }
+  100% { transform: rotateY(-6deg) rotateX(3deg) rotate(0.5deg) translateY(-16px); }
+}
+
+.v2-3d-card-imgwrap {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  background: #18181b;
+}
+
+.v2-3d-card-imgwrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.v2-3d-card:hover .v2-3d-card-imgwrap img {
+  transform: scale(1.05);
+}
+
+.v2-3d-card-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.15) 0%,
+    rgba(0,0,0,0.45) 50%,
+    rgba(17,17,17,0.96) 100%
+  );
+  pointer-events: none;
+}
+
+.v2-3d-card-topbar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 3;
+}
+
+.v2-3d-live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.v2-live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--club-color, #e8504a);
+  box-shadow: 0 0 10px var(--club-color, #e8504a);
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.v2-soundwave-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  padding: 0 8px;
+}
+
+.v2-soundwave-bars span {
+  width: 3px;
+  background: #fff;
+  border-radius: 3px;
+  opacity: 0.85;
+  animation: soundBars 1.2s ease-in-out infinite alternate;
+}
+
+.v2-soundwave-bars span:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.v2-soundwave-bars span:nth-child(2) { height: 16px; animation-delay: 0.3s; }
+.v2-soundwave-bars span:nth-child(3) { height: 10px; animation-delay: 0.5s; }
+.v2-soundwave-bars span:nth-child(4) { height: 14px; animation-delay: 0.2s; }
+.v2-soundwave-bars span:nth-child(5) { height: 8px; animation-delay: 0.4s; }
+
+@keyframes soundBars {
+  0% { transform: scaleY(0.4); }
+  100% { transform: scaleY(1.3); }
+}
+
+.v2-3d-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 26px 28px;
+  z-index: 3;
+}
+
+.v2-3d-card-cat {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--club-color-mid, #ed6b65);
+  margin-bottom: 6px;
+}
+
+.v2-3d-card-heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+  margin: 0 0 10px;
+}
+
+.v2-3d-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+.v2-satellite-badge-1 {
+  position: absolute;
+  top: -24px;
+  right: -24px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 14px 18px;
+  box-shadow: 0 14px 35px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 4;
+  animation: satelliteFloat1 6s ease-in-out infinite alternate;
+}
+
+@keyframes satelliteFloat1 {
+  0%   { transform: translateY(0) rotate(-3deg); }
+  100% { transform: translateY(-12px) rotate(1deg); }
+}
+
+.v2-satellite-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--club-color-pale, #fff5f5);
+  color: var(--club-color, #e8504a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v2-satellite-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.v2-satellite-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.v2-satellite-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.1;
+}
+
+.v2-satellite-sub {
+  font-size: 11px;
+  color: #777;
+  font-weight: 600;
+}
+
+.v2-hero-sticker {
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  background: #111;
+  color: #fff;
+  border-radius: 100px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  transform: rotate(-4deg);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: stickerFloat 8s ease-in-out infinite alternate;
+}
+
+.v2-hero-sticker svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--club-color, #e8504a);
+}
+
+@keyframes stickerFloat {
+  0%   { transform: rotate(-4deg) translateY(0); }
+  100% { transform: rotate(-1deg) translateY(-10px); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 2 — RECENT ACTIVITIES (Restored Clean 2-Steps-Back Style)
+   ═══════════════════════════════════════════════════════════════ */
+
+.v2-activities {
+  background: #ffffff;
+  padding: 120px 0 90px;
+  position: relative;
+  overflow: hidden;
+}
+
+.v2-section-header {
+  max-width: 1680px;
+  margin: 0 auto 48px;
+  padding: 0 clamp(28px, 5vw, 84px);
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) 1fr auto;
+  align-items: center;
+  gap: 32px;
+  position: relative;
+}
+
+.v2-section-cursive-floating {
+  font-family: 'Caveat', cursive;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--club-color, #e8504a);
+  transform: rotate(-8deg);
+  display: inline-block;
+  line-height: 1.2;
+}
+
+.v2-section-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.v2-section-title {
+  font-size: clamp(38px, 4.5vw, 68px);
+  font-weight: 900;
+  letter-spacing: -2.5px;
+  color: #111;
+  margin: 0;
+  line-height: 1;
+}
+
+.v2-section-subtitle {
+  font-size: 15px;
+  color: #666;
+  margin: 6px 0 0;
+  font-weight: 500;
+  max-width: 580px;
+  line-height: 1.5;
+}
+
+.v2-scroll-arrows {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.v2-arrow-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid #111;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.v2-arrow-btn:hover {
+  background: #111;
+  color: #fff;
+  transform: scale(1.06);
+}
+
+.v2-arrow-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+}
+
+/* Horizontal scroll track */
+.v2-activities-scroll {
+  display: flex;
+  gap: 28px;
+  overflow-x: auto;
+  padding: 24px clamp(28px, 5vw, 84px) 50px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.v2-activities-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Individual activity card (Exact 2-steps-back style) */
+.v2-act-card {
+  flex: 0 0 350px;
+  scroll-snap-align: start;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 2px solid var(--club-color-light, rgba(232,80,74,0.22));
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.3s ease;
+  will-change: transform;
+  cursor: pointer;
+}
+
+.v2-act-card:nth-child(1) {
+  transform: rotate(-1.5deg);
+}
+
+.v2-act-card:nth-child(2) {
+  transform: rotate(1.5deg);
+}
+
+.v2-act-card:nth-child(3) {
+  transform: rotate(-1.2deg);
+}
+
+.v2-act-card:nth-child(4) {
+  transform: rotate(1.2deg);
+}
+
+.v2-act-card:hover {
+  box-shadow: 0 22px 48px rgba(232,80,74,0.16);
+  transform: translateY(-8px) rotate(0deg) !important;
+  border-color: var(--club-color, #e8504a);
+}
+
+.v2-act-card-img {
+  height: 220px;
+  background: var(--club-color-pale, rgba(232,80,74,0.08));
+  position: relative;
+  overflow: hidden;
+}
+
+.v2-act-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.v2-act-card:hover .v2-act-card-img img {
+  transform: scale(1.05);
+}
+
+.v2-act-card-img-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--club-color, #e8504a);
+  opacity: 0.35;
+}
+
+.v2-act-card-img-ph svg {
+  width: 48px;
+  height: 48px;
+}
+
+.v2-act-card-body {
+  padding: 22px 24px 26px;
+}
+
+.v2-act-card-glyph {
+  display: flex;
+  align-items: center;
+  color: var(--club-color, #e8504a);
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+
+.v2-act-card-glyph svg {
+  width: 14px;
+  height: 14px;
+}
+
+.v2-act-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.v2-act-date-pill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.5px;
+}
+
+.v2-act-tag {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--club-color, #e8504a);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+
+.v2-act-photos-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: #f4f4f5;
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.v2-act-card-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.v2-act-card-desc {
+  font-size: 13.5px;
+  color: #555;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 3 — PERFECT CLUB FOR (Clustered Deck & Hover Expansion)
+   ═══════════════════════════════════════════════════════════════ */
+
+.v2-perfect-for {
+  position: relative;
+  padding: 130px 0 110px;
+  background: var(--club-color-pale, #fff5f5);
+  overflow: hidden;
+}
+
+.v2-perfect-for-waves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.v2-perfect-for-waves svg {
+  position: absolute;
+  width: 100%;
+}
+
+.v2-perfect-for-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 0 clamp(28px, 5vw, 84px);
+}
+
+.v2-perfect-for-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 70px;
+  gap: 20px;
+}
+
+/* Floating tilted cursive note in middle of header (Aardvark style) */
+.v2-perfect-for-cursive-note {
+  position: absolute;
+  left: 45%;
+  top: -15px;
+  transform: translateX(-50%) rotate(-5deg);
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  opacity: 0.65;
+  text-align: center;
+  line-height: 1.1;
+  pointer-events: none;
+}
+
+.v2-join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--club-color, #e8504a);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 15px 28px;
+  border-radius: 100px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 8px 20px rgba(232, 80, 74, 0.25);
+}
+
+.v2-join-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(232, 80, 74, 0.35);
+}
+
+/* ─── CLUSTERED PLAYING-CARD FAN CONTAINER ───────────────────── */
+.v2-reason-cards-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0 50px;
+}
+
+.v2-reason-cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+/* Tightly grouped overlapping cards */
+.v2-reason-card {
+  flex: 0 0 290px;
+  border-radius: 30px;
+  padding: 42px 30px 38px;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.12);
+  cursor: pointer;
+  margin-left: -42px;
+  transition: 
+    transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.45s ease,
+    opacity 0.45s ease,
+    flex 0.45s ease;
+  will-change: transform, box-shadow;
+}
+
+.v2-reason-card:first-child {
+  margin-left: 0;
+}
+
+/* Natural resting angles */
+.v2-reason-card:nth-child(1) { --card-idle-rot: -6deg; z-index: 1; }
+.v2-reason-card:nth-child(2) { --card-idle-rot: -2deg; z-index: 2; }
+.v2-reason-card:nth-child(3) { --card-idle-rot: 2deg;  z-index: 3; }
+.v2-reason-card:nth-child(4) { --card-idle-rot: 6deg;  z-index: 4; }
+
+.v2-reason-card {
+  transform: rotate(var(--card-idle-rot, 0deg));
+}
+
+/* Hover expansion */
+.v2-reason-card:hover {
+  transform: translateY(-34px) rotate(0deg) scale(1.1) !important;
+  z-index: 25 !important;
+  box-shadow: 0 35px 85px rgba(0,0,0,0.24);
+  flex: 0 0 320px;
+}
+
+.v2-reason-cards:hover .v2-reason-card:not(:hover) {
+  opacity: 0.82;
+  transform: scale(0.96) rotate(var(--card-idle-rot, 0deg));
+}
+
+/* Card colors */
+.v2-reason-card.card-cyan   { background: #5ef0e8; }
+.v2-reason-card.card-pink   { background: #ff6eb4; }
+.v2-reason-card.card-yellow { background: #ffe44d; }
+.v2-reason-card.card-purple { background: #c084fc; }
+
+.v2-reason-step {
+  font-family: 'Caveat', cursive;
+  font-size: 21px;
+  color: rgba(0,0,0,0.55);
+  font-weight: 700;
+}
+
+.v2-reason-illustration {
+  width: 76px;
+  height: 76px;
+  margin: 4px 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v2-reason-illustration svg {
+  width: 100%;
+  height: 100%;
+  stroke: #111;
+  stroke-width: 2.2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.v2-reason-card:hover .v2-reason-illustration svg {
+  transform: scale(1.15) rotate(4deg);
+}
+
+.v2-reason-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #111;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -0.8px;
+}
+
+.v2-reason-desc {
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: rgba(0,0,0,0.74);
+  margin: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 4 — CLUB DETAILS (Glass Cards & Crisp SVG Icons)
+   ═══════════════════════════════════════════════════════════════ */
+
+.v2-details {
+  position: relative;
+  background: var(--club-color, #e8504a);
+  padding: 130px 0 100px;
+  overflow: hidden;
+}
+
+.v2-details-waves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.v2-details-waves svg {
+  position: absolute;
+  width: 100%;
+}
+
+.v2-details-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 0 clamp(28px, 5vw, 84px);
+}
+
+.v2-details-eyebrow {
+  font-family: 'Caveat', cursive;
+  font-size: 24px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 8px;
+  display: block;
+  font-weight: 700;
+}
+
+.v2-details-title {
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -2.5px;
+  margin: 0 0 64px;
+}
+
+.v2-details-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.v2-detail-card {
+  background: rgba(255,255,255,0.16);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 24px;
+  padding: 34px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.v2-detail-card:hover {
+  background: rgba(255,255,255,0.24);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.15);
+}
+
+.v2-detail-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.v2-detail-card-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+}
+
+.v2-detail-card-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+}
+
+.v2-detail-card-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.v2-detail-card-sub {
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Bottom join prompt */
+.v2-details-cta {
+  margin-top: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 48px;
+  background: rgba(0,0,0,0.24);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 28px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.v2-details-cta-text {
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.v2-details-cta-text span {
+  font-family: 'Caveat', cursive;
+  font-size: 20px;
+  display: block;
+  color: rgba(255,255,255,0.75);
+  font-weight: 600;
+}
+
+.v2-join-btn-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  color: var(--club-color, #e8504a);
+  font-size: 15px;
+  font-weight: 800;
+  padding: 17px 36px;
+  border-radius: 100px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.v2-join-btn-dark:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════ */
+
+.v2-footer {
+  background: #0d0d0e;
+  padding: 36px 60px;
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 13.5px;
+  letter-spacing: 0.4px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1200px) {
+  .v2-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 50px;
+    padding-top: 30px;
+  }
+
+  .v2-hero-visual {
+    max-width: 500px;
+    justify-self: center;
+  }
+
+  .v2-reason-cards {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .v2-reason-card {
+    flex: 1 1 calc(50% - 20px);
+    margin-left: 0 !important;
+    transform: none !important;
+  }
+
+  .v2-reason-card:hover {
+    transform: translateY(-16px) scale(1.03) !important;
+  }
+
+  .v2-details-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .v2-hero {
+    padding: 100px 0 50px;
+  }
+
+  .v2-club-title {
+    font-size: clamp(52px, 14vw, 76px);
+    letter-spacing: -2px;
+  }
+
+  .v2-hero-visual {
+    max-width: 100%;
+  }
+
+  .v2-3d-card-imgwrap {
+    height: 300px;
+  }
+
+  .v2-satellite-badge-1 {
+    display: none;
+  }
+
+  .v2-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .v2-act-card {
+    flex: 0 0 290px;
+  }
+
+  .v2-perfect-for-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .v2-perfect-for-cursive-note {
+    position: static;
+    transform: none;
+    margin: 8px 0;
+    text-align: left;
+  }
+
+  .v2-reason-card {
+    flex: 1 1 100%;
+    min-height: auto;
+  }
+
+  .v2-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .v2-details-cta {
+    flex-direction: column;
+    padding: 28px 24px;
+    text-align: center;
+  }
+}
