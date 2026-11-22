@@ -1,4 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&family=Playfair+Display:wght@400;600;700&display=swap');
+
+/* ─── AARDVARK INSP0 FONTS (Champ ExtraBold, Degular, Hello Organichand) ─ */
+@font-face {
+  font-family: 'Champ';
+  src: url('fonts/Champ-ExtraBold.woff') format('woff'),
+       url('../fonts/Champ-ExtraBold.woff') format('woff'),
+       url('https://cdn.prod.website-files.com/696173cb00865d1b386e4af8/6963d2cdeaa0084ad1abd7f0_Champ-ExtraBold.woff') format('woff');
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Degular';
+  src: url('fonts/Degular-Bold.woff2') format('woff2'),
+       url('../fonts/Degular-Bold.woff2') format('woff2'),
+       url('https://cdn.prod.website-files.com/696173cb00865d1b386e4af8/69c520c7360396435501e587_degular-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hello Organichand';
+  src: url('fonts/HelloOrganichand.woff2') format('woff2'),
+       url('../fonts/HelloOrganichand.woff2') format('woff2'),
+       url('https://cdn.prod.website-files.com/696173cb00865d1b386e4af8/6963d3bce4c07135f1d68628_hello-organichand-webfont.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 *,
 *::before,
 *::after {
@@ -324,18 +355,18 @@ nav::-webkit-scrollbar {
 
 .band-2 {
   color: #FFFFFF;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Champ', 'Syne', sans-serif;
   font-size: clamp(40px, 8vw, 84px);
-  font-weight: 800;
-  letter-spacing: -2px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
   padding: 50px 20px;
 }
 .band-2::before { background: #8F5B27; animation-delay: 1.6s; }
 .band-2 .band-content { animation-delay: 2.0s; }
 
 .ccws-logo {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
+  font-family: 'Champ', 'Syne', sans-serif;
+  font-weight: 700;
   letter-spacing: -0.5px;
 }
 
@@ -445,7 +476,8 @@ nav::-webkit-scrollbar {
   border-top: 1px solid rgba(0, 0, 0, 0.07);
 }
 
-.club-row.visible {
+.club-row.visible,
+.club-row.v2-revealed {
   opacity: 1;
   transform: translateY(0);
 }
@@ -543,11 +575,11 @@ nav::-webkit-scrollbar {
 }
 
 .club-name {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Champ', 'Syne', sans-serif;
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   color: #1a1a1a;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.5px;
   margin-bottom: 9px;
   line-height: 1.15;
 }
@@ -1052,4 +1084,133 @@ nav::-webkit-scrollbar {
     height: 100%;
     border-radius: 0;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE TRANSITION CURTAIN (AARDVARK INSP0)
+   ═══════════════════════════════════════════════════════════════ */
+
+.v2-page-transition {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  --trans-theme: #5A390C;
+  transform: translateY(115%);
+  transition: transform 0.44s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.v2-page-transition.v2-trans-active {
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+.v2-page-transition.v2-trans-reveal {
+  pointer-events: none;
+  transform: translateY(-115%);
+  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.v2-trans-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--trans-theme, #5A390C);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v2-trans-crest {
+  position: absolute;
+  top: -150px;
+  left: 0;
+  width: 100%;
+  height: 155px;
+  pointer-events: none;
+}
+
+.v2-trans-crest svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: var(--trans-theme, #5A390C);
+}
+
+.v2-trans-trough {
+  position: absolute;
+  bottom: -150px;
+  left: 0;
+  width: 100%;
+  height: 155px;
+  pointer-events: none;
+}
+
+.v2-trans-trough svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: var(--trans-theme, #5A390C);
+}
+
+.v2-trans-center {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: #fff;
+}
+
+.v2-trans-spinner {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  animation: transSpin 1.8s ease-in-out infinite alternate;
+}
+
+.v2-trans-spinner svg {
+  width: 26px;
+  height: 26px;
+  stroke: #fff;
+}
+
+@keyframes transSpin {
+  0% { transform: scale(0.9) rotate(-14deg); }
+  100% { transform: scale(1.1) rotate(14deg); }
+}
+
+.v2-trans-title {
+  font-family: 'Champ', 'Syne', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.v2-trans-title .v2-trans-accent {
+  opacity: 0.85;
+}
+
+.v2-trans-pill {
+  font-family: 'Hello Organichand', 'Caveat', cursive;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.28);
+  padding: 5px 22px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
