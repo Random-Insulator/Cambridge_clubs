@@ -130,7 +130,7 @@
 
       setTimeout(() => {
         window.location.href = href;
-      }, 380);
+      }, 520);
     });
   }
 
@@ -216,10 +216,35 @@
     }, 1800);
   }
 
+  // ─── CONTINUOUS PARABOLIC SHAPES SCROLL PARALLAX ───────────────
+  function initParabolicParallax() {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const dividers = document.querySelectorAll('.v2-parabolic-divider svg, .v2-activities-parabolic-bg svg, #heroWaves');
+          const winH = window.innerHeight;
+
+          dividers.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.bottom > -100 && rect.top < winH + 100) {
+              const centerDist = (rect.top + rect.height / 2) - (winH / 2);
+              const shift = Math.max(-16, Math.min(16, -centerDist * 0.035));
+              el.style.transform = `translateY(${shift.toFixed(1)}px)`;
+            }
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
   function init() {
     createCurtain();
     attachLinkInterceptors();
     initScrollAnimations();
+    initParabolicParallax();
   }
 
   if (document.readyState === 'loading') {

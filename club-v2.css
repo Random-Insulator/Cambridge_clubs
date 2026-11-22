@@ -503,7 +503,7 @@ body.v2-page {
 
 .v2-activities {
   background: #ffffff;
-  padding: 120px 0 90px;
+  padding: 120px 0 160px;
   position: relative;
   overflow: hidden;
 }
@@ -755,7 +755,7 @@ body.v2-page {
 
 .v2-perfect-for {
   position: relative;
-  padding: 130px 0 110px;
+  padding: 140px 0 180px;
   background: var(--club-color-pale, #fff5f5);
   overflow: hidden;
 }
@@ -956,7 +956,7 @@ body.v2-page {
 .v2-details {
   position: relative;
   background: var(--club-color, #e8504a);
-  padding: 130px 0 100px;
+  padding: 140px 0 160px;
   overflow: hidden;
 }
 
@@ -1296,48 +1296,48 @@ body.v2-page {
   opacity: 1;
   transform: translateY(0) rotate(-3.5deg);
   transition-delay: 0.05s;
-  animation: fanIdle1 6s ease-in-out infinite alternate 0.7s;
+  animation: fanIdle1 10s ease-in-out infinite alternate 0.7s;
 }
 
 .v2-reason-card.v2-revealed:nth-child(2) {
   opacity: 1;
   transform: translateY(0) rotate(2deg);
   transition-delay: 0.15s;
-  animation: fanIdle2 7s ease-in-out infinite alternate 0.8s;
+  animation: fanIdle2 11s ease-in-out infinite alternate 0.8s;
 }
 
 .v2-reason-card.v2-revealed:nth-child(3) {
   opacity: 1;
   transform: translateY(0) rotate(-2deg);
   transition-delay: 0.25s;
-  animation: fanIdle3 6.5s ease-in-out infinite alternate 0.9s;
+  animation: fanIdle3 10.5s ease-in-out infinite alternate 0.9s;
 }
 
 .v2-reason-card.v2-revealed:nth-child(4) {
   opacity: 1;
   transform: translateY(0) rotate(3.5deg);
   transition-delay: 0.35s;
-  animation: fanIdle4 7.5s ease-in-out infinite alternate 1.0s;
+  animation: fanIdle4 12s ease-in-out infinite alternate 1.0s;
 }
 
 @keyframes fanIdle1 {
   0%   { transform: translateY(0) rotate(-3.5deg); }
-  100% { transform: translateY(-7px) rotate(-1.5deg); }
+  100% { transform: translateY(-4px) rotate(-2.5deg); }
 }
 
 @keyframes fanIdle2 {
   0%   { transform: translateY(0) rotate(2deg); }
-  100% { transform: translateY(-9px) rotate(4deg); }
+  100% { transform: translateY(-4px) rotate(3deg); }
 }
 
 @keyframes fanIdle3 {
   0%   { transform: translateY(0) rotate(-2deg); }
-  100% { transform: translateY(-6px) rotate(-4deg); }
+  100% { transform: translateY(-3px) rotate(-3deg); }
 }
 
 @keyframes fanIdle4 {
   0%   { transform: translateY(0) rotate(3.5deg); }
-  100% { transform: translateY(-8px) rotate(1.5deg); }
+  100% { transform: translateY(-4px) rotate(2.5deg); }
 }
 
 .v2-reasons-deck:hover .v2-reason-card {
@@ -1394,7 +1394,7 @@ body.v2-page {
   overflow: visible;
   --trans-theme: var(--club-color, #1a1a1a);
   transform: translateY(115%);
-  transition: transform 0.44s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform 0.62s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .v2-page-transition.v2-trans-active {
@@ -1405,7 +1405,7 @@ body.v2-page {
 .v2-page-transition.v2-trans-reveal {
   pointer-events: none;
   transform: translateY(-115%);
-  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform 0.72s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .v2-trans-fill {
@@ -1470,7 +1470,7 @@ body.v2-page {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  animation: transSpin 1.8s ease-in-out infinite alternate;
+  animation: transSpin 3.5s ease-in-out infinite alternate;
 }
 
 .v2-trans-spinner svg {
@@ -1480,8 +1480,8 @@ body.v2-page {
 }
 
 @keyframes transSpin {
-  0% { transform: scale(0.9) rotate(-14deg); }
-  100% { transform: scale(1.1) rotate(14deg); }
+  0% { transform: scale(0.95) rotate(-8deg); }
+  100% { transform: scale(1.05) rotate(8deg); }
 }
 
 .v2-trans-title {
@@ -1503,4 +1503,79 @@ body.v2-page {
   padding: 5px 22px;
   border-radius: 100px;
   border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTINUOUS PARABOLIC SECTION DIVIDERS (AARDVARK INSP0)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Reusable Parabolic Section Divider across the whole page */
+.v2-parabolic-divider {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.v2-parabolic-divider svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: center bottom;
+  will-change: transform;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 1. Activities to Perfect-For Divider (Bottom of Section 2) */
+.v2-div-act-to-perfect {
+  bottom: -1px;
+  height: clamp(65px, 8.5vw, 130px);
+}
+
+/* 2. Perfect-For to Details Crest (Bottom of Section 3) */
+.v2-div-perfect-to-details {
+  bottom: -1px;
+  height: clamp(75px, 9.5vw, 150px);
+}
+
+/* 3. Details to Footer Trough (Bottom of Section 4) */
+.v2-div-details-to-footer {
+  bottom: -1px;
+  height: clamp(65px, 8.5vw, 130px);
+}
+
+/* Ambient parabolic halo inside sections */
+.v2-activities-parabolic-bg {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+.v2-activities-parabolic-bg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.v2-perfect-for::before {
+  content: '';
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1500px, 100vw);
+  height: 650px;
+  border-radius: 50% 50% 45% 45% / 35% 35% 65% 65%;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
+  pointer-events: none;
+  z-index: 1;
 }

@@ -64,6 +64,8 @@
           d="M0,620 C360,540 720,680 1020,570 C1220,500 1360,580 1440,600 L1440,900 L0,900 Z" />
         <path id="heroWave3" fill="var(--club-color-light, rgba(232,80,74,0.45))" opacity="0.5"
           d="M0,720 C380,660 760,760 1100,680 C1280,640 1380,700 1440,710 L1440,900 L0,900 Z" />
+        <path id="heroWave4" fill="#ffffff"
+          d="M0,770 C400,710 800,820 1150,740 C1290,710 1390,760 1440,770 L1440,900 L0,900 Z" />
       </svg>
     </div>
 
@@ -159,7 +161,15 @@
   <!-- ═══════════════════════════════════════════════════════════
        SECTION 2 — RECENT ACTIVITIES (Clean 2-Steps-Back Style)
        ═══════════════════════════════════════════════════════════ -->
-  <section class="v2-activities">
+    <section class="v2-activities">
+
+    <!-- Ambient Parabolic Background Arc -->
+    <div class="v2-activities-parabolic-bg" aria-hidden="true">
+      <svg viewBox="0 0 1440 360" preserveAspectRatio="none">
+        <path fill="var(--club-color-pale)" opacity="0.45"
+          d="M0,80 C360,220 1080,20 1440,140 L1440,360 L0,360 Z"/>
+      </svg>
+    </div>
 
     <div class="v2-section-header">
       <div class="v2-section-cursive-col">
@@ -187,6 +197,17 @@
     <!-- Horizontal scroll track with clean cards -->
     <div class="v2-activities-scroll" id="activitiesScroll">
       <!-- Injected via JS -->
+    </div>
+
+
+    <!-- Parabolic Wave Divider into Section 3 (Perfect Club For) -->
+    <div class="v2-parabolic-divider v2-div-act-to-perfect" aria-hidden="true">
+      <svg viewBox="0 0 1440 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="var(--club-color-light)" opacity="0.3"
+          d="M0,35 C360,110 740,20 1100,85 C1260,105 1370,75 1440,55 L1440,140 L0,140 Z"/>
+        <path fill="var(--club-color-pale)"
+          d="M0,65 C380,130 800,45 1160,105 C1290,125 1390,95 1440,85 L1440,140 L0,140 Z"/>
+      </svg>
     </div>
 
   </section>
@@ -304,6 +325,16 @@
       </div>
 
     </div>
+      <!-- Parabolic Wave Crest into Section 4 (Club Details) -->
+    <div class="v2-parabolic-divider v2-div-perfect-to-details" aria-hidden="true">
+      <svg viewBox="0 0 1440 160" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="var(--club-color-dark)" opacity="0.35"
+          d="M0,65 C360,10 740,120 1120,40 C1280,10 1380,50 1440,60 L1440,160 L0,160 Z"/>
+        <path fill="var(--club-color)"
+          d="M0,95 C400,30 800,150 1180,60 C1300,30 1390,80 1440,90 L1440,160 L0,160 Z"/>
+      </svg>
+    </div>
+
   </section>
 
 
@@ -396,6 +427,16 @@
       </div>
 
     </div>
+      <!-- Parabolic Wave Trough into Footer -->
+    <div class="v2-parabolic-divider v2-div-details-to-footer" aria-hidden="true">
+      <svg viewBox="0 0 1440 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#1a1a1c" opacity="0.5"
+          d="M0,30 C380,110 760,20 1120,80 C1280,100 1380,60 1440,40 L1440,140 L0,140 Z"/>
+        <path fill="#0d0d0e"
+          d="M0,70 C400,130 800,40 1160,110 C1300,130 1390,90 1440,70 L1440,140 L0,140 Z"/>
+      </svg>
+    </div>
+
   </section>
 
 

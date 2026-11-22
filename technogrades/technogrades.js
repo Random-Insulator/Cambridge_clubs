@@ -26,11 +26,12 @@ const CLUB_ACTIVITIES = [
   }
 ];
 
-// ─── MATHEMATICAL SVG PARABOLIC WAVE MORPHING (60 FPS) ──────
+// ─── MATHEMATICAL SVG PARABOLIC WAVE MORPHING (Serene Flow) ──
 (function initFluidWaves() {
   const wave1 = document.getElementById('heroWave1');
   const wave2 = document.getElementById('heroWave2');
   const wave3 = document.getElementById('heroWave3');
+  const wave4 = document.getElementById('heroWave4');
   if (!wave1 || !wave2 || !wave3) return;
 
   let time = 0;
@@ -38,52 +39,70 @@ const CLUB_ACTIVITIES = [
 
   function renderWave() {
     if (!isRunning) return;
-    time += 0.016;
+    // Ultra-slow, serene pacing (16x slower than before)
+    time += 0.0012;
 
-    // Layer 1: Deep slow undulation
-    const y1_0 = 500 + Math.sin(time * 0.7) * 35;
-    const c1_x1 = 300 + Math.cos(time * 0.5) * 40;
-    const c1_y1 = 430 + Math.sin(time * 0.8) * 45;
-    const c1_x2 = 680 + Math.sin(time * 0.6) * 50;
-    const c1_y2 = 570 + Math.cos(time * 0.7) * 35;
-    const mid1_x = 960 + Math.cos(time * 0.45) * 40;
-    const mid1_y = 470 + Math.sin(time * 0.75) * 40;
-    const end1_y = 490 + Math.sin(time * 0.6) * 30;
+    // Layer 1: Deep slow undulation (~35s period, gentle 10px breathing)
+    const y1_0 = 510 + Math.sin(time * 0.18) * 10;
+    const c1_x1 = 300 + Math.cos(time * 0.12) * 12;
+    const c1_y1 = 430 + Math.sin(time * 0.20) * 12;
+    const c1_x2 = 680 + Math.sin(time * 0.15) * 14;
+    const c1_y2 = 570 + Math.cos(time * 0.18) * 10;
+    const mid1_x = 960 + Math.cos(time * 0.14) * 12;
+    const mid1_y = 470 + Math.sin(time * 0.22) * 12;
+    const end1_y = 490 + Math.sin(time * 0.16) * 8;
 
     wave1.setAttribute(
       'd',
       `M0,${y1_0} C${c1_x1},${c1_y1} ${c1_x2},${c1_y2} ${mid1_x},${mid1_y} C1200,${mid1_y - 60} 1350,${end1_y + 30} 1440,${end1_y} L1440,900 L0,900 Z`
     );
 
-    // Layer 2: Mid-tone dynamic parabolic curve
-    const y2_0 = 600 + Math.cos(time * 0.85) * 30;
-    const c2_x1 = 340 + Math.sin(time * 0.7) * 45;
-    const c2_y1 = 530 + Math.cos(time * 0.95) * 35;
-    const c2_x2 = 740 + Math.cos(time * 0.65) * 40;
-    const c2_y2 = 660 + Math.sin(time * 0.85) * 40;
-    const mid2_x = 1060 + Math.sin(time * 0.55) * 50;
-    const mid2_y = 560 + Math.cos(time * 0.65) * 35;
-    const end2_y = 610 + Math.cos(time * 0.75) * 25;
+    // Layer 2: Mid-tone dynamic parabolic curve (~40s period, gentle 10px breathing)
+    const y2_0 = 610 + Math.cos(time * 0.16) * 10;
+    const c2_x1 = 340 + Math.sin(time * 0.14) * 12;
+    const c2_y1 = 540 + Math.cos(time * 0.22) * 10;
+    const c2_x2 = 740 + Math.cos(time * 0.15) * 12;
+    const c2_y2 = 660 + Math.sin(time * 0.19) * 12;
+    const mid2_x = 1060 + Math.sin(time * 0.13) * 14;
+    const mid2_y = 570 + Math.cos(time * 0.17) * 10;
+    const end2_y = 610 + Math.cos(time * 0.20) * 8;
 
     wave2.setAttribute(
       'd',
       `M0,${y2_0} C${c2_x1},${c2_y1} ${c2_x2},${c2_y2} ${mid2_x},${mid2_y} C1240,${mid2_y - 40} 1360,${end2_y + 30} 1440,${end2_y} L1440,900 L0,900 Z`
     );
 
-    // Layer 3: Foreground rhythmic wave
-    const y3_0 = 700 + Math.sin(time * 1.05) * 25;
-    const c3_x1 = 380 + Math.cos(time * 0.9) * 35;
-    const c3_y1 = 640 + Math.sin(time * 1.1) * 30;
-    const c3_x2 = 820 + Math.sin(time * 0.8) * 40;
-    const c3_y2 = 750 + Math.cos(time * 0.95) * 30;
-    const mid3_x = 1160 + Math.cos(time * 0.65) * 40;
-    const mid3_y = 670 + Math.sin(time * 0.85) * 30;
-    const end3_y = 720 + Math.sin(time * 1.0) * 20;
+    // Layer 3: Foreground rhythmic wave (~30s period, gentle 8px breathing)
+    const y3_0 = 710 + Math.sin(time * 0.22) * 8;
+    const c3_x1 = 380 + Math.cos(time * 0.18) * 10;
+    const c3_y1 = 650 + Math.sin(time * 0.24) * 8;
+    const c3_x2 = 820 + Math.sin(time * 0.16) * 10;
+    const c3_y2 = 750 + Math.cos(time * 0.21) * 8;
+    const mid3_x = 1160 + Math.cos(time * 0.15) * 10;
+    const mid3_y = 670 + Math.sin(time * 0.20) * 8;
+    const end3_y = 720 + Math.sin(time * 0.23) * 6;
 
     wave3.setAttribute(
       'd',
       `M0,${y3_0} C${c3_x1},${c3_y1} ${c3_x2},${c3_y2} ${mid3_x},${mid3_y} C1300,${mid3_y - 20} 1390,${end3_y + 20} 1440,${end3_y} L1440,900 L0,900 Z`
     );
+
+    // Layer 4 (if present): Transition into Activities section
+    if (wave4) {
+      const y4_0 = 760 + Math.sin(time * 0.15) * 6;
+      const c4_x1 = 400 + Math.cos(time * 0.14) * 8;
+      const c4_y1 = 700 + Math.sin(time * 0.18) * 6;
+      const c4_x2 = 840 + Math.sin(time * 0.12) * 8;
+      const c4_y2 = 800 + Math.cos(time * 0.16) * 6;
+      const mid4_x = 1180 + Math.cos(time * 0.13) * 8;
+      const mid4_y = 720 + Math.sin(time * 0.17) * 6;
+      const end4_y = 770 + Math.sin(time * 0.15) * 5;
+
+      wave4.setAttribute(
+        'd',
+        `M0,${y4_0} C${c4_x1},${c4_y1} ${c4_x2},${c4_y2} ${mid4_x},${mid4_y} C1300,${mid4_y - 20} 1390,${end4_y + 20} 1440,${end4_y} L1440,900 L0,900 Z`
+      );
+    }
 
     requestAnimationFrame(renderWave);
   }
